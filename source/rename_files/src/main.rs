@@ -5,12 +5,13 @@ fn rename_files(file_list: &String, name_prefix: &String) {
     let mut file_counter : u64 = 0;
     let contents = fs::read_to_string(file_list).expect("Error reading the file");
     let value = contents.split("\n");
+    let count = value.collect().len();
     for i in value {
         if i.len() > 0 {
             let mut prefix_string = String::new();
             prefix_string.push_str(&format!("{}{}_{}",name_prefix,file_counter+1, i));
             println!("{} => {}", i, prefix_string);
-            fs::copy(i, prefix_string).expect("error on copy");
+            fs::rename(i, prefix_string).expect("error on copy");
             file_counter += 1;
         }
     }
