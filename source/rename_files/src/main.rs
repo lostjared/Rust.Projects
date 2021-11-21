@@ -8,8 +8,7 @@ fn rename_files(file_list: &String, name_prefix: &String) {
     let sval = format!("{}", counter);
     for i in contents.lines() {
         if i.len() > 0 {
-            let mut prefix_string = String::new();
-            prefix_string.push_str(&format!("{}{:0width$}_{}",name_prefix,file_counter+1, i, width=sval.len()));
+            let prefix_string = String::from(&format!("{}{:0width$}_{}",name_prefix,file_counter+1, i, width=sval.len()));
             println!("{} => {}", i, prefix_string);
             fs::rename(i, prefix_string).expect("error on copy");
             file_counter += 1;
