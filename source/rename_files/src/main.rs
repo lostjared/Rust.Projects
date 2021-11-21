@@ -10,7 +10,7 @@ fn rename_files(file_list: &String, name_prefix: &String) {
         if i.len() > 0 {
             let prefix_string = String::from(&format!("{}{:0width$}_{}",name_prefix,file_counter+1, i, width=sval.len()));
             println!("{} => {}", i, prefix_string);
-            fs::rename(i, prefix_string).expect("error on copy");
+            fs::rename(i, prefix_string).expect("error on rename");
             file_counter += 1;
         }
     }
