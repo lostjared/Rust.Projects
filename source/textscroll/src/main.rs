@@ -23,6 +23,6 @@ fn main() {
         scrolltext(&contents, num);
     }
     else {
-        println!("Error: input_file output_file");
+        println!("Error: input_file timeout");
     }
 }
