@@ -134,7 +134,10 @@ fn main() {
         let start = SystemTime::now();
         let se = start.duration_since(UNIX_EPOCH).expect("error on time");
         let tick = se.as_secs() * 1000 + se.subsec_nanos() as u64 / 1_000_000;
-        let delta : f64 = (tick as f64 - prev_tick as f64) / 1000.0;
+        let mut delta : f64 = (tick as f64 - prev_tick as f64) / 1000.0;
+        if delta > 0.15 {
+            delta = 0.15;
+        }
         prev_tick = tick; 
         for _event in e.poll_iter() {
  
