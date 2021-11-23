@@ -119,8 +119,8 @@ fn main() {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     ];
     let map = Map::new(12, 12, 64, tiles);
-    let max_x : i32 = map.cols * 64 - 512;
-    let max_y : i32 = map.cols * 64 - 512;
+    let max_x : i32 = (map.cols * 64 - 512)-1;
+    let max_y : i32 = (map.cols * 64 - 512)-1;
     let mut camera = Camera::new(512, 512, max_x, max_y);
     let mut prev_tick : u64 = 0;
     'main: loop {
