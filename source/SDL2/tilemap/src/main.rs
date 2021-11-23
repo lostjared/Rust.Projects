@@ -163,7 +163,9 @@ fn main() {
                     _ => {}
                 }
             }
-        
-            camera.move_camera(delta, move_x, move_y);
+            if move_x != 0 || move_y != 0 {
+                camera.move_camera(delta, move_x, move_y);
+                println!("x: {} y: {} delta: {}", move_x, move_y, delta);
+            }
     }
 }
