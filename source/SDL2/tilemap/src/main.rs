@@ -6,6 +6,9 @@ use sdl2::rect::Rect;
 use std::path::Path;
 use sdl2::surface::Surface;
 use std::time::{SystemTime, UNIX_EPOCH};
+use std::cmp::max;
+use std::cmp::min;
+use std::collections::HashSet;
 
 struct Camera {
     x: i32,
@@ -15,22 +18,6 @@ struct Camera {
     max_x: i32,
     max_y: i32,
     speed: i32
-}
-
-fn max(x: i32, x2: i32) -> i32 {
-    if x > x2 {
-        x
-    } else {
-        x2
-    }
-}
-
-fn min(x: i32, x2: i32) -> i32 {
-    if x < x2 {
-        x
-    } else {
-        x2
-    }
 }
 
 impl Camera {
@@ -95,6 +82,14 @@ impl Map {
     }
 }
 
+fn fmin(x: f64, x2: f64) -> f64 {
+    if x < x2 {
+        x
+    } else {
+        x2
+    }
+}
+
 fn main() {
     let pathval = Path::new("./image.bmp");
     let width = 512;
@@ -128,16 +123,13 @@ fn main() {
     let max_y : i32 = map.cols * 64 - 512;
     let mut camera = Camera::new(512, 512, max_x, max_y);
     let mut prev_tick : u64 = 0;
-    
     'main: loop {
         let start = SystemTime::now();
         let se = start.duration_since(UNIX_EPOCH).expect("error on time");
         let tick = se.as_secs() * 1000 + se.subsec_nanos() as u64 / 1_000_000;
         let mut delta : f64 = (tick as f64 - prev_tick as f64) / 1000.0;
-        if delta > 0.15 {
-            delta = 0.15;
-        }
-        prev_tick = tick; 
+        prev_tick = tick;
+        delta = fmin(0.75, delta);
         for _event in e.poll_iter() {
             match _event {
                 Event::Quit { .. }
@@ -145,35 +137,33 @@ fn main() {
                     keycode: Some(Keycode::Escape),
                     ..
                 } => break 'main,
-                Event::KeyDown {
-                    keycode: Some(Keycode::Right),
-                    ..
-                } => {
-                    camera.move_camera(delta, 1, 0)
-                },
-                Event::KeyDown {
-                    keycode: Some(Keycode::Left),
-                    ..
-                } => {
-                    camera.move_camera(delta, -1, 0);
-                },
-                Event::KeyDown {
-                    keycode: Some(Keycode::Up),
-                    ..
-                } => {
-                    camera.move_camera(delta, 0, -1);
-                },
-                Event::KeyDown {
-                    keycode: Some(Keycode::Down),
-                    ..
-                } => {
-                    camera.move_camera(delta, 0, 1);
-                },
                 _ => {}
             }
         }
         can.clear();
         map.draw_map(&texture, &camera, &mut can);
         can.present();
+        let keys : HashSet<_> = e.keyboard_state().pressed_scancodes().filter_map(Keycode::from_scancode).collect();
+        let mut move_x : i32 = 0;
+        let mut move_y : i32 = 0;
+        for i in &keys {
+            match *i {
+                Keycode::Left => {
+                    move_x = -1;
+                }
+                Keycode::Right => {
+                     move_x = 1;
+                }
+                Keycode::Up => {
+                    move_y = -1;
+                }
+                Keycode::Down => {
+                    move_y = 1;
+                }
+                    _ => {}
+                }
+            }
+        
+            camera.move_camera(delta, move_x, move_y);
     }
 }
