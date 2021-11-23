@@ -83,10 +83,10 @@ impl Map {
         let off_y : i32 = -cy + start_row as i32 * self.tsize as i32;
         for i in start_col ..= end_col {
             for z in start_row ..= end_row {
-                let tile : &u8 = self.layers.get((z * self.rows + i) as usize).unwrap();
+                let tile : u8 = self.layers[(z * self.rows + i) as usize];
                 let x : i32 = (i- start_col) * self.tsize + off_x;
                 let y : i32 = (z- start_row) * self.tsize + off_y;
-                let t : i32 = *tile as i32;
+                let t : i32 = tile as i32;
                 if t != 0 {
                     can.copy(&texture, Some(Rect::new((t-1) as i32 * self.tsize as i32, 0, self.tsize as u32, self.tsize as u32)), Some(Rect::new(x as i32, y as i32, self.tsize as u32, self.tsize as u32))).expect("on copy");
                 }
@@ -120,10 +120,11 @@ fn main() {
         3, 1, 1, 1, 1, 2, 1, 1, 1, 1, 3, 3,
         3, 1, 1, 1, 1, 2, 1, 1, 1, 1, 3, 3,
         3, 3, 3, 1, 1, 2, 3, 3, 3, 3, 3, 3,
-        3, 3, 3, 1, 1, 2, 3, 3, 3, 3, 3, 3
+        3, 3, 3, 1, 1, 2, 3, 3, 3, 3, 3, 3,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     ];
     let map = Map::new(12, 12, 64, tiles);
-    let max_x : i32 = (map.cols-1) * 64 - 512;
+    let max_x : i32 = map.cols * 64 - 512;
     let max_y : i32 = map.cols * 64 - 512;
     let mut camera = Camera::new(512, 512, max_x, max_y);
     let mut prev_tick : u64 = 0;
@@ -138,7 +139,6 @@ fn main() {
         }
         prev_tick = tick; 
         for _event in e.poll_iter() {
- 
             match _event {
                 Event::Quit { .. }
                 | Event::KeyDown {
