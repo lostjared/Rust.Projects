@@ -6,14 +6,13 @@ use std::io::Write;
 
 fn trimlines(inputfile: &String, outputfile: &String) {
     let contents = fs::read_to_string(inputfile).expect("Error reading the file");
-    let mut val : Vec<String> = Vec::new();
-    for i in contents.split("\n") {
-        if i.len() > 0 {
-            val.push(i.to_string());
-        }
-    }
+    let val : Vec<&str> = contents.lines().collect();
     let mut cfile = File::create(outputfile).expect("Error creating file");
-    val.iter().for_each(|x| writeln!(&mut cfile, "{}", x).expect("error on write"));
+    val.iter().for_each(|x| {
+        if x.len() > 0 {
+            writeln!(&mut cfile, "{}", x).expect("error on write");
+        }
+    });
 }
 
 fn main() {
