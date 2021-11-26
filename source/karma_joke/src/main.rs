@@ -4,7 +4,12 @@ fn give() -> String {
     io::stdin()
             .read_line(&mut input)
             .expect("Failed to readline");
-    input.pop();
+    if input.ends_with("\n") { 
+        input.pop();
+        if input.ends_with("\r") {
+            input.pop();
+        }
+    }
     input
 }
 fn get(value: String) -> String {
