@@ -5,7 +5,7 @@ use std::env;
 use std::fs::File;
 use std::io::{self,BufRead};
 
-fn process_files(filename: &String, search: &String) -> bool {
+fn search_file_lines(filename: &String, search: String) -> (bool, u64) {
     /*
     let contents = fs::read_to_string(filename).expect("Error reading the file");
     for line in contents.lines() {
@@ -16,13 +16,15 @@ fn process_files(filename: &String, search: &String) -> bool {
     false*/
     let f = File::open(filename).expect("could not open file");
     let it = io::BufReader::new(f);
+    let mut index = 1;
     for i in it.lines() {
         let line = i.unwrap();
-        if line.contains(search) {
-            return true;
+        if line.contains(&search) {
+            return (true, index);
         }
+        index += 1;
     }
-    false
+    (false, 0)
 }
 
 fn main() {
@@ -36,8 +38,8 @@ fn main() {
         let search: String = String::from(args.get(1).unwrap());
         let filename: String = String::from(args.get(i).unwrap());
         let t = thread::spawn(move || {
-            let result = process_files(&filename, &search);
-            println!("{} found: {}", filename, result);
+            let result = search_file_lines(&filename, search);
+            println!("{} found: {} line: {}", filename, result.0, result.1);
         });
         handles.push(t);
     }
