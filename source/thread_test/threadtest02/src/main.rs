@@ -2,14 +2,25 @@
 
 use std::thread;
 use std::env;
-use std::fs;
+use std::fs::File;
+use std::io::{self,BufRead};
 
 fn process_files(filename: &String, search: &String) -> bool {
+    /*
     let contents = fs::read_to_string(filename).expect("Error reading the file");
     for line in contents.lines() {
         if line.contains(search) {
             return true;
         }   
+    }
+    false*/
+    let f = File::open(filename).expect("could not open file");
+    let it = io::BufReader::new(f);
+    for i in it.lines() {
+        let line = i.unwrap();
+        if line.contains(search) {
+            return true;
+        }
     }
     false
 }
