@@ -1,6 +1,7 @@
+// Practice Project
+// Search Rust Source Files Concurrently for String
 use std::path::Path;
 use std::fs;
-
 use std::thread;
 use std::env;
 use std::fs::File;
@@ -47,7 +48,7 @@ fn proc_slice(values: &[String], search: &String) {
 fn main() -> io::Result<()> {
     let args: Vec<String> = env::args().collect();
     if args.len() != 3 {
-        println!("requires search dir1 dir2");
+        println!("Search Rust source files\nrequires: search directory");
     }
     let search = args.get(1).unwrap();
     let path = args.get(2).unwrap();
