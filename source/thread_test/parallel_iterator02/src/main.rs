@@ -36,15 +36,6 @@ fn list_dir(dir: &Path, files: &mut Vec<String>) -> io::Result<()> {
     Ok(())
 }
 
-fn proc_slice(values: &[String], search: &String) {
-    for i in values {
-        let result = search_file_lines(Path::new(i), search);
-        if result.0 != false && result.1 != 0 {
-            println!("search found: {} at line {}", i, result.1);
-        }
-    }
-}
-
 fn main() -> io::Result<()> {
     let args: Vec<String> = env::args().collect();
     if args.len() != 3 {
@@ -54,9 +45,11 @@ fn main() -> io::Result<()> {
     let path = args.get(2).unwrap();
     let mut files : Vec<String> = Vec::new();
     list_dir(Path::new(path), &mut files)?;
-    let filename: Vec<(usize, &mut [String])> = files.chunks_mut(8).enumerate().collect();
-    filename.into_par_iter().for_each(|(_, filename)| {
-        proc_slice(filename, search);
+    files.into_par_iter().for_each(|filename| {
+        let result = search_file_lines(Path::new(&filename), &search);
+        if result.0 != false && result.1 != 0 {
+            println!("search found: {} at line {}", filename, result.1);
+        }
     });
     Ok(())
 }
