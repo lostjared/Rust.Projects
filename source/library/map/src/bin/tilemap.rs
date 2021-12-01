@@ -1,11 +1,10 @@
-// cargo run --bin level
+// cargo run --bin tilemap
 // followed this tutorial here: https://developer.mozilla.org/en-US/docs/Games/Techniques/Tilemaps
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use std::path::Path;
 use sdl2::surface::Surface;
 use std::time::{SystemTime, UNIX_EPOCH};
-
 use std::collections::HashSet;
 use map::level::Camera;
 use map::level::Map;
