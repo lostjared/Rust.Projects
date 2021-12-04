@@ -11,6 +11,12 @@ fn print_values(x : (u32, u32, u32, u32)) {
     println!("{}: {}: {}: {}", x.0, x.1, x.2, x.3);
 }
 
+#[test] 
+fn tuple_test() {
+    assert_eq!(values(1), (10, 10, 10.5));
+    assert_eq!(values(0), (5, 5, 5.5));
+}
+
 fn main() {
     let val = values(1);
     let val2 = values(2);
