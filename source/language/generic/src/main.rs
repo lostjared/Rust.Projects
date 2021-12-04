@@ -20,6 +20,13 @@ impl<T: Copy> PairType<T> {
     }
 }
 
+#[test]
+fn test_pair() {
+    let t : PairType<u32> = PairType {one: 1, two: 2};
+    assert_eq!(t.get_one(), &1);
+    assert_eq!(t.get_two(), &2);
+}
+
 fn main() {
     let mut t : PairType<u32> = PairType{ one: 1, two: 2 };
     println!("{}:{}", t.one, t.two);
