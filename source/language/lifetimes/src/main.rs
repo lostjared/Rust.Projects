@@ -8,6 +8,11 @@ fn longest<'a>(one: &'a str, two: &'a str) -> &'a str {
     }
 }
 
+#[test]
+fn test_longest() {
+    assert_eq!(longest("o", "oo"), "oo");
+}
+
 fn main() {
     println!("Hello, world!");
     let longest_string = longest("one", "two three");
