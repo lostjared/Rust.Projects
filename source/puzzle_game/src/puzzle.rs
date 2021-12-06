@@ -11,8 +11,10 @@ pub mod game {
         pub color: i32,
     }
 
-    const TILE_W: usize = 1280/32;
-    const TILE_H: usize = 720/16;
+    pub const WINDOW_WIDTH : usize = 1280;
+    pub const WINDOW_HEIGHT: usize = 720;
+    pub const TILE_W: usize = WINDOW_WIDTH/32;
+    pub const TILE_H: usize = WINDOW_HEIGHT/16;
 
     pub struct Grid {
         blocks: Box<[[Block; TILE_H]; TILE_W]>,

@@ -38,8 +38,8 @@ fn draw_grid(grid : &game::Grid, colors: &Vec<Color>, can: &mut sdl2::render::Ca
 
 fn main() {   
 
-    let width = 1280;
-    let height = 720;
+    let width = game::WINDOW_WIDTH as u32;
+    let height = game::WINDOW_HEIGHT as u32;
     let sdl = sdl2::init().unwrap();
     let video = sdl.video().unwrap();
     let window = video.window("Generic Puzzle Game", width, height).resizable().opengl().build().unwrap();
