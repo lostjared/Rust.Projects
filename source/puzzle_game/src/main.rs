@@ -80,6 +80,14 @@ fn main() {
                     keycode: Some(Keycode::Right),
                     ..
                 } => grid.move_right(),
+                | Event::KeyDown {
+                    keycode: Some(Keycode::A),
+                    ..
+                } => grid.swap_piece_colors(0),
+                | Event::KeyDown {
+                    keycode: Some(Keycode::S),
+                    ..
+                } => grid.swap_piece_colors(1),
                 |
                 _ => {}
             }

@@ -47,6 +47,19 @@ pub mod game {
             }
         }
 
+        pub fn swap_piece_colors(&mut self, dir: u8) {
+            let b = self.piece;
+            if dir == 0 {
+                self.piece[0].color = b[2].color;
+                self.piece[1].color = b[0].color;
+                self.piece[2].color = b[1].color;
+            } else {
+                self.piece[0].color = b[1].color;
+                self.piece[1].color = b[2].color;
+                self.piece[2].color = b[0].color;
+            }
+        }
+
         pub fn get_grid_point(&self, x: usize, y: usize) -> i32 {
             self.blocks[x][y].color
         }
