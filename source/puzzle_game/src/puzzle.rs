@@ -124,6 +124,11 @@ pub mod game {
                 self.blocks[self.piece[i].x as usize][self.piece[i].y as usize].color = self.piece[i].color;
             }           
             self.new_piece();
+            self.proc_blocks();
+        }
+
+        pub fn proc_blocks(&mut self) {
+
         }
     }
 
