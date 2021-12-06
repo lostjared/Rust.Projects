@@ -10,6 +10,7 @@ use sdl2::rect::Rect;
 use sdl2::pixels::Color;
 //use rand::Rng;
 use puzzle::game;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 fn draw_grid(grid : &game::Grid, colors: &Vec<Color>, can: &mut sdl2::render::Canvas<sdl2::video::Window>) {
     let offset = 0;
@@ -23,7 +24,6 @@ fn draw_grid(grid : &game::Grid, colors: &Vec<Color>, can: &mut sdl2::render::Ca
             }
         }
     }
-
     let block = grid.get_block();
     let mut value: Color = *colors.get(block[0].color as usize).unwrap();
     can.set_draw_color(value);
@@ -42,6 +42,8 @@ fn main() {
     let height = game::WINDOW_HEIGHT as u32;
     let sdl = sdl2::init().unwrap();
     let video = sdl.video().unwrap();
+    let timer_delay : u64 = 1500;
+
     let window = video.window("Generic Puzzle Game", width, height).resizable().opengl().build().unwrap();
     let mut can = window.into_canvas().build().map_err(|e| e.to_string()).expect("Error on canvas");
     //let tc = can.texture_creator();
@@ -63,8 +65,19 @@ fn main() {
     colors.push(Color::RGB(150, 155, 40));
     colors.push(Color::RGB(50, 150, 200));
     colors.push(Color::RGB(255, 0, 0));
-
+    let mut prev_tick : u64 = 0;
+    let mut tick_count : u64 = 0;
     'main: loop {
+        let start = SystemTime::now();
+        let se = start.duration_since(UNIX_EPOCH).expect("error on time");
+        let tick = se.as_secs() * 1000 + se.subsec_nanos() as u64 / 1_000_000;
+        let ptick = tick - prev_tick;
+        prev_tick = tick;
+        tick_count += ptick;
+        if tick_count > timer_delay {
+            tick_count = 0;
+            grid.move_down();
+        }
         for _event in e.poll_iter() {
             match _event {
                 Event::Quit { .. }
