@@ -79,7 +79,7 @@ pub mod game {
         pub fn move_left(&mut self) {
             let mut go = true;
             for i in 0..3 {
-                if self.piece[i].x <= 0 {
+                if self.piece[i].x <= 0 || self.blocks[(self.piece[i].x as usize)-1][self.piece[i].y as usize].color != 0 {
                     go = false;
                 }
             }
@@ -93,7 +93,7 @@ pub mod game {
         pub fn move_right(&mut self) {
             let mut go = true;
             for i in 0..3 {
-                if self.piece[i].x >= (TILE_W as i32)-1 {
+                if self.piece[i].x >= (TILE_W as i32)-1 || self.blocks[(self.piece[i].x as usize)+1][self.piece[i].y as usize].color != 0 {
                     go = false;
                 }
             }
@@ -102,6 +102,28 @@ pub mod game {
                     self.piece[i].x += 1;
                 }
             }
+        }
+
+        pub fn move_down(&mut self) {
+            if self.piece[2].y+1 > (TILE_H as i32)-1 {
+                self.set_block();
+                return;
+            }
+            if self.piece[2].y+1 < (TILE_H as i32)-1 && self.blocks[self.piece[2].x as usize][(self.piece[2].y as usize)+1].color != 0 {
+                self.set_block();
+                return;
+            }
+
+           for i in 0..3 {
+                self.piece[i].y += 1;
+            }
+        }
+
+        pub fn set_block(&mut self) {
+            for i in 0..3 {
+                self.blocks[self.piece[i].x as usize][self.piece[i].y as usize].color = self.piece[i].color;
+            }           
+            self.new_piece();
         }
     }
 

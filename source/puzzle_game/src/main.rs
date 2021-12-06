@@ -12,7 +12,7 @@ use sdl2::pixels::Color;
 use puzzle::game;
 
 fn draw_grid(grid : &game::Grid, colors: &Vec<Color>, can: &mut sdl2::render::Canvas<sdl2::video::Window>) {
-    let offset = 10;
+    let offset = 0;
     for x in 0..grid.get_width() as usize {
         for y in 0..grid.get_height() as usize {
             let color = grid.get_grid_point(x, y);
@@ -88,6 +88,10 @@ fn main() {
                     keycode: Some(Keycode::S),
                     ..
                 } => grid.swap_piece_colors(1),
+                | Event::KeyDown {
+                    keycode: Some(Keycode::Down),
+                    ..
+                } => grid.move_down(),
                 |
                 _ => {}
             }
