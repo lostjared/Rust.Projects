@@ -5,10 +5,10 @@ mod puzzle;
 
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
-use sdl2::pixels::PixelFormatEnum;
+//use sdl2::pixels::PixelFormatEnum;
 use sdl2::rect::Rect;
 use sdl2::pixels::Color;
-use rand::Rng;
+//use rand::Rng;
 use puzzle::game;
 
 fn draw_grid(grid : &game::Grid, colors: &Vec<Color>, can: &mut sdl2::render::Canvas<sdl2::video::Window>) {
@@ -16,9 +16,11 @@ fn draw_grid(grid : &game::Grid, colors: &Vec<Color>, can: &mut sdl2::render::Ca
     for x in 0..grid.get_width() as usize {
         for y in 0..grid.get_height() as usize {
             let color = grid.get_grid_point(x, y);
-            let value: Color = *colors.get(color as usize).unwrap();
-            can.set_draw_color(value);
-            can.fill_rect(Some(Rect::new(x as i32 * 32, (y as i32 * 16) + offset, 32, 16))).expect("draw rect");
+            if color != 0 {
+                let value: Color = *colors.get(color as usize).unwrap();
+                can.set_draw_color(value);
+                can.fill_rect(Some(Rect::new(x as i32 * 32, (y as i32 * 16) + offset, 32, 16))).expect("draw rect");
+            }
         }
     }
 
@@ -42,8 +44,8 @@ fn main() {
     let video = sdl.video().unwrap();
     let window = video.window("Generic Puzzle Game", width, height).resizable().opengl().build().unwrap();
     let mut can = window.into_canvas().build().map_err(|e| e.to_string()).expect("Error on canvas");
-    let tc = can.texture_creator();
-    let mut texture = tc.create_texture_streaming(PixelFormatEnum::RGB24, width, height).map_err(|e| e.to_string()).expect("Error on texture create");
+    //let tc = can.texture_creator();
+    //let mut texture = tc.create_texture_streaming(PixelFormatEnum::RGB24, width, height).map_err(|e| e.to_string()).expect("Error on texture create");
     let mut e = sdl.event_pump().unwrap();
     can.set_draw_color(Color::RGB(0, 0, 0));
     can.clear();

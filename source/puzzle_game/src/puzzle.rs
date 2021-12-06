@@ -21,13 +21,6 @@ pub mod game {
         piece: [Block; 3]
     }
 
-    impl Block {
-        fn new(xx: i32, xy: i32, xcolor: i32) -> Block {
-            Block {x: xx, y: xy, color: xcolor}
-        }
-
-    }
-
     impl Grid {
         pub fn new(widthx: i32, heightx: i32) -> Grid {
             let g = Box::new([[Block{x: 0, y: 0, color: 0}; TILE_H]; TILE_W]);
