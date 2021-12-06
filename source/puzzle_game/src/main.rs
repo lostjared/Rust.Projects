@@ -5,20 +5,24 @@ mod puzzle;
 
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
-//use sdl2::pixels::PixelFormatEnum;
 use sdl2::rect::Rect;
 use sdl2::pixels::Color;
-//use rand::Rng;
 use puzzle::game;
 use std::time::{SystemTime, UNIX_EPOCH};
+use rand::Rng;
 
 fn draw_grid(grid : &game::Grid, colors: &Vec<Color>, can: &mut sdl2::render::Canvas<sdl2::video::Window>) {
     let offset = 0;
     for x in 0..grid.get_width() as usize {
         for y in 0..grid.get_height() as usize {
             let color = grid.get_grid_point(x, y);
-            if color != 0 {
+            if color != 0 && color != -1 {
                 let value: Color = *colors.get(color as usize).unwrap();
+                can.set_draw_color(value);
+                can.fill_rect(Some(Rect::new(x as i32 * 32, (y as i32 * 16) + offset, 32, 16))).expect("draw rect");
+            } else if color == -1 {
+                let mut rng = rand::thread_rng();
+                let value : Color = Color::RGB(rng.gen_range(0..255), rng.gen_range(0..255), rng.gen_range(0..255));
                 can.set_draw_color(value);
                 can.fill_rect(Some(Rect::new(x as i32 * 32, (y as i32 * 16) + offset, 32, 16))).expect("draw rect");
             }
