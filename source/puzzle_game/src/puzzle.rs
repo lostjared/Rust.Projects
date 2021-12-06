@@ -2,36 +2,62 @@
 
 pub mod game {
 
+    use rand::Rng;
+
     #[derive(Copy,Clone,Debug)]
     pub struct Block {
-        x: i32,
-        y: i32,
-        color: i32,
+        pub x: i32,
+        pub y: i32,
+        pub color: i32,
     }
 
-    const TILE_W: usize = 1920/32;
-    const TILE_H: usize = 1080/16;
+    const TILE_W: usize = 1280/32;
+    const TILE_H: usize = 720/16;
 
     pub struct Grid {
         blocks: Box<[[Block; TILE_H]; TILE_W]>,
         width: i32,
         height: i32,
+        piece: [Block; 3]
     }
 
     impl Block {
         fn new(xx: i32, xy: i32, xcolor: i32) -> Block {
             Block {x: xx, y: xy, color: xcolor}
         }
+
     }
 
     impl Grid {
         pub fn new(widthx: i32, heightx: i32) -> Grid {
             let g = Box::new([[Block{x: 0, y: 0, color: 0}; TILE_H]; TILE_W]);
-            Grid{ blocks: g, width: widthx, height: heightx }
+            Grid{ blocks: g, width: widthx, height: heightx, piece: [Block { x: 0, y: 0, color: 0}; 3] }
+        }
+
+        pub fn new_piece(&mut self) {
+            let mut rng = rand::thread_rng();
+            self.piece[0].x = (TILE_W/2) as i32;
+            self.piece[0].y = 0;
+            self.piece[0].color = rng.gen_range(1..8);
+            self.piece[1].x = (TILE_W/2) as i32;
+            self.piece[1].y = 1;
+            self.piece[1].color = rng.gen_range(1..8);
+            self.piece[2].x = (TILE_W/2) as i32;
+            self.piece[2].y = 2;
+            self.piece[2].color = rng.gen_range(1..8);
+            while self.piece[0].color == self.piece[1].color || self.piece[0].color == self.piece[2].color {
+                self.piece[0].color = rng.gen_range(1..8);
+                self.piece[1].color = rng.gen_range(1..8);
+                self.piece[2].color = rng.gen_range(1..8);
+            }
         }
 
         pub fn get_grid_point(&self, x: usize, y: usize) -> i32 {
             self.blocks[x][y].color
+        }
+
+        pub fn get_block(&self) -> [Block; 3] {
+            self.piece
         }
 
         pub fn get_width(&self) -> i32 {
@@ -40,6 +66,34 @@ pub mod game {
 
         pub fn get_height(&self) -> i32 {
             self.height
+        }
+        
+        pub fn move_left(&mut self) {
+            let mut go = true;
+            for i in 0..3 {
+                if self.piece[i].x <= 0 {
+                    go = false;
+                }
+            }
+            if go == true {
+                for i in 0..3 {
+                    self.piece[i].x -= 1;
+                }
+            }
+        }
+
+        pub fn move_right(&mut self) {
+            let mut go = true;
+            for i in 0..3 {
+                if self.piece[i].x >= (TILE_W as i32)-1 {
+                    go = false;
+                }
+            }
+            if go == true {
+                for i in 0..3 {
+                    self.piece[i].x += 1;
+                }
+            }
         }
     }
 
