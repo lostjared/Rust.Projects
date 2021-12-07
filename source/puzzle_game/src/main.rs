@@ -102,6 +102,10 @@ fn main() {
                 | Event::KeyDown {
                     keycode: Some(Keycode::A),
                     ..
+                } 
+                | Event::KeyDown {
+                    keycode: Some(Keycode::Up),
+                    ..
                 } => grid.swap_piece_colors(0),
                 | Event::KeyDown {
                     keycode: Some(Keycode::S),

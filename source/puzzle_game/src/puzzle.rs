@@ -128,7 +128,6 @@ pub mod game {
         }
 
         pub fn check_block(&mut self, color: i32, x: i32, y: i32) -> bool {
-            println!("true; x:{} y:{} color:{}", x,y,color);
             if x >= 0 && x < (TILE_W as i32) && y >= 0 && y < (TILE_H as i32) && color == self.blocks[x as usize][y as usize].color {
                 return true;
             } else {
