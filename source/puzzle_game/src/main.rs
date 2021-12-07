@@ -60,6 +60,7 @@ fn main() {
     grid.new_piece();
     let mut colors = vec![];
     colors.push(Color::RGB(0, 0, 0));
+    colors.push(Color::RGB(255, 0, 0));
     colors.push(Color::RGB(0, 255, 0));
     colors.push(Color::RGB(0, 0, 255));
     colors.push(Color::RGB(255, 255, 0));
@@ -68,7 +69,7 @@ fn main() {
     colors.push(Color::RGB(255, 0, 255,));
     colors.push(Color::RGB(150, 155, 40));
     colors.push(Color::RGB(50, 150, 200));
-    colors.push(Color::RGB(255, 0, 0));
+    
     let mut prev_tick : u64 = 0;
     let mut tick_count : u64 = 0;
     'main: loop {
