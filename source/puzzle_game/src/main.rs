@@ -7,6 +7,7 @@ use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::rect::Rect;
 use sdl2::pixels::Color;
+use sdl2::surface::Surface;
 use puzzle::game;
 use std::time::{SystemTime, UNIX_EPOCH};
 use rand::Rng;
@@ -25,6 +26,9 @@ fn draw_grid(grid : &game::Grid, colors: &Vec<Color>, can: &mut sdl2::render::Ca
                 let value : Color = Color::RGB(rng.gen_range(0..255), rng.gen_range(0..255), rng.gen_range(0..255));
                 can.set_draw_color(value);
                 can.fill_rect(Some(Rect::new(x as i32 * 32, (y as i32 * 16) + offset, 32, 16))).expect("draw rect");
+            } else if color == 0 {
+                can.set_draw_color(Color::RGB(0, 0, 0));
+                can.fill_rect(Some(Rect::new((x as i32 * 32)+1, (y as i32 * 16) + offset + 1, 31, 15))).expect("draw rect");
             }
         }
     }
@@ -50,8 +54,9 @@ fn main() {
 
     let window = video.window("Generic Puzzle Game", width, height).resizable().opengl().build().unwrap();
     let mut can = window.into_canvas().build().map_err(|e| e.to_string()).expect("Error on canvas");
-    //let tc = can.texture_creator();
-    //let mut texture = tc.create_texture_streaming(PixelFormatEnum::RGB24, width, height).map_err(|e| e.to_string()).expect("Error on texture create");
+    let tc = can.texture_creator();
+    let surf = Surface::load_bmp("./img/bg.bmp").unwrap();
+    let texture = tc.create_texture_from_surface(surf).unwrap();
     let mut e = sdl.event_pump().unwrap();
     can.set_draw_color(Color::RGB(0, 0, 0));
     can.clear();
@@ -122,6 +127,7 @@ fn main() {
         }
         can.set_draw_color(Color::RGB(0, 0, 0));
         can.clear();
+        can.copy(&texture, None, Some(Rect::new(0, 0, width, height))).expect("on copy");
         draw_grid(&grid,&colors,&mut can);
         //   can.copy(&texture, None, Some(Rect::new(0, 0, width, height))).expect("on copy");
         can.present();
