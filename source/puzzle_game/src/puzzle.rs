@@ -127,8 +127,77 @@ pub mod game {
             self.proc_blocks();
         }
 
-        pub fn proc_blocks(&mut self) {
+        pub fn check_block(&mut self, color: i32, x: i32, y: i32) -> bool {
+            println!("true; x:{} y:{} color:{}", x,y,color);
+            if x >= 0 && x < (TILE_W as i32) && y >= 0 && y < (TILE_H as i32) && color == self.blocks[x as usize][y as usize].color {
+                return true;
+            } else {
+                return false;
+            }
+        }
 
+        pub fn proc_move_down(&mut self) {
+            for x in 0..self.get_width() {
+                for y in 0..self.get_height()-1 {
+                    let color = self.blocks[x as usize][y as usize].color;
+                    let color2 = self.blocks[x as usize][(y as usize)+1].color;
+                    if color != 0 && color2 == 0 {
+                        self.blocks[x as usize][y as usize].color = 0;
+                        self.blocks[x as usize][(y as usize)+1].color = color;
+                        return;
+                    }
+                }
+            }
+        }
+
+        pub fn proc_blocks(&mut self) {           
+             for x in 0..self.get_width() {
+                for y in 0..self.get_height() {
+                    let xpos : usize = x as usize;
+                    let ypos : usize = y as usize;
+                    let mut color : i32 = self.blocks[xpos][ypos].color;
+                    if color >= 1 {
+                        if self.check_block(color, x+1, y) == true && self.check_block(color, x+2, y) == true {
+                            self.blocks[xpos][ypos].color = -1;
+                            self.blocks[xpos+1][ypos].color = -1;
+                            self.blocks[xpos+2][ypos].color = -1;
+                            return;
+                        } 
+                        if self.check_block(color, x, y+1) == true && self.check_block(color, x, y+2) == true {
+                            self.blocks[xpos][ypos].color = -1;
+                            self.blocks[xpos][ypos+1].color = -1;
+                            self.blocks[xpos][ypos+2].color = -1;
+                            return;
+                        }
+                        if self.check_block(color, x+1, y+1) == true && self.check_block(color, x+2, y+2) == true {
+                            self.blocks[xpos][ypos].color = -1;
+                            self.blocks[xpos+1][ypos+1].color = -1;
+                            self.blocks[xpos+2][ypos+2].color = -1;
+                            return;
+                        }
+                        if self.check_block(color, x+1, y-1) == true && self.check_block(color, x+2, y-2) == true {
+                            self.blocks[xpos][ypos].color = -1;
+                            self.blocks[xpos+1][ypos-1].color = -1;
+                            self.blocks[xpos+2][ypos-2].color = -1;
+                            return;
+                        }
+                        if self.check_block(color, x-1, y+1) == true && self.check_block(color, x-2, y+2) == true {
+                            self.blocks[xpos][ypos].color = -1;
+                            self.blocks[xpos-1][ypos+1].color = -1;
+                            self.blocks[xpos-2][ypos+2].color = -1;
+                            return;
+                        }
+                    } else if color < 0 {
+                        color -= 1;
+                        if color < -90 {
+                            self.blocks[xpos][ypos].color = 0;
+                        } else {
+                            self.blocks[xpos][ypos].color = color;
+                        }
+                    }
+                }
+            }
+            self.proc_move_down();
         }
     }
 
