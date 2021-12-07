@@ -67,9 +67,9 @@ fn main() {
     colors.push(Color::RGB(0, 255, 255));
     colors.push(Color::RGB(255, 255, 255));
     colors.push(Color::RGB(255, 0, 255,));
-    colors.push(Color::RGB(150, 155, 40));
-    colors.push(Color::RGB(50, 150, 200));
-    
+    colors.push(Color::RGB(150, 0, 40));
+    colors.push(Color::RGB(50, 155, 255));
+
     let mut prev_tick : u64 = 0;
     let mut tick_count : u64 = 0;
     'main: loop {
