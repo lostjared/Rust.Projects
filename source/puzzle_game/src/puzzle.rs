@@ -20,13 +20,14 @@ pub mod game {
         blocks: Box<[[Block; TILE_H]; TILE_W]>,
         width: i32,
         height: i32,
-        piece: [Block; 3]
+        piece: [Block; 3],
+        score: u32
     }
 
     impl Grid {
         pub fn new(widthx: i32, heightx: i32) -> Grid {
             let g = Box::new([[Block{x: 0, y: 0, color: 0}; TILE_H]; TILE_W]);
-            Grid{ blocks: g, width: widthx, height: heightx, piece: [Block { x: 0, y: 0, color: 0}; 3] }
+            Grid{ blocks: g, width: widthx, height: heightx, piece: [Block { x: 0, y: 0, color: 0}; 3], score: 0 }
         }
 
         pub fn new_piece(&mut self) {
@@ -45,6 +46,16 @@ pub mod game {
                 self.piece[1].color = rng.gen_range(1..8);
                 self.piece[2].color = rng.gen_range(1..8);
             }
+        }
+
+        pub fn reset_game(&mut self) {
+            for x in 0..self.get_width() {
+                for y in 0..self.get_height() {
+                    self.blocks[x as usize][y as usize].color = 0;
+                }
+            }
+            self.new_piece();
+            self.score = 0;
         }
 
         pub fn swap_piece_colors(&mut self, dir: u8) {
@@ -109,6 +120,12 @@ pub mod game {
                 self.set_block();
                 return;
             }
+
+            if self.piece[2].y == 2 && self.piece[2].y+1 < (TILE_H as i32)-1 && self.blocks[self.piece[2].x as usize][(self.piece[2].y as usize)+1].color != 0 {
+                self.reset_game();
+                return;
+            }
+
             if self.piece[2].y+1 < (TILE_H as i32)-1 && self.blocks[self.piece[2].x as usize][(self.piece[2].y as usize)+1].color != 0 {
                 self.set_block();
                 return;
@@ -160,30 +177,35 @@ pub mod game {
                             self.blocks[xpos][ypos].color = -1;
                             self.blocks[xpos+1][ypos].color = -1;
                             self.blocks[xpos+2][ypos].color = -1;
+                            self.score += 1;
                             return;
                         } 
                         if self.check_block(color, x, y+1) == true && self.check_block(color, x, y+2) == true {
                             self.blocks[xpos][ypos].color = -1;
                             self.blocks[xpos][ypos+1].color = -1;
                             self.blocks[xpos][ypos+2].color = -1;
+                            self.score += 1;
                             return;
                         }
                         if self.check_block(color, x+1, y+1) == true && self.check_block(color, x+2, y+2) == true {
                             self.blocks[xpos][ypos].color = -1;
                             self.blocks[xpos+1][ypos+1].color = -1;
                             self.blocks[xpos+2][ypos+2].color = -1;
+                            self.score += 2;
                             return;
                         }
                         if self.check_block(color, x+1, y-1) == true && self.check_block(color, x+2, y-2) == true {
                             self.blocks[xpos][ypos].color = -1;
                             self.blocks[xpos+1][ypos-1].color = -1;
                             self.blocks[xpos+2][ypos-2].color = -1;
+                            self.score += 2;
                             return;
                         }
                         if self.check_block(color, x-1, y+1) == true && self.check_block(color, x-2, y+2) == true {
                             self.blocks[xpos][ypos].color = -1;
                             self.blocks[xpos-1][ypos+1].color = -1;
                             self.blocks[xpos-2][ypos+2].color = -1;
+                            self.score += 2;
                             return;
                         }
                     } else if color < 0 {
