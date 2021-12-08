@@ -21,13 +21,14 @@ pub mod game {
         width: i32,
         height: i32,
         piece: [Block; 3],
-        score: u32
+        score: u32,
+        pub game_over: bool
     }
 
     impl Grid {
         pub fn new(widthx: i32, heightx: i32) -> Grid {
             let g = Box::new([[Block{x: 0, y: 0, color: 0}; TILE_H]; TILE_W]);
-            Grid{ blocks: g, width: widthx, height: heightx, piece: [Block { x: 0, y: 0, color: 0}; 3], score: 0 }
+            Grid{ blocks: g, width: widthx, height: heightx, piece: [Block { x: 0, y: 0, color: 0}; 3], score: 0, game_over: false }
         }
 
         pub fn new_piece(&mut self) {
@@ -123,6 +124,7 @@ pub mod game {
 
             if self.piece[2].y == 2 && self.piece[2].y+1 < (TILE_H as i32)-1 && self.blocks[self.piece[2].x as usize][(self.piece[2].y as usize)+1].color != 0 {
                 self.reset_game();
+                self.game_over = true;
                 return;
             }
 

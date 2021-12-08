@@ -93,7 +93,7 @@ fn main() {
     let sdl = sdl2::init().unwrap();
     let video = sdl.video().unwrap();
     let timer_delay: u64 = 1500;
-    let cur_screen: i32 = 1;
+    let mut cur_screen: i32 = 1;
 
     let window = video
         .window("Generic Puzzle Game", width, height)
@@ -130,7 +130,14 @@ fn main() {
     let mut prev_tick: u64 = 0;
     let mut tick_count: u64 = 0;
     'main: loop {
+
+        if grid.game_over == true {
+            cur_screen = 2;
+            grid.game_over = false;
+        }
+
         if cur_screen == 1 {
+            // draw game screen
             let start = SystemTime::now();
             let se = start.duration_since(UNIX_EPOCH).expect("error on time");
             let tick = se.as_secs() * 1000 + se.subsec_nanos() as u64 / 1_000_000;
