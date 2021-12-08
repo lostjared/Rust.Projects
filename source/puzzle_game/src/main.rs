@@ -108,7 +108,9 @@ fn main() {
         .expect("Error on canvas");
     let tc = can.texture_creator();
     let surf = Surface::load_bmp("./img/bg.bmp").unwrap();
+    let game_over_surf = Surface::load_bmp("./img/gameover.bmp").unwrap();
     let texture = tc.create_texture_from_surface(surf).unwrap();
+    let game_over_texture = tc.create_texture_from_surface(game_over_surf).unwrap();
     let mut e = sdl.event_pump().unwrap();
     can.set_draw_color(Color::RGB(0, 0, 0));
     can.clear();
@@ -209,6 +211,7 @@ fn main() {
             }
             can.set_draw_color(Color::RGB(0,0,0));
             can.clear();
+            can.copy(&game_over_texture, None, Some(Rect::new(0, 0, width, height))).expect("on copy");
             can.present();
         }
     }
