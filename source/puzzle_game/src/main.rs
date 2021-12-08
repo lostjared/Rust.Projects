@@ -199,6 +199,11 @@ fn main() {
                         keycode: Some(Keycode::Escape),
                         ..
                     } => break 'main,
+                    | Event::KeyDown {
+                        keycode: Some(Keycode::Space),
+                        ..
+                    } => cur_screen = 1,
+                    |
                     _ => {}
                 }
             }
