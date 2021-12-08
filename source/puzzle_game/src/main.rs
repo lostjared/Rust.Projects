@@ -132,13 +132,13 @@ fn main() {
     let mut prev_tick: u64 = 0;
     let mut tick_count: u64 = 0;
     'main: loop {
-
-        if grid.game_over == true {
-            cur_screen = 2;
-            grid.game_over = false;
-        }
-
+        
         if cur_screen == 1 {
+
+            if grid.game_over == true {
+                cur_screen = 2;
+                grid.game_over = false;
+            }
             // draw game screen
             let start = SystemTime::now();
             let se = start.duration_since(UNIX_EPOCH).expect("error on time");
