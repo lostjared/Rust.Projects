@@ -112,7 +112,7 @@ fn main() {
     let texture = tc.create_texture_from_surface(surf).unwrap();
     let game_over_texture = tc.create_texture_from_surface(game_over_surf).unwrap();
     let game_surf = Surface::load_bmp("./img/intro.bmp").unwrap();
-    let game_texture = tc.create_texture_from_surface(game_surf).unwrap(); 
+    let game_texture = tc.create_texture_from_surface(game_surf).unwrap();
     let mut e = sdl.event_pump().unwrap();
     can.set_draw_color(Color::RGB(0, 0, 0));
     can.clear();
@@ -134,7 +134,6 @@ fn main() {
     let mut prev_tick: u64 = 0;
     let mut tick_count: u64 = 0;
     'main: loop {
-
         if cur_screen == 0 {
             for _event in e.poll_iter() {
                 match _event {
@@ -143,21 +142,19 @@ fn main() {
                         keycode: Some(Keycode::Escape),
                         ..
                     } => break 'main,
-                    | Event::KeyDown {
+                    Event::KeyDown {
                         keycode: Some(Keycode::Space),
                         ..
                     } => cur_screen = 1,
-                    |
                     _ => {}
                 }
             }
-            can.set_draw_color(Color::RGB(0,0,0));
+            can.set_draw_color(Color::RGB(0, 0, 0));
             can.clear();
-            can.copy(&game_texture, None, Some(Rect::new(0, 0, width, height))).expect("on copy");
+            can.copy(&game_texture, None, Some(Rect::new(0, 0, width, height)))
+                .expect("on copy");
             can.present();
-
         } else if cur_screen == 1 {
-
             if grid.game_over == true {
                 cur_screen = 2;
                 grid.game_over = false;
@@ -224,17 +221,21 @@ fn main() {
                         keycode: Some(Keycode::Escape),
                         ..
                     } => break 'main,
-                    | Event::KeyDown {
+                    Event::KeyDown {
                         keycode: Some(Keycode::Space),
                         ..
                     } => cur_screen = 1,
-                    |
                     _ => {}
                 }
             }
-            can.set_draw_color(Color::RGB(0,0,0));
+            can.set_draw_color(Color::RGB(0, 0, 0));
             can.clear();
-            can.copy(&game_over_texture, None, Some(Rect::new(0, 0, width, height))).expect("on copy");
+            can.copy(
+                &game_over_texture,
+                None,
+                Some(Rect::new(0, 0, width, height)),
+            )
+            .expect("on copy");
             can.present();
         }
     }
