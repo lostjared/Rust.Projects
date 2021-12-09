@@ -187,6 +187,15 @@ fn main() {
                         keycode: Some(Keycode::Right),
                         ..
                     } => grid.move_right(),
+
+                    Event::KeyDown {
+                        keycode: Some(Keycode::Z),
+                        ..
+                    } => grid.shift_left(),
+                    Event::KeyDown {
+                        keycode: Some(Keycode::X),
+                        ..
+                    } => grid.shift_right(),
                     Event::KeyDown {
                         keycode: Some(Keycode::A),
                         ..

@@ -21,6 +21,7 @@ pub mod game {
         piece: [Block; 3],
         score: u32,
         pub game_over: bool,
+        piece_shape: i32,
     }
 
     impl Grid {
@@ -43,6 +44,7 @@ pub mod game {
                 }; 3],
                 score: 0,
                 game_over: false,
+                piece_shape: 0,
             }
         }
 
@@ -64,6 +66,7 @@ pub mod game {
                 self.piece[1].color = rng.gen_range(1..8);
                 self.piece[2].color = rng.gen_range(1..8);
             }
+            self.piece_shape = 0;
         }
 
         pub fn reset_game(&mut self) {
@@ -104,6 +107,40 @@ pub mod game {
         pub fn get_height(&self) -> i32 {
             self.height
         }
+
+        pub fn shift_left(&mut self) {
+            if self.piece_shape == 0 && self.check_block(0, self.piece[1].x-1, self.piece[1].y-1) == true && self.check_block(0, self.piece[2].x-2, self.piece[2].y-2) == true {
+                self.piece[1].x -= 1;
+                self.piece[1].y -= 1;
+                self.piece[2].x -= 2;
+                self.piece[2].y -= 2;
+                self.piece_shape = 1;
+            } else if self.piece_shape == 1 && self.check_block(0, self.piece[1].x+1, self.piece[1].y+1) == true && self.check_block(0, self.piece[2].x+2, self.piece[2].y+2) == true {
+                self.piece[1].x += 1;
+                self.piece[1].y += 1;
+                self.piece[2].x += 2;
+                self.piece[2].y += 2;
+                self.piece_shape = 0;                
+            } 
+
+        }
+
+        pub fn shift_right(&mut self) {
+            if self.piece_shape == 0 && self.check_block(0, self.piece[1].x+1, self.piece[1].y-1) == true && self.check_block(0, self.piece[2].x+2, self.piece[2].y-2) == true {
+                self.piece[1].x += 1;
+                self.piece[1].y -= 1;
+                self.piece[2].x += 2;
+                self.piece[2].y -= 2;
+                self.piece_shape = 2;
+            } else if self.piece_shape == 2 && self.check_block(0, self.piece[1].x+1, self.piece[1].y+1) == true && self.check_block(0, self.piece[2].x+2, self.piece[2].y+2) == true {
+                self.piece[1].x -= 1;
+                self.piece[1].y += 1;
+                self.piece[2].x -= 2;
+                self.piece[2].y += 2;
+                self.piece_shape = 0;                
+            } 
+        }
+
         pub fn move_left(&mut self) {
             let mut go = true;
             for i in 0..3 {
@@ -139,6 +176,7 @@ pub mod game {
         }
 
         pub fn move_down(&mut self) {
+            
             if self.piece[2].y + 1 > (TILE_H as i32) - 1 {
                 self.set_block();
                 return;
@@ -153,11 +191,13 @@ pub mod game {
                 return;
             }
 
-            if self.piece[2].y + 1 < (TILE_H as i32) - 1
-                && self.blocks[self.piece[2].x as usize][(self.piece[2].y as usize) + 1].color != 0
-            {
-                self.set_block();
-                return;
+            for i in 0..3 {
+                if self.piece[i].y + 1 < (TILE_H as i32) 
+                    && self.blocks[self.piece[i].x as usize][(self.piece[i].y as usize) + 1].color != 0
+                {
+                    self.set_block();
+                    return;
+                }
             }
 
             for i in 0..3 {
