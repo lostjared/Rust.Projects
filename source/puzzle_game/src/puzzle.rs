@@ -254,6 +254,15 @@ pub mod game {
                             self.blocks[xpos][ypos].color = -1;
                             self.blocks[xpos + 1][ypos].color = -1;
                             self.blocks[xpos + 2][ypos].color = -1;
+
+                            if self.check_block(color, x + 3, y) == true {
+                                self.blocks[xpos + 3][ypos].color = -1;
+                                self.score += 1;
+                                if self.check_block(color, x + 4, y) == true {
+                                    self.blocks[xpos + 4][ypos].color = -1;
+                                    self.score += 1;
+                                }
+                            }
                             self.score += 1;
                             return;
                         }
@@ -263,6 +272,12 @@ pub mod game {
                             self.blocks[xpos][ypos].color = -1;
                             self.blocks[xpos][ypos + 1].color = -1;
                             self.blocks[xpos][ypos + 2].color = -1;
+
+                            if self.check_block(color, x, y + 3) == true {
+                                self.blocks[xpos][ypos + 3].color = -1;
+                                self.score += 1;
+                            }
+
                             self.score += 1;
                             return;
                         }
@@ -272,6 +287,12 @@ pub mod game {
                             self.blocks[xpos][ypos].color = -1;
                             self.blocks[xpos + 1][ypos + 1].color = -1;
                             self.blocks[xpos + 2][ypos + 2].color = -1;
+
+                            if self.check_block(color, x + 3, y + 3) == true {
+                                self.blocks[xpos + 3][ypos + 3].color = -1;
+                                self.score += 2;
+                            }
+
                             self.score += 2;
                             return;
                         }
@@ -281,6 +302,12 @@ pub mod game {
                             self.blocks[xpos][ypos].color = -1;
                             self.blocks[xpos + 1][ypos - 1].color = -1;
                             self.blocks[xpos + 2][ypos - 2].color = -1;
+
+                            if self.check_block(color, x + 3, y - 3) == true {
+                                self.blocks[xpos + 3][ypos - 3].color = -1;
+                                self.score += 2;
+                            }
+
                             self.score += 2;
                             return;
                         }
