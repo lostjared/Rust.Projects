@@ -291,6 +291,10 @@ pub mod game {
                             if self.check_block(color, x + 3, y + 3) == true {
                                 self.blocks[xpos + 3][ypos + 3].color = -1;
                                 self.score += 2;
+                                if self.check_block(color, x + 4, y + 4) == true {
+                                    self.blocks[xpos + 3][ypos + 3].color = -1;
+                                    self.score += 2;
+                                }
                             }
 
                             self.score += 2;
@@ -306,11 +310,15 @@ pub mod game {
                             if self.check_block(color, x + 3, y - 3) == true {
                                 self.blocks[xpos + 3][ypos - 3].color = -1;
                                 self.score += 2;
+                                if self.check_block(color, x + 4, y - 4) == true {
+                                    self.blocks[xpos + 4][ypos - 4].color = -1;
+                                    self.score += 2;
+                                }
                             }
-
                             self.score += 2;
                             return;
                         }
+                        /*
                         if self.check_block(color, x - 1, y + 1) == true
                             && self.check_block(color, x - 2, y + 2) == true
                         {
@@ -319,7 +327,7 @@ pub mod game {
                             self.blocks[xpos - 2][ypos + 2].color = -1;
                             self.score += 2;
                             return;
-                        }
+                        }*/
                     } else if color < 0 {
                         color -= 1;
                         if color < -90 {
