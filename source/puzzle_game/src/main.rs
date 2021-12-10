@@ -1,5 +1,6 @@
 // cargo run --release
 
+extern crate sdl2;
 mod puzzle;
 
 use puzzle::game;
@@ -9,6 +10,7 @@ use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 use sdl2::surface::Surface;
+//use sdl2::render::TextureQuery;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 fn draw_grid(
@@ -105,6 +107,10 @@ fn main() {
         .build()
         .map_err(|e| e.to_string())
         .expect("Error on canvas");
+
+    /*
+    let ttf_context = sdl2::ttf::init().map_err(|e| e.to_string()).unwrap();*/
+
     let tc = can.texture_creator();
     let surf = Surface::load_bmp("./img/bg.bmp").unwrap();
     let game_over_surf = Surface::load_bmp("./img/gameover.bmp").unwrap();
@@ -130,6 +136,10 @@ fn main() {
     colors.push(Color::RGB(150, 0, 40));
     colors.push(Color::RGB(50, 155, 255));
 
+
+    /*
+    let mut font = ttf_context.load_font("./img/font.ttf", 18).expect("test");
+    font.set_style(sdl2::ttf::FontStyle::BOLD);*/
     let mut prev_tick: u64 = 0;
     let mut tick_count: u64 = 0;
     'main: loop {
@@ -219,6 +229,12 @@ fn main() {
             can.copy(&texture, None, Some(Rect::new(0, 0, width, height)))
                 .expect("on copy");
             draw_grid(&grid, &colors, &mut can);
+            /*
+            let score = format!("Score: {} Lines: {}", grid.score, grid.lines);  
+            let text_surf = font.render(&score).blended(Color::RGB(255,255,255)).unwrap();
+            let text_surf_tex = tc.create_texture_from_surface(&text_surf).unwrap();        
+            let TextureQuery { width, height, .. } = text_surf_tex.query();
+            can.copy(&text_surf_tex, None, Some(Rect::new(0, 0, width, height))).expect("on copy font"); */
             can.present();
         } else if cur_screen == 2 {
             // draw game over screen

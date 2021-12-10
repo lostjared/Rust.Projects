@@ -19,9 +19,10 @@ pub mod game {
         width: i32,
         height: i32,
         piece: [Block; 3],
-        score: u32,
+        pub score: u32,
         pub game_over: bool,
         piece_shape: i32,
+        pub lines: i32,
     }
 
     impl Grid {
@@ -45,6 +46,7 @@ pub mod game {
                 score: 0,
                 game_over: false,
                 piece_shape: 0,
+                lines: 0,
             }
         }
 
@@ -67,6 +69,7 @@ pub mod game {
                 self.piece[2].color = rng.gen_range(1..8);
             }
             self.piece_shape = 0;
+
         }
 
         pub fn reset_game(&mut self) {
@@ -77,6 +80,7 @@ pub mod game {
             }
             self.new_piece();
             self.score = 0;
+            self.lines = 0;
         }
 
         pub fn swap_piece_colors(&mut self, dir: u8) {
@@ -264,6 +268,7 @@ pub mod game {
                                 }
                             }
                             self.score += 1;
+                            self.lines += 1;
                             return;
                         }
                         if self.check_block(color, x, y + 1) == true
@@ -276,9 +281,14 @@ pub mod game {
                             if self.check_block(color, x, y + 3) == true {
                                 self.blocks[xpos][ypos + 3].color = -1;
                                 self.score += 1;
+                                if self.check_block(color, x, y + 4) == true {
+                                    self.blocks[xpos][ypos + 4].color = -1;
+                                    self.score += 1;
+                                }
                             }
 
                             self.score += 1;
+                            self.lines += 1;
                             return;
                         }
                         if self.check_block(color, x + 1, y + 1) == true
@@ -298,6 +308,7 @@ pub mod game {
                             }
 
                             self.score += 2;
+                            self.lines += 1;
                             return;
                         }
                         if self.check_block(color, x + 1, y - 1) == true
@@ -316,6 +327,7 @@ pub mod game {
                                 }
                             }
                             self.score += 2;
+                            self.lines += 1;
                             return;
                         }
                         /*
