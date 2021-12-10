@@ -97,7 +97,6 @@ fn main() {
 
     let window = video
         .window("Generic Puzzle Game", width, height)
-        .resizable()
         .opengl()
         .build()
         .unwrap();
