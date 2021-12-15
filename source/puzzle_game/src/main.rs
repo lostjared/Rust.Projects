@@ -232,7 +232,8 @@ fn main() {
             let score = format!("Score: {}", grid.score); 
             let text_surf = font.render(&score).blended(Color::RGB(255,255,255)).unwrap();
             let text_surf_tex = tc.create_texture_from_surface(&text_surf).unwrap();                 
-            can.copy(&text_surf_tex, None, Some(Rect::new(25, 25, 100, 20))).expect("on font copy");
+            let TextureQuery { width : wi, height: hi, .. } = text_surf_tex.query();
+            can.copy(&text_surf_tex, Some(Rect::new(0, 0, wi, hi)), Some(Rect::new(25, 25, wi, hi))).expect("on font copy");
             can.present();
         } else if cur_screen == 2 {
             // draw game over screen
