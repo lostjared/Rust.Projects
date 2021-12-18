@@ -46,7 +46,9 @@ fn printtext_width(can: &mut sdl2::render::Canvas<sdl2::video::Window>, tex: &sd
             width += metrics.advance;
         }
     }
-    vlst.push(value);
+    if value.len() > 0 {
+        vlst.push(value);
+    }
 
     let mut yy = y;
     for i in &vlst {
