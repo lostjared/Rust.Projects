@@ -26,6 +26,38 @@ fn printtext(can: &mut sdl2::render::Canvas<sdl2::video::Window>, tex: &sdl2::re
     .expect("on font copy");
 }
 
+fn printtext_width(can: &mut sdl2::render::Canvas<sdl2::video::Window>, tex: &sdl2::render::TextureCreator<sdl2::video::WindowContext>, font: &sdl2::ttf::Font, x: i32, y: i32, w: u32, color: sdl2::pixels::Color, text: &str) {
+
+    let mut vlst : Vec<String>  = Vec::new();
+    let mut width = x;
+    let metrics = font.find_glyph_metrics('A').unwrap();
+    //let mut ypos = y;
+
+    let mut value = String::new();
+
+    for ch in text.chars() {
+        if (width + metrics.advance > (w-25) as i32) || ch == '\n' {
+            vlst.push(value);
+            value = String::new();
+    //      ypos += metrics.advance+metrics.maxy;
+            width = x;
+        } else {
+            value.push(ch);
+            width += metrics.advance;
+        }
+    }
+    vlst.push(value);
+
+    let mut yy = y;
+    for i in &vlst {
+        if i.len() > 0 {
+            printtext(can, tex, font, x, yy, color, i);
+            yy += metrics.advance+metrics.maxy;
+        }
+    }
+
+}
+
 fn main() {
     let width = 1280;
     let height = 720;
@@ -45,7 +77,7 @@ fn main() {
     let ttf_context = sdl2::ttf::init().map_err(|e| e.to_string()).unwrap();
     let font = ttf_context.load_font("./font.ttf", 18).expect("test");
     let tc = can.texture_creator();
-    let text_surf = font
+    let _text_surf = font
         .render("Hello, World!")
         .blended(Color::RGB(255, 255, 255))
         .unwrap();
@@ -63,7 +95,7 @@ fn main() {
         }
         can.set_draw_color(Color::RGB(0, 0, 0));
         can.clear();
-        printtext(&mut can, &tc, &font, 25, 25, Color::RGB(255, 255, 255), "Hello, World with SDL2/TTF!");
+        printtext_width(&mut can, &tc, &font, 25, 25, width, Color::RGB(255, 255, 255), "Hello, World with SDL2/TTF!\nLine Two\nLine Three");
         can.present();
     }
 }
