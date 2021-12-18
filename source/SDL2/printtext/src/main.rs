@@ -68,8 +68,8 @@ fn printtext_width(
     for i in &vlst {
         if i.len() > 0 {
             printtext(can, tex, font, x, yy, color, i);
-            yy += metrics.advance + metrics.maxy;
-        }
+         }
+         yy += metrics.advance + metrics.maxy;
     }
 
     if blink == true {
