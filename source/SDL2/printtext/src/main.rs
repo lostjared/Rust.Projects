@@ -4,15 +4,17 @@ use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 use sdl2::render::TextureQuery;
 
-
-fn printtext(can: &mut sdl2::render::Canvas<sdl2::video::Window>, tex: &sdl2::render::TextureCreator<sdl2::video::WindowContext>, font: &sdl2::ttf::Font, x: i32, y: i32, color: sdl2::pixels::Color, text: &str) {
-    let text_surf = font
-    .render(text)
-    .blended(color)
-    .unwrap();
-    let text_surf_tex = tex
-    .create_texture_from_surface(&text_surf)
-    .unwrap();
+fn printtext(
+    can: &mut sdl2::render::Canvas<sdl2::video::Window>,
+    tex: &sdl2::render::TextureCreator<sdl2::video::WindowContext>,
+    font: &sdl2::ttf::Font,
+    x: i32,
+    y: i32,
+    color: sdl2::pixels::Color,
+    text: &str,
+) {
+    let text_surf = font.render(text).blended(color).unwrap();
+    let text_surf_tex = tex.create_texture_from_surface(&text_surf).unwrap();
     let TextureQuery {
         width: wi,
         height: hi,
@@ -26,9 +28,18 @@ fn printtext(can: &mut sdl2::render::Canvas<sdl2::video::Window>, tex: &sdl2::re
     .expect("on font copy");
 }
 
-fn printtext_width(blink: bool, can: &mut sdl2::render::Canvas<sdl2::video::Window>, tex: &sdl2::render::TextureCreator<sdl2::video::WindowContext>, font: &sdl2::ttf::Font, x: i32, y: i32, w: u32, color: sdl2::pixels::Color, text: &str) {
-
-    let mut vlst : Vec<String>  = Vec::new();
+fn printtext_width(
+    blink: bool,
+    can: &mut sdl2::render::Canvas<sdl2::video::Window>,
+    tex: &sdl2::render::TextureCreator<sdl2::video::WindowContext>,
+    font: &sdl2::ttf::Font,
+    x: i32,
+    y: i32,
+    w: u32,
+    color: sdl2::pixels::Color,
+    text: &str,
+) {
+    let mut vlst: Vec<String> = Vec::new();
     let mut width = x;
     let metrics = font.find_glyph_metrics('A').unwrap();
     let mut ypos = y;
@@ -36,10 +47,10 @@ fn printtext_width(blink: bool, can: &mut sdl2::render::Canvas<sdl2::video::Wind
     let mut value = String::new();
 
     for ch in text.chars() {
-        if (width + metrics.advance > (w-25) as i32) || ch == '\n' {
+        if (width + metrics.advance > (w - 25) as i32) || ch == '\n' {
             vlst.push(value);
             value = String::new();
-            ypos += metrics.advance+metrics.maxy;
+            ypos += metrics.advance + metrics.maxy;
             width = x;
         } else {
             value.push(ch);
@@ -54,13 +65,19 @@ fn printtext_width(blink: bool, can: &mut sdl2::render::Canvas<sdl2::video::Wind
     for i in &vlst {
         if i.len() > 0 {
             printtext(can, tex, font, x, yy, color, i);
-            yy += metrics.advance+metrics.maxy;
+            yy += metrics.advance + metrics.maxy;
         }
     }
 
     if blink == true {
         can.set_draw_color(color);
-        can.fill_rect(Rect::new(width+5, ypos, 8, (metrics.maxy+metrics.advance) as u32)).expect("failed on rect");
+        can.fill_rect(Rect::new(
+            width + 5,
+            ypos,
+            8,
+            (metrics.maxy + metrics.advance) as u32,
+        ))
+        .expect("failed on rect");
     }
 }
 
@@ -104,13 +121,23 @@ fn main() {
         can.clear();
         flash += 1;
         let flash_on;
-        if flash>10 {
+        if flash > 10 {
             flash_on = true;
             flash = 0;
         } else {
             flash_on = false;
         }
-        printtext_width(flash_on, &mut can, &tc, &font, 25, 25, width, Color::RGB(255, 255, 255), "Hello, World with SDL2/TTF!\nLine Two\nLine Three");
+        printtext_width(
+            flash_on,
+            &mut can,
+            &tc,
+            &font,
+            25,
+            25,
+            width,
+            Color::RGB(255, 255, 255),
+            "Hello, World with SDL2/TTF!\nLine Two\nLine Three",
+        );
         can.present();
     }
 }
