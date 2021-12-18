@@ -50,6 +50,9 @@ fn printtext_width(
         if (width + metrics.advance > (w - 25) as i32) || ch == '\n' {
             vlst.push(value);
             value = String::new();
+            if ch != '\n' {
+                value.push(ch);
+            }
             ypos += metrics.advance + metrics.maxy;
             width = x;
         } else {
