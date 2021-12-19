@@ -35,6 +35,7 @@ fn printtext(
 
 fn printtext_width(
     blink: bool,
+    line_height: &mut usize,
     can: &mut sdl2::render::Canvas<sdl2::video::Window>,
     tex: &sdl2::render::TextureCreator<sdl2::video::WindowContext>,
     font: &sdl2::ttf::Font,
@@ -74,11 +75,17 @@ fn printtext_width(
     }
 
     let mut yy = y;
+    let mut line_index: usize = 0;
     for i in &vlst {
         if i.len() > 0 {
             printtext(can, tex, font, x, yy, color, i);
         }
         yy += metrics.advance + metrics.maxy;
+        line_index += 1;
+        if yy > 720 - 25 {
+            *line_height = line_index;
+            break;
+        }
     }
 
     if blink == true {
@@ -128,10 +135,11 @@ fn main() {
 
     let inputfile = args.get(1).unwrap();
     let contents = fs::read_to_string(inputfile).expect("Error reading the file");
-  
     let mut prev_tick = 0;
     let mut index = 0;
     let mut outputted_value = String::new();
+    let metrics = font.find_glyph_metrics('A').unwrap();
+    let mut lines_height: usize = (720 - 25) / (metrics.advance + metrics.maxy) as usize;
 
     'main: loop {
         for _event in e.poll_iter() {
@@ -148,13 +156,20 @@ fn main() {
         let start = SystemTime::now();
         let se = start.duration_since(UNIX_EPOCH).expect("error on time");
         let tick = se.as_secs() * 1000 + se.subsec_nanos() as u64 / 1_000_000;
-        let ticks = tick / 100;
+        let ticks = tick / 40;
         if ticks > prev_tick {
             prev_tick = ticks;
             if index < contents.len() {
                 let val = contents.chars().nth(index).unwrap();
                 outputted_value.push(val);
                 index += 1;
+
+                let f = outputted_value.find("\n");
+                let l: Vec<_> = outputted_value.lines().collect();
+                if f != None && l.len() > (lines_height as usize) - 1 {
+                    let v = &outputted_value[f.unwrap() + 1..outputted_value.len()];
+                    outputted_value = String::from(v);
+                }
             }
         }
         can.set_draw_color(Color::RGB(0, 0, 0));
@@ -169,6 +184,7 @@ fn main() {
         }
         printtext_width(
             flash_on,
+            &mut lines_height,
             &mut can,
             &tc,
             &font,
