@@ -54,7 +54,6 @@ fn printtext_width(
     let mut width = x;
     let metrics = font.find_glyph_metrics('A').unwrap();
     let mut ypos = y;
-
     let mut value = String::new();
 
     for ch in text.chars() {
@@ -77,6 +76,7 @@ fn printtext_width(
 
     let mut yy = y;
     let mut line_index: usize = 0;
+    
     for i in &vlst {
         if i.len() > 0 {
             printtext(can, tex, font, x, yy, color, i);
@@ -140,7 +140,8 @@ fn main() {
     let mut index = 0;
     let mut outputted_value = String::new();
     let metrics = font.find_glyph_metrics('A').unwrap();
-    let mut lines_height: usize = (height as usize - 25) / (metrics.advance + metrics.maxy) as usize;
+    let mut lines_height: usize =
+        (height as usize - 25) / (metrics.advance + metrics.maxy) as usize;
 
     'main: loop {
         for _event in e.poll_iter() {
