@@ -44,7 +44,6 @@ fn printtext_width(
     color: sdl2::pixels::Color,
     text: &str,
 ) {
-
     if text.len() == 0 {
         return;
     }
@@ -121,15 +120,15 @@ fn main() {
     let mut flash = 0;
 
     let args: Vec<String> = env::args().collect();
-    let inputfile = args.get(1).unwrap();
-    let contents = fs::read_to_string(inputfile).expect("Error reading the file");
-   
+
     if args.len() != 2 {
         println!("Error requires text file as argument...");
         return;
     }
 
-
+    let inputfile = args.get(1).unwrap();
+    let contents = fs::read_to_string(inputfile).expect("Error reading the file");
+  
     let mut prev_tick = 0;
     let mut index = 0;
     let mut outputted_value = String::new();
@@ -153,11 +152,11 @@ fn main() {
         if ticks > prev_tick {
             prev_tick = ticks;
             if index < contents.len() {
-                let val = contents.chars().nth(index).unwrap();            
+                let val = contents.chars().nth(index).unwrap();
                 outputted_value.push(val);
                 index += 1;
             }
-        } 
+        }
         can.set_draw_color(Color::RGB(0, 0, 0));
         can.clear();
         flash += 1;
