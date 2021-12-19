@@ -42,6 +42,7 @@ fn printtext_width(
     x: i32,
     y: i32,
     w: u32,
+    h: u32,
     color: sdl2::pixels::Color,
     text: &str,
 ) {
@@ -82,7 +83,7 @@ fn printtext_width(
         }
         yy += metrics.advance + metrics.maxy;
         line_index += 1;
-        if yy > 720 - 25 {
+        if yy > h as i32 - 25 {
             *line_height = line_index;
             break;
         }
@@ -139,7 +140,7 @@ fn main() {
     let mut index = 0;
     let mut outputted_value = String::new();
     let metrics = font.find_glyph_metrics('A').unwrap();
-    let mut lines_height: usize = (720 - 25) / (metrics.advance + metrics.maxy) as usize;
+    let mut lines_height: usize = (height as usize - 25) / (metrics.advance + metrics.maxy) as usize;
 
     'main: loop {
         for _event in e.poll_iter() {
@@ -191,6 +192,7 @@ fn main() {
             25,
             25,
             width,
+            height,
             Color::RGB(255, 255, 255),
             &outputted_value,
         );
