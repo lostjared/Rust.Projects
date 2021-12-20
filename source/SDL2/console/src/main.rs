@@ -50,12 +50,13 @@ fn main() {
         can.clear();
         flash += 1;
         let flash_on;
-        if flash > 10  {
+        if flash > 9  {
             flash_on = true;
             flash = 0;
         } else {
             flash_on = false;
         }
+        con.print(&format!("hello world: {}\n", flash));
         con.draw(flash_on, &mut can, &tc, &font, Color::RGB(255,255,255));
         can.present();
     }
