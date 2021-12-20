@@ -13,7 +13,7 @@ fn main() {
     let video = sdl.video().unwrap();
     video.text_input().start();
     let window = video
-        .window("App", width, height)
+        .window("Console", width, height)
         .resizable()
         .opengl()
         .build()
