@@ -118,6 +118,11 @@ pub mod console_system {
             self.text.push_str(t);
         }
 
+        pub fn println(&mut self, t: &str) {
+            self.text.push_str(t);
+            self.text.push_str("\n");
+        }
+
         pub fn draw(
             &mut self,
             blink: bool,

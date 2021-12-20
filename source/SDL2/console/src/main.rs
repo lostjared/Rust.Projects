@@ -31,7 +31,7 @@ fn main() {
         .unwrap();
     let mut e = sdl.event_pump().unwrap();
     let mut flash = 0;
-    con.print("Hello World!");
+    con.println("Hello World!");
 
     'main: loop {
         for _event in e.poll_iter() {
