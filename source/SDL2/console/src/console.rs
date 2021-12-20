@@ -8,6 +8,7 @@ pub mod console_system {
         w: u32,
         h: u32,
         text: String,
+        input_text: String,
         line_height: usize,
     }
 
@@ -46,7 +47,7 @@ pub mod console_system {
         w: u32,
         h: u32,
         color: sdl2::pixels::Color,
-        text: &str,
+        text: &str
     ) {
         if text.len() == 0 {
             return;
@@ -111,6 +112,7 @@ pub mod console_system {
                 w: wx,
                 h: hx,
                 text: String::new(),
+                input_text: String::new(),
                 line_height: 27,
             }
         }
@@ -121,6 +123,18 @@ pub mod console_system {
         pub fn println(&mut self, t: &str) {
             self.text.push_str(t);
             self.text.push_str("\n");
+        }
+
+        pub fn type_key(&mut self, t: &str) {
+            self.input_text.push_str(t);
+            self.print(t);
+        }
+
+        pub fn back(&mut self) {
+            if self.input_text.len() > 0 {
+                self.input_text.pop();
+                self.text.pop();
+            }
         }
 
         pub fn draw(

@@ -11,6 +11,7 @@ fn main() {
     let mut con = Console::new(25, 25, width as u32, height as u32);
     let sdl = sdl2::init().unwrap();
     let video = sdl.video().unwrap();
+    video.text_input().start();
     let window = video
         .window("App", width, height)
         .resizable()
@@ -31,8 +32,7 @@ fn main() {
         .unwrap();
     let mut e = sdl.event_pump().unwrap();
     let mut flash = 0;
-    con.println("Hello World!");
-
+    con.print("cmd=)> ");
     'main: loop {
         for _event in e.poll_iter() {
             match _event {
@@ -41,6 +41,14 @@ fn main() {
                     keycode: Some(Keycode::Escape),
                     ..
                 } => break 'main,
+                Event::TextInput{ timestamp: _, window_id: _, text: s} => {
+                    con.type_key(&s);
+                },
+                Event::KeyDown { keycode: key, .. } => {
+                    if key == Some(Keycode::Backspace) {
+                        con.back();
+                    }
+                }
                 _ => {}
             }
         }
@@ -48,13 +56,13 @@ fn main() {
         can.clear();
         flash += 1;
         let flash_on;
-        if flash > 9 {
+        if flash > 10 {
             flash_on = true;
             flash = 0;
         } else {
             flash_on = false;
         }
-        con.print(&format!("hello world: {}\n", flash));
+       // con.print(&format!("hello world: {}\n", flash));
         con.draw(flash_on, &mut can, &tc, &font, Color::RGB(255, 255, 255));
         can.present();
     }
