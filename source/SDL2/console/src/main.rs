@@ -8,7 +8,7 @@ use sdl2::pixels::Color;
 fn main() {
     let width = 1280;
     let height = 720;
-    let mut con = Console::new(25, 25, 1280, 720);
+    let mut con = Console::new(25, 25, width as u32, height as u32);
     let sdl = sdl2::init().unwrap();
     let video = sdl.video().unwrap();
     let window = video
