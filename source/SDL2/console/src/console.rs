@@ -2,14 +2,13 @@ pub mod console_system {
 
     use sdl2::rect::Rect;
     use sdl2::render::TextureQuery;
-   
     pub struct Console {
         x: i32,
         y: i32,
         w: u32,
         h: u32,
         text: String,
-        line_height: usize
+        line_height: usize,
     }
 
     pub fn printtext(
@@ -112,25 +111,41 @@ pub mod console_system {
                 w: wx,
                 h: hx,
                 text: String::new(),
-                line_height: 27
+                line_height: 27,
             }
         }
         pub fn print(&mut self, t: &str) {
             self.text.push_str(t);
+        }
+
+        pub fn draw(
+            &mut self,
+            blink: bool,
+            can: &mut sdl2::render::Canvas<sdl2::video::Window>,
+            tex: &sdl2::render::TextureCreator<sdl2::video::WindowContext>,
+            font: &sdl2::ttf::Font,
+            color: sdl2::pixels::Color,
+        ) {
             let f = self.text.find("\n");
             let l: Vec<_> = self.text.lines().collect();
             if f != None && l.len() > (self.line_height as usize) - 1 {
                 let v = &self.text[f.unwrap() + 1..self.text.len()];
                 self.text = String::from(v);
             }
+
+            printtext_width(
+                blink,
+                &mut self.line_height,
+                can,
+                tex,
+                font,
+                self.x,
+                self.y,
+                self.w,
+                self.h,
+                color,
+                &self.text,
+            );
         }
-
-        pub fn draw(&mut self,blink: bool, can: &mut sdl2::render::Canvas<sdl2::video::Window>,
-            tex: &sdl2::render::TextureCreator<sdl2::video::WindowContext>,
-            font: &sdl2::ttf::Font,color: sdl2::pixels::Color
-
-           ) {
-               printtext_width(blink,&mut self.line_height,can, tex, font, self.x, self.y, self.w, self.h, color, &self.text);
-           }
     }
 }
