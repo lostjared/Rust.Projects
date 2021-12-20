@@ -1,9 +1,9 @@
 pub mod console_system {
 
-    use std::process::Command;
-    use std::process::Stdio;
     use sdl2::rect::Rect;
     use sdl2::render::TextureQuery;
+    use std::process::Command;
+    use std::process::Stdio;
     pub struct Console {
         x: i32,
         y: i32,
@@ -49,7 +49,7 @@ pub mod console_system {
         w: u32,
         h: u32,
         color: sdl2::pixels::Color,
-        text: &str
+        text: &str,
     ) {
         if text.len() == 0 {
             return;
@@ -140,7 +140,7 @@ pub mod console_system {
         }
         pub fn enter(&mut self) {
             // proc command
-            let v : Vec<&str> = self.input_text.split(' ').collect();
+            let v: Vec<&str> = self.input_text.split(' ').collect();
             if v.len() == 0 {
                 self.print("\n");
                 self.print("cmd=)>");
@@ -150,9 +150,11 @@ pub mod console_system {
             let output;
             if v.len() > 1 {
                 let args = &v[1..v.len()];
-                output = Command::new(name).args(args).stdout(Stdio::piped()).output();
-            }
-            else {
+                output = Command::new(name)
+                .args(args)
+                .stdout(Stdio::piped())
+                .output();
+            } else {
                 output = Command::new(name)
                 .stdout(Stdio::piped())
                 .output();
@@ -163,7 +165,7 @@ pub mod console_system {
                     let stdout = String::from_utf8(output.stdout).unwrap();
                     self.print("\n");
                     self.print(&stdout);
-                },
+                }
                 _ => {
                     self.print("\n");
                     let s = format!("{:?}", output.unwrap_err());
@@ -171,7 +173,6 @@ pub mod console_system {
                 }
             }
 
-          
             self.input_text = String::new();
             self.print("cmd=)>");
         }
