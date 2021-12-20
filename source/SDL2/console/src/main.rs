@@ -32,7 +32,7 @@ fn main() {
         .unwrap();
     let mut e = sdl.event_pump().unwrap();
     let mut flash = 0;
-    con.print("cmd=)> ");
+    con.print("cmd=)>");
     'main: loop {
         for _event in e.poll_iter() {
             match _event {
@@ -47,6 +47,9 @@ fn main() {
                 Event::KeyDown { keycode: key, .. } => {
                     if key == Some(Keycode::Backspace) {
                         con.back();
+                    }
+                    if key == Some(Keycode::Return) {
+                        con.enter();
                     }
                 }
                 _ => {}

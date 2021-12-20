@@ -136,6 +136,11 @@ pub mod console_system {
                 self.text.pop();
             }
         }
+        pub fn enter(&mut self) {
+            // proc command
+            self.input_text = String::new();
+            self.print("\ncmd=)>");
+        }
 
         pub fn draw(
             &mut self,
