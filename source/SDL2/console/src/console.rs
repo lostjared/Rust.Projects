@@ -139,16 +139,8 @@ pub mod console_system {
             }
         }
 
-        pub fn enter(&mut self) {
-            // proc command
-            let v: Vec<&str> = self.input_text.split(' ').collect();
-            if v.len() == 0 {
-                self.print("\n");
-                self.print("cmd=)>");
-                return;
-            }
+        pub fn proc_command(&mut self, v: Vec<&str>) {
             let name = v[0];
-
             match name {
 
                 "exit" => {
@@ -197,6 +189,18 @@ pub mod console_system {
             }
             self.input_text = String::new();
             self.print("cmd=)>");
+        }
+
+        pub fn enter(&mut self) {
+            // proc command
+            let input = String::from(&self.input_text);
+            let v: Vec<&str> = input.split(' ').collect();
+            if v.len() == 0 {
+                self.print("\n");
+                self.print("cmd=)>");
+                return;
+            }
+            self.proc_command(v);
         }
 
         pub fn draw(
