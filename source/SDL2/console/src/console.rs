@@ -138,6 +138,7 @@ pub mod console_system {
                 self.text.pop();
             }
         }
+
         pub fn enter(&mut self) {
             // proc command
             let v: Vec<&str> = self.input_text.split(' ').collect();
@@ -147,32 +148,44 @@ pub mod console_system {
                 return;
             }
             let name = v[0];
-            let output;
-            if v.len() > 1 {
-                let args = &v[1..v.len()];
-                output = Command::new(name)
-                .args(args)
-                .stdout(Stdio::piped())
-                .output();
-            } else {
-                output = Command::new(name)
-                .stdout(Stdio::piped())
-                .output();
-            }
 
-            match output {
-                Ok(output) => {
-                    let stdout = String::from_utf8(output.stdout).unwrap();
-                    self.print("\n");
-                    self.print(&stdout);
-                }
-                _ => {
-                    self.print("\n");
-                    let s = format!("{:?}", output.unwrap_err());
-                    self.println(&s);
-                }
-            }
+            match name {
+                "exec" => {
+                    if v.len() >= 2 {
+                        let name = v[1];
+                        let output;
+                        if v.len() > 2 {
+                            let args = &v[2..v.len()];
+                            output = Command::new(name)
+                                .args(args)
+                                .stdout(Stdio::piped())
+                                .output();
+                        } else if v.len() == 2 {
+                            output = Command::new(name).stdout(Stdio::piped()).output();
+                        } else {
+                            self.println("Error requires argument...\n");
+                            self.print("cmd=)>");
+                            return;
+                        }
 
+                        match output {
+                            Ok(output) => {
+                                let stdout = String::from_utf8(output.stdout).unwrap();
+                                self.print("\n");
+                                self.print(&stdout);
+                            }
+                            _ => {
+                                self.print("\n");
+                                let s = format!("{:?}", output.unwrap_err());
+                                self.println(&s);
+                            }
+                        }
+                    } else {
+                        self.println("\nError requires argument of command...");
+                    }
+                }
+                _ => { self.print("\n"); }
+            }
             self.input_text = String::new();
             self.print("cmd=)>");
         }
