@@ -150,6 +150,15 @@ pub mod console_system {
             let name = v[0];
 
             match name {
+
+                "exit" => {
+                    std::process::exit(0);
+                }
+
+                "clear" => {
+                    self.text.clear();
+                }
+
                 "exec" => {
                     if v.len() >= 2 {
                         let name = v[1];
