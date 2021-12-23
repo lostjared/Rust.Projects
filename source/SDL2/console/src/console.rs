@@ -143,6 +143,10 @@ pub mod console_system {
             let name = v[0];
             match name {
 
+                "about" => {
+                    self.println("\nRust SDL Console v1.0. https://github.com/lostjared");
+                }
+
                 "exit" => {
                     std::process::exit(0);
                 }
