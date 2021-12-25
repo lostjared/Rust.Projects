@@ -8,8 +8,7 @@ use sdl2::pixels::Color;
 fn main() {
     let width = 1280;
     let height = 720;
-    let mut con = Console::new(25, 25, width as u32, height as u32);
-    let sdl = sdl2::init().unwrap();
+     let sdl = sdl2::init().unwrap();
     let video = sdl.video().unwrap();
     video.text_input().start();
     let window = video
@@ -32,7 +31,10 @@ fn main() {
         .unwrap();
     let mut e = sdl.event_pump().unwrap();
     let mut flash = 0;
-    con.print("cmd=)>");
+    let mut con = Console::new(25, 25, width as u32, height as u32);
+ 
+    con.print_prompt();
+
     'main: loop {
         for _event in e.poll_iter() {
             match _event {

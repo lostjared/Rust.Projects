@@ -109,7 +109,11 @@ pub mod console_system {
 
     impl Console {
         pub fn new(xx: i32, yx: i32, wx: u32, hx: u32) -> Console {
-            
+            let home_dir = dirs::home_dir();
+            match home_dir {
+                Some(hdir) => { std::env::set_current_dir(hdir).expect("could not set directory"); }
+                _ => {}
+            }
             Console {
                 x: xx,
                 y: yx,
@@ -121,6 +125,17 @@ pub mod console_system {
                 color: sdl2::pixels::Color::RGB(255,255,255)
             }
         }
+
+        pub fn change_dir(&mut self, d: &str) {
+            let result = std::env::set_current_dir(std::path::Path::new(d));
+            match result {
+                Ok(_) => {}
+                Err(s) => {
+                    self.println(&format!("\nError could not change directory... {}", s));
+                }
+            }
+        }
+
         pub fn print(&mut self, t: &str) {
             self.text.push_str(t);
         }
@@ -142,10 +157,22 @@ pub mod console_system {
             }
         }
 
+        pub fn print_prompt(&mut self) {
+            let path = std::env::current_dir().unwrap();
+            self.print(&format!("[{}]=)>", path.display()));
+        }
+
         pub fn proc_command(&mut self, v: Vec<&str>) {
             let name = v[0];
             match name {
-
+                "cd" => {
+                    if v.len() != 2 {
+                        self.println("\n Requires path...\n");
+                    } else {
+                        self.change_dir(v[1]);
+                        self.print("\n");
+                    }
+                }
                 "setcolor" => {
                     if v.len() != 4 {
                         self.println("\nError requires r g b arguments...\n");
@@ -184,7 +211,7 @@ pub mod console_system {
                             output = Command::new(name).stdout(Stdio::piped()).output();
                         } else {
                             self.println("Error requires argument...\n");
-                            self.print("cmd=)>");
+                            self.print_prompt();
                             return;
                         }
 
@@ -207,7 +234,7 @@ pub mod console_system {
                 _ => { self.print("\n"); }
             }
             self.input_text = String::new();
-            self.print("cmd=)>");
+            self.print_prompt();
         }
 
         pub fn enter(&mut self) {
@@ -216,7 +243,7 @@ pub mod console_system {
             let v: Vec<&str> = input.split(' ').collect();
             if v.len() == 0 {
                 self.print("\n");
-                self.print("cmd=)>");
+                self.print_prompt();
                 return;
             }
             self.proc_command(v);
