@@ -66,7 +66,7 @@ fn main() {
             flash_on = false;
         }
        // con.print(&format!("hello world: {}\n", flash));
-        con.draw(flash_on, &mut can, &tc, &font, Color::RGB(255, 255, 255));
+        con.draw(flash_on, &mut can, &tc, &font);
         can.present();
     }
 }

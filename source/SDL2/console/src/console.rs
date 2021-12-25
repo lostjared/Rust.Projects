@@ -12,6 +12,7 @@ pub mod console_system {
         text: String,
         input_text: String,
         line_height: usize,
+        color: sdl2::pixels::Color
     }
 
     pub fn printtext(
@@ -108,6 +109,7 @@ pub mod console_system {
 
     impl Console {
         pub fn new(xx: i32, yx: i32, wx: u32, hx: u32) -> Console {
+            
             Console {
                 x: xx,
                 y: yx,
@@ -116,6 +118,7 @@ pub mod console_system {
                 text: String::new(),
                 input_text: String::new(),
                 line_height: 27,
+                color: sdl2::pixels::Color::RGB(255,255,255)
             }
         }
         pub fn print(&mut self, t: &str) {
@@ -212,8 +215,7 @@ pub mod console_system {
             blink: bool,
             can: &mut sdl2::render::Canvas<sdl2::video::Window>,
             tex: &sdl2::render::TextureCreator<sdl2::video::WindowContext>,
-            font: &sdl2::ttf::Font,
-            color: sdl2::pixels::Color,
+            font: &sdl2::ttf::Font
         ) {
             let f = self.text.find("\n");
             let l: Vec<_> = self.text.lines().collect();
@@ -232,7 +234,7 @@ pub mod console_system {
                 self.y,
                 self.w,
                 self.h,
-                color,
+                self.color,
                 &self.text,
             );
         }
