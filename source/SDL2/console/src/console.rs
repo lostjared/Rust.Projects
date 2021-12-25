@@ -146,6 +146,18 @@ pub mod console_system {
             let name = v[0];
             match name {
 
+                "setcolor" => {
+                    if v.len() != 4 {
+                        self.println("\nError requires r g b arguments...\n");
+                    } else {
+                        let r : u8 = v[1].parse::<u8>().unwrap();
+                        let g : u8 = v[2].parse::<u8>().unwrap();
+                        let b : u8 = v[3].parse::<u8>().unwrap();
+                        self.color = sdl2::pixels::Color::RGB(r,g,b);
+                        self.println("\nColor set.\n");
+                    }
+                }
+
                 "about" => {
                     self.println("\nRust SDL Console v1.0. https://github.com/lostjared");
                 }
