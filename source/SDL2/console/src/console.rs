@@ -164,7 +164,7 @@ pub mod console_system {
             self.print(&format!("[{}]=)>", path.display()));
         }
 
-        pub fn proc_command(&mut self, v: Vec<&str>) {
+        pub fn proc_command(&mut self, v: Vec<&str>, cmd: &str) {
             let name = v[0];
             match name {
                 "cd" => {
@@ -188,36 +188,29 @@ pub mod console_system {
                 }
                 "shell" => {
                     let output;
-                    if v.len() >= 2 {
-                        let args = &v[1..v.len()];
+                    if v.len() >= 1 && cmd.len() > 6 {
+                        let icmd = &cmd[6..cmd.len()];
+                  
                         output = Command::new("/bin/sh")
                             .arg("-c")
-                            .args(args)
+                            .arg(icmd)
                             .stdout(Stdio::piped())
                             .output();
-                    } else if v.len() == 2 {
-                        output = Command::new("/bin/sh")
-                            .arg("-c")
-                            .arg(v[0])
-                            .stdout(Stdio::piped())
-                            .output();
-                    } else {
-                        self.println("\nError requires argument...\n");
-                        self.print_prompt();
-                        return;
-                    }
 
-                    match output {
-                        Ok(output) => {
-                            let stdout = String::from_utf8(output.stdout).unwrap();
-                            self.print("\n");
-                            self.print(&stdout);
+                        match output {
+                            Ok(output) => {
+                                let stdout = String::from_utf8(output.stdout).unwrap();
+                                self.print("\n");
+                                self.print(&stdout);
+                            }
+                            Err(s) => {
+                                self.print("\n");
+                                let s = format!("{}", s);
+                                self.println(&s);
+                            }
                         }
-                        Err(s) => {
-                            self.print("\n");
-                            let s = format!("{}", s);
-                            self.println(&s);
-                        }
+                    } else {
+                        self.println("\nError invalid command..");
                     }
                 }
 
@@ -284,7 +277,7 @@ pub mod console_system {
                 self.print_prompt();
                 return;
             }
-            self.proc_command(v);
+            self.proc_command(v, &input);
         }
 
         pub fn draw(
