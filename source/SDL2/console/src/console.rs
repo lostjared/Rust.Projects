@@ -12,7 +12,7 @@ pub mod console_system {
         text: String,
         input_text: String,
         line_height: usize,
-        color: sdl2::pixels::Color
+        color: sdl2::pixels::Color,
     }
 
     pub fn printtext(
@@ -111,7 +111,9 @@ pub mod console_system {
         pub fn new(xx: i32, yx: i32, wx: u32, hx: u32) -> Console {
             let home_dir = dirs::home_dir();
             match home_dir {
-                Some(hdir) => { std::env::set_current_dir(hdir).expect("could not set directory"); }
+                Some(hdir) => {
+                    std::env::set_current_dir(hdir).expect("could not set directory");
+                }
                 _ => {}
             }
             Console {
@@ -122,7 +124,7 @@ pub mod console_system {
                 text: String::new(),
                 input_text: String::new(),
                 line_height: 27,
-                color: sdl2::pixels::Color::RGB(255,255,255)
+                color: sdl2::pixels::Color::RGB(255, 255, 255),
             }
         }
 
@@ -177,11 +179,45 @@ pub mod console_system {
                     if v.len() != 4 {
                         self.println("\nError requires r g b arguments...\n");
                     } else {
-                        let r : u8 = v[1].parse::<u8>().unwrap();
-                        let g : u8 = v[2].parse::<u8>().unwrap();
-                        let b : u8 = v[3].parse::<u8>().unwrap();
-                        self.color = sdl2::pixels::Color::RGB(r,g,b);
+                        let r: u8 = v[1].parse::<u8>().unwrap();
+                        let g: u8 = v[2].parse::<u8>().unwrap();
+                        let b: u8 = v[3].parse::<u8>().unwrap();
+                        self.color = sdl2::pixels::Color::RGB(r, g, b);
                         self.println("\nColor set.\n");
+                    }
+                }
+                "shell" => {
+                    let output;
+                    if v.len() >= 2 {
+                        let args = &v[1..v.len()];
+                        output = Command::new("/bin/sh")
+                            .arg("-c")
+                            .args(args)
+                            .stdout(Stdio::piped())
+                            .output();
+                    } else if v.len() == 2 {
+                        output = Command::new("/bin/sh")
+                            .arg("-c")
+                            .arg(v[0])
+                            .stdout(Stdio::piped())
+                            .output();
+                    } else {
+                        self.println("\nError requires argument...\n");
+                        self.print_prompt();
+                        return;
+                    }
+
+                    match output {
+                        Ok(output) => {
+                            let stdout = String::from_utf8(output.stdout).unwrap();
+                            self.print("\n");
+                            self.print(&stdout);
+                        }
+                        Err(s) => {
+                            self.print("\n");
+                            let s = format!("{}", s);
+                            self.println(&s);
+                        }
                     }
                 }
 
@@ -231,7 +267,9 @@ pub mod console_system {
                         self.println("\nError requires argument of command...");
                     }
                 }
-                _ => { self.print("\n"); }
+                _ => {
+                    self.print("\n");
+                }
             }
             self.input_text = String::new();
             self.print_prompt();
@@ -254,7 +292,7 @@ pub mod console_system {
             blink: bool,
             can: &mut sdl2::render::Canvas<sdl2::video::Window>,
             tex: &sdl2::render::TextureCreator<sdl2::video::WindowContext>,
-            font: &sdl2::ttf::Font
+            font: &sdl2::ttf::Font,
         ) {
             let f = self.text.find("\n");
             let l: Vec<_> = self.text.lines().collect();

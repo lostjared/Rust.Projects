@@ -8,7 +8,7 @@ use sdl2::pixels::Color;
 fn main() {
     let width = 1280;
     let height = 720;
-     let sdl = sdl2::init().unwrap();
+    let sdl = sdl2::init().unwrap();
     let video = sdl.video().unwrap();
     video.text_input().start();
     let window = video
@@ -32,7 +32,7 @@ fn main() {
     let mut e = sdl.event_pump().unwrap();
     let mut flash = 0;
     let mut con = Console::new(25, 25, width as u32, height as u32);
- 
+
     con.print_prompt();
 
     'main: loop {
@@ -43,9 +43,13 @@ fn main() {
                     keycode: Some(Keycode::Escape),
                     ..
                 } => break 'main,
-                Event::TextInput{ timestamp: _, window_id: _, text: s} => {
+                Event::TextInput {
+                    timestamp: _,
+                    window_id: _,
+                    text: s,
+                } => {
                     con.type_key(&s);
-                },
+                }
                 Event::KeyDown { keycode: key, .. } => {
                     if key == Some(Keycode::Backspace) {
                         con.back();
@@ -67,7 +71,7 @@ fn main() {
         } else {
             flash_on = false;
         }
-       // con.print(&format!("hello world: {}\n", flash));
+        // con.print(&format!("hello world: {}\n", flash));
         con.draw(flash_on, &mut can, &tc, &font);
         can.present();
     }
