@@ -128,6 +128,10 @@ pub mod console_system {
             }
         }
 
+        pub fn set_text_color(&mut self, col: sdl2::pixels::Color) {
+            self.color = col;
+        }
+
         pub fn change_dir(&mut self, d: &str) {
             let result = std::env::set_current_dir(std::path::Path::new(d));
             match result {
@@ -190,7 +194,6 @@ pub mod console_system {
                     let output;
                     if v.len() >= 1 && cmd.len() > 6 {
                         let icmd = &cmd[6..cmd.len()];
-                  
                         output = Command::new("/bin/sh")
                             .arg("-c")
                             .arg(icmd)

@@ -32,7 +32,7 @@ fn main() {
     let mut e = sdl.event_pump().unwrap();
     let mut flash = 0;
     let mut con = Console::new(25, 25, width as u32, height as u32);
-
+    con.set_text_color(Color::RGB(255,255,255));
     con.print_prompt();
 
     'main: loop {
