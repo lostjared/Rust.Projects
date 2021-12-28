@@ -13,6 +13,7 @@ pub mod console_system {
         input_text: String,
         line_height: usize,
         color: sdl2::pixels::Color,
+        visible: bool,
     }
 
     pub fn printtext(
@@ -125,11 +126,20 @@ pub mod console_system {
                 input_text: String::new(),
                 line_height: 27,
                 color: sdl2::pixels::Color::RGB(255, 255, 255),
+                visible: true,
             }
         }
 
         pub fn set_text_color(&mut self, col: sdl2::pixels::Color) {
             self.color = col;
+        }
+
+        pub fn set_visible(&mut self, v: bool) {
+            self.visible = v;
+        }
+
+        pub fn get_visible(&mut self) -> bool {
+            self.visible
         }
 
         pub fn change_dir(&mut self, d: &str) {
@@ -152,12 +162,14 @@ pub mod console_system {
         }
 
         pub fn type_key(&mut self, t: &str) {
-            self.input_text.push_str(t);
-            self.print(t);
+            if self.visible == true {
+                self.input_text.push_str(t);
+                self.print(t);
+            }
         }
 
         pub fn back(&mut self) {
-            if self.input_text.len() > 0 {
+            if self.visible == true && self.input_text.len() > 0 {
                 self.input_text.pop();
                 self.text.pop();
             }
@@ -228,6 +240,10 @@ pub mod console_system {
                 "clear" => {
                     self.text.clear();
                 }
+                "hide" => {
+                    self.set_visible(false);
+                    self.print("\n");
+                }
 
                 "exec" => {
                     if v.len() >= 2 {
@@ -272,6 +288,10 @@ pub mod console_system {
         }
 
         pub fn enter(&mut self) {
+            if self.visible == false {
+                return;
+            }
+
             // proc command
             let input = String::from(&self.input_text);
             let v: Vec<&str> = input.split(' ').collect();
@@ -290,6 +310,10 @@ pub mod console_system {
             tex: &sdl2::render::TextureCreator<sdl2::video::WindowContext>,
             font: &sdl2::ttf::Font,
         ) {
+            if self.visible == false {
+                return;
+            }
+
             let f = self.text.find("\n");
             let l: Vec<_> = self.text.lines().collect();
             if f != None && l.len() > (self.line_height as usize) - 1 {

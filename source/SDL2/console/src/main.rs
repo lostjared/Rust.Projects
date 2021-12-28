@@ -32,9 +32,9 @@ fn main() {
     let mut e = sdl.event_pump().unwrap();
     let mut flash = 0;
     let mut con = Console::new(25, 25, width as u32, height as u32);
-    con.set_text_color(Color::RGB(255,255,255));
+    con.set_text_color(Color::RGB(255, 255, 255));
     con.print_prompt();
-
+    con.set_visible(true);
     'main: loop {
         for _event in e.poll_iter() {
             match _event {
@@ -55,7 +55,11 @@ fn main() {
                         con.back();
                     }
                     if key == Some(Keycode::Return) {
-                        con.enter();
+                        if con.get_visible() == false {
+                            con.set_visible(true);
+                        } else {
+                            con.enter();
+                        }
                     }
                 }
                 _ => {}
