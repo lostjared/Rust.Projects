@@ -230,7 +230,7 @@ pub mod console_system {
                 }
 
                 "about" => {
-                    self.println("\nRust SDL Console v1.0. https://github.com/lostjared");
+                    self.println("\nRust SDL Console v1.0. https://github.com/lostjared\nhttp://lostsidedead.com");
                 }
 
                 "exit" => {
