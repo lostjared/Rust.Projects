@@ -1,16 +1,19 @@
 use std::env;
 use std::fs;
+use std::io;
+use std::io::prelude::*;
+use std::fs::File;
 
-fn print_data(inputfile: &String) {
-    let contents = fs::read_to_string(inputfile).expect("Error reading the file");
-    let val : Vec<&str> = contents.lines().collect();
+fn print_data(inputfile: &String) -> io::Result<()> {
+    let mut file = File::open(inputfile)?;
+    let mut buffer = Vec::new();
+    file.read_to_end(&mut buffer)?;
     println!("unsigned char bytes[] = {{");
-    val.iter().for_each(|x| {
-        for i in x.as_bytes() {
-            print!("{:#04x},", i);
-        }
-    });
+    for i in buffer {
+        print!("{:#04x},", i);
+    }
     println!("0x0}};");
+    Ok(())
 }
 
 fn main() {
