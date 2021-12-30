@@ -1,5 +1,4 @@
 use std::env;
-use std::fs;
 use std::io;
 use std::io::prelude::*;
 use std::fs::File;
@@ -16,13 +15,14 @@ fn print_data(inputfile: &String) -> io::Result<()> {
     Ok(())
 }
 
-fn main() {
+fn main() -> io::Result<()> {
     let args: Vec<String> = env::args().collect();
     if args.len() == 2 {
         let val1 = args.get(1).unwrap();
-        print_data(val1);
+        print_data(val1)?;
     }
     else {
         println!("Error: input_file");
     }
+    Ok(())
 }
