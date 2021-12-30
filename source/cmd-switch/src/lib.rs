@@ -27,6 +27,14 @@ pub mod cmd_sw {
         print!("\n");
     }
 
+    pub fn print_accepted_args_map(desc: &HashMap<String, Argument>) {
+        println!("Accepted Arguments:");
+        for (key, value) in desc {
+            println!("\t--{} [{}]", key, value.desc);
+        }
+        print!("\n");
+    }
+
     pub fn parse_args(args: &Vec<String>, desc: &HashMap<String, String>) -> HashMap<String, Argument> {
         let mut argz : HashMap<String, Argument> = HashMap::new();
         for i in args.into_iter().skip(1) {
