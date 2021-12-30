@@ -19,7 +19,15 @@ pub mod cmd_sw {
         }
     }
 
-    pub fn parse_args(args: &Vec<String>) -> HashMap<String, Argument> {
+    pub fn print_accepted_args(desc: &HashMap<String, String>) {
+        println!("Accepted Arguments:");
+        for (key, value) in desc {
+            println!("\t--{} [{}]", key, value);
+        }
+        print!("\n");
+    }
+
+    pub fn parse_args(args: &Vec<String>, desc: &HashMap<String, String>) -> HashMap<String, Argument> {
         let mut argz : HashMap<String, Argument> = HashMap::new();
         for i in args.into_iter().skip(1) {
             let pos = i.find("=");
@@ -28,9 +36,16 @@ pub mod cmd_sw {
                 let loc = (pos_s.unwrap(), pos.unwrap());
                 let key = &i[loc.0+2..loc.1];
                 let right = &i[loc.1+1..i.len()];
-                argz.insert(String::from(key), Argument::new(key,right,"description"));
+                let d;
+                let s = desc.get(key);
+                if s != None {
+                    d = String::from(s.unwrap());
+                } else {
+                    d = String::from("None");
+                }
+                argz.insert(String::from(key), Argument::new(key,right,&d));
             } else {
-                println!("Incorrect format: use --key=value found: {}", i);
+                //println!("Incorrect format: use --key=value found: {}", i);
             }
         }
         argz

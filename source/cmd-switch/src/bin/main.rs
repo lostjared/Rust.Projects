@@ -1,10 +1,13 @@
-
+use std::collections::HashMap;
 use cmd_switch::cmd_sw;
 use std::env;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let argz = cmd_sw::parse_args(&args);
+    let mut desc = HashMap::new();
+    desc.insert(String::from("hello"), String::from("enter your name"));
+    cmd_sw::print_accepted_args(&desc);
+    let argz = cmd_sw::parse_args(&args, &desc);
     for (key, value) in &argz {
         println!("{} = {}", *key, value.value);
     }
