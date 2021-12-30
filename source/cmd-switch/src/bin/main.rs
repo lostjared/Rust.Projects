@@ -16,5 +16,6 @@ fn main() {
         std::process::exit(0);
     }
     let v = argz.get("hello").unwrap();
-    println!("Key is {} value is {}", v.key, v.value);
+    println!("Key is {} value is {} its for {}", v.key, v.value, v.desc);
+
 }
