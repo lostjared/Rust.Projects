@@ -21,7 +21,7 @@ pub mod cmd_sw {
 
     pub fn parse_args(args: &Vec<String>) -> HashMap<String, Argument> {
         let mut argz : HashMap<String, Argument> = HashMap::new();
-        for i in args {
+        for i in args.into_iter().skip(1) {
             let pos = i.find("=");
             let pos_s = i.find("--");
             if pos != None && pos_s != None {
@@ -29,7 +29,9 @@ pub mod cmd_sw {
                 let key = &i[loc.0+2..loc.1];
                 let right = &i[loc.1+1..i.len()];
                 argz.insert(String::from(key), Argument::new(key,right,"description"));
-            } 
+            } else {
+                println!("Incorrect format: use --key=value found: {}", i);
+            }
         }
         argz
     }
