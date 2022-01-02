@@ -35,6 +35,15 @@ pub mod cmd_sw {
         print!("\n");
     }
 
+    pub fn print_accepted_args_map_require(desc: &HashMap<String, (String, bool)>) {
+        println!("Accepted Arguments:");
+        for (key, value) in desc {
+            println!("\t--{} [{}] required: {}", key, value.0, value.1);
+        }
+        print!("\n");
+
+    }
+
     pub fn parse_args(args: &Vec<String>, desc: &HashMap<String, String>) -> HashMap<String, Argument> {
         let mut argz : HashMap<String, Argument> = HashMap::new();
         for i in args.into_iter().skip(1) {
@@ -80,9 +89,7 @@ pub mod cmd_sw {
                     d = String::from("None");
                 }
                 argz.insert(String::from(key), Argument::new(key,right,&d));
-            } else {
-                //println!("Incorrect format: use --key=value found: {}", i);
-            }
+            } 
         }
 
         for (key, value) in desc {

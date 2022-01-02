@@ -6,7 +6,7 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     let mut desc = HashMap::new();
     desc.insert(String::from("hello"), (String::from("enter your name"), true));
-    //cmd_sw::print_accepted_args(&desc);
+    cmd_sw::print_accepted_args_map_require(&desc);
     let argz = cmd_sw::parse_args_require(&args, &desc);
     for (key, value) in &argz {
         println!("{} = {}", *key, value.value);
