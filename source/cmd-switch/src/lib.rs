@@ -61,7 +61,17 @@ pub mod cmd_sw {
                     d = String::from("None");
                 }
                 argz.insert(String::from(key), Argument::new(key,right,&d));
-            } else {
+            } else if pos_s != None && pos == None {
+                let loc = pos_s.unwrap();
+                let k = &i[loc..i.len()];
+                let d;
+                let s = desc.get(k);
+                if s != None {
+                    d = String::from(s.unwrap());
+                } else {
+                    d = String::from("None");
+                }
+                argz.insert(String::from(k), Argument::new(k,"",&d));
                 //println!("Incorrect format: use --key=value found: {}", i);
             }
         }
@@ -89,7 +99,24 @@ pub mod cmd_sw {
                     d = String::from("None");
                 }
                 argz.insert(String::from(key), Argument::new(key,right,&d));
-            } 
+            } else if pos_s != None && pos == None {
+                   let loc = pos_s.unwrap();
+                    let k = &i[loc+2..i.len()];
+                    let v = desc.get(k);
+                    let d;
+                    if v != None {
+                        let s = v.unwrap();
+                        let string_value = String::from(k);
+                        d = String::from(&s.0);
+                        arg_req.insert(string_value, true);
+                    } else {
+                        d = String::from("None");
+                    }
+                    println!("Adding: {}", k);
+                    argz.insert(String::from(k), Argument::new(k,"",&d));
+                
+                //println!("Incorrect format: use --key=value found: {}", i);
+            }
         }
 
         for (key, value) in desc {
