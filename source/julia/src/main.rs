@@ -3,7 +3,8 @@ use std::collections::HashMap;
 use std::env;
 
 
-pub fn parse_split_int(text: &str) -> (i32, i32) {
+pub fn parse_split_int(t: &str) -> (i32, i32) {
+    let text = String::from(t.trim());
     let pos = text.find(",");
     if pos == None {
         panic!("Could not find list seperator for argument..");
@@ -14,7 +15,8 @@ pub fn parse_split_int(text: &str) -> (i32, i32) {
     (left.parse::<i32>().unwrap(), right.parse::<i32>().unwrap())
 }
 
-pub fn parse_split_double(text: &str) -> (f32, f32) {
+pub fn parse_split_double(t: &str) -> (f32, f32) {
+    let text = String::from(t.trim());
     let pos = text.find(",");
     if pos == None {
         panic!("Could not find list seperator for argument..");
@@ -31,6 +33,9 @@ fn main() {
 
     desc.insert(String::from("output"), (String::from("output file"), true));
     desc.insert(String::from("res"), (String::from("output resolution"), true));
+    desc.insert(String::from("param"), (String::from("complex pair"), true));
+    desc.insert(String::from("iter"), (String::from("number of iterations"), true));
+
 
     if args.len() == 1 {
         cmd_sw::print_accepted_args_map_require(&desc);
@@ -38,11 +43,14 @@ fn main() {
     }
 
     let argz = cmd_sw::parse_args_require(&args, &desc);
-
     let output = &argz["output"];
     let res = &argz["res"];
     let res_value = parse_split_int(&res.value);
+    let param = &argz["param"];
+    let iter = &argz["iter"];
+    let iterations = iter.value.parse::<i32>().unwrap();
+    let params = parse_split_double(&param.value);
 
-    println!("output: [{}] resolution: ({}, {})", output.value, res_value.0, res_value.1);
+    println!("output: [{}] resolution: ({}, {}) param: ({}, {}) iterations: {}", output.value, res_value.0, res_value.1, params.0, params.1, iterations);
 
 }
