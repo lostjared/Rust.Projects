@@ -52,5 +52,11 @@ fn main() {
     let params = parse_split_double(&param.value);
 
     println!("output: [{}] resolution: ({}, {}) param: ({}, {}) iterations: {}", output.value, res_value.0, res_value.1, params.0, params.1, iterations);
+    draw_julia(&output.value, res_value, params, iterations);
+
+}
+
+pub fn draw_julia(filename: &String, res: (i32, i32), param: (f32, f32), iter: i32) {
+
 
 }
