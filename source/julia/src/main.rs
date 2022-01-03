@@ -14,6 +14,17 @@ pub fn parse_split_int(text: &str) -> (i32, i32) {
     (left.parse::<i32>().unwrap(), right.parse::<i32>().unwrap())
 }
 
+pub fn parse_split_double(text: &str) -> (f32, f32) {
+    let pos = text.find(",");
+    if pos == None {
+        panic!("Could not find list seperator for argument..");
+    }
+    let pos_value = pos.unwrap();
+    let left = &text[0..pos_value];
+    let right = &text[pos_value+1..text.len()];
+    (left.parse::<f32>().unwrap(), right.parse::<f32>().unwrap())
+}
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     let mut desc = HashMap::new();
