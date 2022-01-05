@@ -4,13 +4,7 @@ fn give() -> String {
     io::stdin()
             .read_line(&mut input)
             .expect("Failed to readline");
-    if input.ends_with("\n") { 
-        input.pop();
-        if input.ends_with("\r") {
-            input.pop();
-        }
-    }
-    input
+    String::from(input.trim())
 }
 fn get(value: String) -> String {
     if value.eq("love") == true { return String::from("1"); }
