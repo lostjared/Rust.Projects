@@ -40,6 +40,6 @@ fn main() {
             num_lines, total_blanks, total_lines
         );
     } else {
-        println!("Error: input_file output_file");
+        println!("Error: input_file_list");
     }
 }
