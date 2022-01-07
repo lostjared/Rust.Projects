@@ -3,14 +3,14 @@ use std::fs;
 
 fn count_lines(inputfile: &String) -> usize {
     let contents = fs::read_to_string(inputfile).expect("Error reading the file");
-    let val : Vec<&str> = contents.lines().collect();
+    let val: Vec<&str> = contents.lines().collect();
     //println!("{} contains {} lines", inputfile, val.len());
     val.len()
 }
 
 fn count_blanks(inputfile: &String) -> (usize, usize, usize) {
     let contents = fs::read_to_string(inputfile).expect("Error reading the file");
-    let val : Vec<&str> = contents.lines().collect();
+    let val: Vec<&str> = contents.lines().collect();
     let mut blanks = 0;
     let mut index = 0;
     for i in &val {
@@ -20,7 +20,13 @@ fn count_blanks(inputfile: &String) -> (usize, usize, usize) {
             blanks += 1;
         }
     }
-    println!("{} contains {} blank lines, lines: {}, total lines: {}", inputfile, blanks, index, blanks+index);
+    println!(
+        "{} contains {} blank lines, lines: {}, total lines: {}",
+        inputfile,
+        blanks,
+        index,
+        blanks + index
+    );
     (index, blanks, val.len())
 }
 
@@ -36,9 +42,11 @@ fn main() {
             total_lines += rt_val.0;
             total_blanks += rt_val.1;
         }
-        println!("total lines: {}, total blanks: {}, total non-blank: {}", num_lines, total_blanks, total_lines);
-    }
-    else {
+        println!(
+            "total lines: {}, total blanks: {}, total non-blank: {}",
+            num_lines, total_blanks, total_lines
+        );
+    } else {
         println!("Error: input_file output_file");
     }
 }
