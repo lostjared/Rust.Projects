@@ -1,14 +1,7 @@
 use std::env;
 use std::fs;
 
-fn count_lines(inputfile: &String) -> usize {
-    let contents = fs::read_to_string(inputfile).expect("Error reading the file");
-    let val: Vec<&str> = contents.lines().collect();
-    //println!("{} contains {} lines", inputfile, val.len());
-    val.len()
-}
-
-fn count_blanks(inputfile: &String) -> (usize, usize, usize) {
+fn count_lines(inputfile: &String) -> (usize, usize, usize) {
     let contents = fs::read_to_string(inputfile).expect("Error reading the file");
     let val: Vec<&str> = contents.lines().collect();
     let mut blanks = 0;
@@ -37,10 +30,10 @@ fn main() {
         let mut total_blanks = 0;
         let mut total_lines = 0;
         for i in args.iter().skip(1) {
-            num_lines += count_lines(i);
-            let rt_val = count_blanks(i);
+            let rt_val = count_lines(i);
             total_lines += rt_val.0;
             total_blanks += rt_val.1;
+            num_lines += rt_val.2;
         }
         println!(
             "total lines: {}, total blanks: {}, total non-blank: {}",
