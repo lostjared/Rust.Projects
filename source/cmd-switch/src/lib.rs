@@ -49,10 +49,20 @@ pub mod cmd_sw {
         let mut argz: HashMap<String, Argument> = HashMap::new();
         for i in args.into_iter().skip(1) {
             let pos = i.find("=");
-            let pos_s = i.find("--");
+            let mut pos_s = i.find("--");
+            let mut pos_f = false;
+            if pos_s == None {
+                pos_s = i.find("-");
+                pos_f = true;
+            }
             if pos != None && pos_s != None {
                 let loc = (pos_s.unwrap(), pos.unwrap());
-                let key = &i[loc.0 + 2..loc.1];
+                let key;
+                if pos_f == false {
+                    key = &i[loc.0 + 2..loc.1];
+                } else {
+                    key = &i[loc.0 + 1..loc.1];
+                }
                 let right = &i[loc.1 + 1..i.len()];
                 let d;
                 let s = desc.get(key);
@@ -87,10 +97,20 @@ pub mod cmd_sw {
         let mut arg_req: HashMap<String, bool> = HashMap::new();
         for i in args.into_iter().skip(1) {
             let pos = i.find("=");
-            let pos_s = i.find("--");
+            let mut pos_s = i.find("--");
+            let mut pos_f = false;
+            if pos_s == None {
+                pos_s = i.find("-");
+                pos_f = true;
+            }
             if pos != None && pos_s != None {
                 let loc = (pos_s.unwrap(), pos.unwrap());
-                let key = &i[loc.0 + 2..loc.1];
+                let key;
+                if pos_f == false {
+                    key = &i[loc.0 + 2..loc.1];
+                } else {
+                    key = &i[loc.0 + 1..loc.1];
+                }
                 let right = &i[loc.1 + 1..i.len()];
                 let d;
                 let s = desc.get(key);
@@ -117,7 +137,6 @@ pub mod cmd_sw {
                     d = String::from("None");
                 }
                 argz.insert(String::from(k), Argument::new(k, "", &d));
-
                 //println!("Incorrect format: use --key=value found: {}", i);
             }
         }
