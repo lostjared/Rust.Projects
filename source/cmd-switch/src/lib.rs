@@ -63,7 +63,7 @@ pub mod cmd_sw {
                 } else {
                     key = &i[loc.0 + 1..loc.1];
                 }
-                let right = &i[loc.1 + 1..i.len()];
+                let right = &i[loc.1 + 1..];
                 let d;
                 let s = desc.get(key);
                 if s != None {
@@ -74,7 +74,12 @@ pub mod cmd_sw {
                 argz.insert(String::from(key), Argument::new(key, right, &d));
             } else if pos_s != None && pos == None {
                 let loc = pos_s.unwrap();
-                let k = &i[loc..i.len()];
+                let k;
+                if pos_f == false {
+                    k = &i[loc+2..];
+                } else {
+                    k = &i[loc+1..];
+                }
                 let d;
                 let s = desc.get(k);
                 if s != None {
@@ -125,7 +130,12 @@ pub mod cmd_sw {
                 argz.insert(String::from(key), Argument::new(key, right, &d));
             } else if pos_s != None && pos == None {
                 let loc = pos_s.unwrap();
-                let k = &i[loc + 2..];
+                let k;
+                if pos_f == false {
+                     k = &i[loc + 2..];
+                } else {
+                    k = &i[loc +1..];
+                }
                 let v = desc.get(k);
                 let d;
                 if v != None {
