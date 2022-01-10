@@ -195,10 +195,50 @@ pub mod console_system {
                     if v.len() != 4 {
                         self.println("\nError requires r g b arguments...\n");
                     } else {
-                        let r: u8 = v[1].parse::<u8>().unwrap();
-                        let g: u8 = v[2].parse::<u8>().unwrap();
-                        let b: u8 = v[3].parse::<u8>().unwrap();
-                        self.color = sdl2::pixels::Color::RGB(r, g, b);
+                        let r = v[1].parse::<u8>();
+                        let g = v[2].parse::<u8>();
+                        let b = v[3].parse::<u8>();
+
+                        let rr: u8;
+                        let gg: u8;
+                        let bb: u8;
+
+                        match r {
+                            Ok(r_r) => {
+                                rr = r_r;
+                            }
+                            Err(_) => {
+                                self.println("\nError on setcolor");
+                                self.input_text = String::new();
+                                self.print_prompt();
+                                return;
+                            }
+                        }
+                        match g {
+                            Ok(g_g) => {
+                                gg = g_g;
+                            }
+                            Err(_) => {
+                                self.println("\nError on setcolor");
+                                self.input_text = String::new();
+                                self.print_prompt();
+                                return;
+                            }
+                        }
+
+                        match b {
+                            Ok(b_b) => {
+                                bb = b_b;
+                            }
+                            Err(_) => {
+                                self.println("\nError on setcolor");
+                                self.input_text = String::new();
+                                self.print_prompt();
+                                return;
+                            }
+                        }
+
+                        self.color = sdl2::pixels::Color::RGB(rr, gg, bb);
                         self.println("\nColor set.\n");
                     }
                 }
