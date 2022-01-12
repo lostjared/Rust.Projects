@@ -105,11 +105,16 @@ fn main() {
     let mut timer_delay: u64;
     let mut cur_screen: i32 = 0;
 
-    let window = video
+    let icon = Surface::load_bmp("./img/icon.bmp").unwrap();
+
+    let mut window = video
         .window("Generic Puzzle Game", width, height)
         .opengl()
         .build()
         .unwrap();
+
+    window.set_icon(icon);
+
     let mut can = window
         .into_canvas()
         .build()
@@ -142,7 +147,7 @@ fn main() {
         block_tex.push(tc.create_texture_from_surface(t_surf).unwrap());
     }
 
-    let mut levels : Vec<sdl2::render::Texture> = Vec::new();
+    let mut levels: Vec<sdl2::render::Texture> = Vec::new();
     for i in 1..=8 {
         let filename = format!("./img/level{}.bmp", i);
         let t_surf = Surface::load_bmp(filename).unwrap();
@@ -307,8 +312,12 @@ fn main() {
             can.set_draw_color(Color::RGB(0, 0, 0));
             can.clear();
 
-            can.copy(&levels[cur_level-1], None, Some(Rect::new(0, 0, width, height)))
-                .expect("on copy");
+            can.copy(
+                &levels[cur_level - 1],
+                None,
+                Some(Rect::new(0, 0, width, height)),
+            )
+            .expect("on copy");
             draw_grid(&grid, &mut can, &block_tex);
             let score = format!("Score: {} Level: {}", grid.score, cur_level);
             let text_surf = font
