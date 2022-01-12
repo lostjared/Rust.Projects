@@ -18,6 +18,7 @@ fn draw_grid(
     grid: &game::Grid,
     colors: &Vec<Color>,
     can: &mut sdl2::render::Canvas<sdl2::video::Window>,
+    blocks: &Vec<sdl2::render::Texture>
 ) {
     let offset = 0;
     for x in 0..grid.get_width() as usize {
@@ -26,13 +27,15 @@ fn draw_grid(
             if color >= 1 {
                 let value: Color = *colors.get(color as usize).unwrap();
                 can.set_draw_color(value);
-                can.fill_rect(Some(Rect::new(
+                let b = blocks.get(color as usize).unwrap();
+                can.copy(&b, 
+                    None,Some(Rect::new(
                     x as i32 * 32,
                     (y as i32 * 16) + offset,
                     32,
                     16,
-                )))
-                .expect("draw rect");
+                ))).expect("on copy block");
+
             } else if color < 0 {
                 let mut rng = rand::thread_rng();
                 let value: Color = Color::RGB(
@@ -61,27 +64,24 @@ fn draw_grid(
         }
     }
     let block = grid.get_block();
-    let mut value: Color = *colors.get(block[0].color as usize).unwrap();
-    can.set_draw_color(value);
-    can.fill_rect(Some(Rect::new(
+    let b = blocks.get(block[0].color as usize).unwrap();
+    can.copy(&b, None, Some(Rect::new(
         block[0].x as i32 * 32,
         (block[0].y as i32 * 16) + offset,
         32,
         16,
     )))
     .expect("draw rect");
-    value = *colors.get(block[1].color as usize).unwrap();
-    can.set_draw_color(value);
-    can.fill_rect(Some(Rect::new(
+    let b2 = blocks.get(block[1].color as usize).unwrap();
+    can.copy(&b2, None, Some(Rect::new(
         block[1].x as i32 * 32,
         (block[1].y as i32 * 16) + offset,
         32,
         16,
     )))
     .expect("draw rect");
-    value = *colors.get(block[2].color as usize).unwrap();
-    can.set_draw_color(value);
-    can.fill_rect(Some(Rect::new(
+    let b3 = blocks.get(block[2].color as usize).unwrap();
+    can.copy(&b3, None, Some(Rect::new(
         block[2].x as i32 * 32,
         (block[2].y as i32 * 16) + offset,
         32,
@@ -117,6 +117,13 @@ fn main() {
     let game_over_texture = tc.create_texture_from_surface(game_over_surf).unwrap();
     let game_surf = Surface::load_bmp("./img/intro.bmp").unwrap();
     let game_texture = tc.create_texture_from_surface(game_surf).unwrap();
+    let blocks = vec!["./img/block_black.bmp", "./img/block_clear.bmp", "./img/block_dblue.bmp", "./img/block_gray.bmp", "./img/block_green.bmp", "./img/block_ltblue.bmp", "./img/block_orange.bmp", "./img/block_pink.bmp", "./img/block_purple.bmp", "./img/block_red.bmp", "./img/block_yellow.bmp"];
+    let mut block_tex : Vec<sdl2::render::Texture> = Vec::new();
+    for i in &blocks {
+        let t_surf = Surface::load_bmp(i).unwrap();
+        block_tex.push( tc.create_texture_from_surface(t_surf).unwrap());
+    }
+
     let mut e = sdl.event_pump().unwrap();
     can.set_draw_color(Color::RGB(0, 0, 0));
     can.clear();
@@ -230,7 +237,7 @@ fn main() {
             can.clear();
             can.copy(&texture, None, Some(Rect::new(0, 0, width, height)))
                 .expect("on copy");
-            draw_grid(&grid, &colors, &mut can);
+            draw_grid(&grid, &colors, &mut can, &block_tex);
             let score = format!("Score: {}", grid.score);
             let text_surf = font
                 .render(&score)
