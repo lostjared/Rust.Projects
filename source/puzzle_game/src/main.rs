@@ -151,7 +151,7 @@ fn main() {
     grid.new_piece();
     let mut font = ttf_context.load_font("./img/font.ttf", 18).expect("test");
     font.set_style(sdl2::ttf::FontStyle::BOLD);
-    let text_surf = font
+    let _text_surf = font
         .render("Score: ")
         .blended(Color::RGB(255, 255, 255))
         .unwrap();
