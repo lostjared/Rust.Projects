@@ -54,22 +54,21 @@ pub mod game {
             let mut rng = rand::thread_rng();
             self.piece[0].x = (TILE_W / 2) as i32;
             self.piece[0].y = 0;
-            self.piece[0].color = rng.gen_range(1..8);
+            self.piece[0].color = rng.gen_range(1..10);
             self.piece[1].x = (TILE_W / 2) as i32;
             self.piece[1].y = 1;
-            self.piece[1].color = rng.gen_range(1..8);
+            self.piece[1].color = rng.gen_range(1..10);
             self.piece[2].x = (TILE_W / 2) as i32;
             self.piece[2].y = 2;
-            self.piece[2].color = rng.gen_range(1..8);
+            self.piece[2].color = rng.gen_range(1..10);
             while self.piece[0].color == self.piece[1].color
                 || self.piece[0].color == self.piece[2].color
             {
-                self.piece[0].color = rng.gen_range(1..8);
-                self.piece[1].color = rng.gen_range(1..8);
-                self.piece[2].color = rng.gen_range(1..8);
+                self.piece[0].color = rng.gen_range(1..10);
+                self.piece[1].color = rng.gen_range(1..10);
+                self.piece[2].color = rng.gen_range(1..10);
             }
             self.piece_shape = 0;
-
         }
 
         pub fn reset_game(&mut self) {
@@ -113,36 +112,47 @@ pub mod game {
         }
 
         pub fn shift_left(&mut self) {
-            if self.piece_shape == 0 && self.check_block(0, self.piece[1].x-1, self.piece[1].y-1) == true && self.check_block(0, self.piece[2].x-2, self.piece[2].y-2) == true {
+            if self.piece_shape == 0
+                && self.check_block(0, self.piece[1].x - 1, self.piece[1].y - 1) == true
+                && self.check_block(0, self.piece[2].x - 2, self.piece[2].y - 2) == true
+            {
                 self.piece[1].x -= 1;
                 self.piece[1].y -= 1;
                 self.piece[2].x -= 2;
                 self.piece[2].y -= 2;
                 self.piece_shape = 1;
-            } else if self.piece_shape == 1 && self.check_block(0, self.piece[1].x+1, self.piece[1].y+1) == true && self.check_block(0, self.piece[2].x+2, self.piece[2].y+2) == true {
+            } else if self.piece_shape == 1
+                && self.check_block(0, self.piece[1].x + 1, self.piece[1].y + 1) == true
+                && self.check_block(0, self.piece[2].x + 2, self.piece[2].y + 2) == true
+            {
                 self.piece[1].x += 1;
                 self.piece[1].y += 1;
                 self.piece[2].x += 2;
                 self.piece[2].y += 2;
-                self.piece_shape = 0;                
-            } 
-
+                self.piece_shape = 0;
+            }
         }
 
         pub fn shift_right(&mut self) {
-            if self.piece_shape == 0 && self.check_block(0, self.piece[1].x+1, self.piece[1].y-1) == true && self.check_block(0, self.piece[2].x+2, self.piece[2].y-2) == true {
+            if self.piece_shape == 0
+                && self.check_block(0, self.piece[1].x + 1, self.piece[1].y - 1) == true
+                && self.check_block(0, self.piece[2].x + 2, self.piece[2].y - 2) == true
+            {
                 self.piece[1].x += 1;
                 self.piece[1].y -= 1;
                 self.piece[2].x += 2;
                 self.piece[2].y -= 2;
                 self.piece_shape = 2;
-            } else if self.piece_shape == 2 && self.check_block(0, self.piece[1].x+1, self.piece[1].y+1) == true && self.check_block(0, self.piece[2].x+2, self.piece[2].y+2) == true {
+            } else if self.piece_shape == 2
+                && self.check_block(0, self.piece[1].x + 1, self.piece[1].y + 1) == true
+                && self.check_block(0, self.piece[2].x + 2, self.piece[2].y + 2) == true
+            {
                 self.piece[1].x -= 1;
                 self.piece[1].y += 1;
                 self.piece[2].x -= 2;
                 self.piece[2].y += 2;
-                self.piece_shape = 0;                
-            } 
+                self.piece_shape = 0;
+            }
         }
 
         pub fn move_left(&mut self) {
@@ -180,7 +190,6 @@ pub mod game {
         }
 
         pub fn move_down(&mut self) {
-            
             if self.piece[2].y + 1 > (TILE_H as i32) - 1 {
                 self.set_block();
                 return;
@@ -196,8 +205,9 @@ pub mod game {
             }
 
             for i in 0..3 {
-                if self.piece[i].y + 1 < (TILE_H as i32) 
-                    && self.blocks[self.piece[i].x as usize][(self.piece[i].y as usize) + 1].color != 0
+                if self.piece[i].y + 1 < (TILE_H as i32)
+                    && self.blocks[self.piece[i].x as usize][(self.piece[i].y as usize) + 1].color
+                        != 0
                 {
                     self.set_block();
                     return;
