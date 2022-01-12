@@ -12,10 +12,10 @@ use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 use sdl2::render::TextureQuery;
 use sdl2::surface::Surface;
-use std::time::{SystemTime, UNIX_EPOCH};
 use std::fs;
 use std::fs::File;
 use std::io::Write;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 fn draw_grid(
     grid: &game::Grid,
@@ -191,14 +191,12 @@ fn main() {
                         println!("Error: {}", val);
                     }
                 }
-            }        
+            }
         }
         Err(e) => {
             println!("{}", e);
         }
     }
-
-    
     'main: loop {
         if cur_screen == 0 {
             for _event in e.poll_iter() {
@@ -239,13 +237,12 @@ fn main() {
             }
             can.present();
         } else if cur_screen == 1 {
-
             if grid.game_over == true {
                 cur_screen = 2;
                 grid.game_over = false;
             } else {
                 game_over_score = grid.score;
-                if game_over_score > game_over_high_score  {
+                if game_over_score > game_over_high_score {
                     game_over_high_score = game_over_score;
                 }
             }
@@ -394,7 +391,10 @@ fn main() {
             )
             .expect("on copy");
 
-            let score = format!("Game Over Your Score: {}, Highscore: {}", game_over_score, game_over_high_score);
+            let score = format!(
+                "Game Over Your Score: {}, Highscore: {}",
+                game_over_score, game_over_high_score
+            );
             let text_surf = font
                 .render(&score)
                 .blended(Color::RGB(255, 255, 255))
@@ -405,14 +405,14 @@ fn main() {
                 height: hi,
                 ..
             } = text_surf_tex.query();
-            can.fill_rect(Some(Rect::new(25, 25, wi , hi))).expect("on fill rect");
+            can.fill_rect(Some(Rect::new(25, 25, wi, hi)))
+                .expect("on fill rect");
             can.copy(
                 &text_surf_tex,
                 Some(Rect::new(0, 0, wi, hi)),
                 Some(Rect::new(25, 25, wi, hi)),
             )
             .expect("on font copy");
-
 
             can.present();
         }
