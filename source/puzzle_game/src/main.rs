@@ -178,19 +178,27 @@ fn main() {
     let mut starting_image = false;
     let mut game_over_score = 0;
     let mut game_over_high_score = 0;
-    let contents = fs::read_to_string("./img/score.dat").expect("Error reading the file");
-    if contents.len() > 0 {
-        let hscore = contents.trim().parse::<u32>();
-        match hscore {
-            Ok(val) => {
-                game_over_high_score = val;
-            }
-            Err(val) => {
-                println!("Error: {}", val);
-            }
+    let contents1 = fs::read_to_string("./img/score.dat");
+    match contents1 {
+        Ok(contents) => {
+            if contents.len() > 0 {
+                let hscore = contents.trim().parse::<u32>();
+                match hscore {
+                    Ok(val) => {
+                        game_over_high_score = val;
+                    }
+                    Err(val) => {
+                        println!("Error: {}", val);
+                    }
+                }
+            }        
+        }
+        Err(e) => {
+            println!("{}", e);
         }
     }
 
+    
     'main: loop {
         if cur_screen == 0 {
             for _event in e.poll_iter() {
