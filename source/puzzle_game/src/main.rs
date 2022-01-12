@@ -13,6 +13,9 @@ use sdl2::rect::Rect;
 use sdl2::render::TextureQuery;
 use sdl2::surface::Surface;
 use std::time::{SystemTime, UNIX_EPOCH};
+use std::fs;
+use std::fs::File;
+use std::io::Write;
 
 fn draw_grid(
     grid: &game::Grid,
@@ -173,6 +176,21 @@ fn main() {
     let mut prev_tick: u64 = 0;
     let mut tick_count: u64 = 0;
     let mut starting_image = false;
+    let mut game_over_score = 0;
+    let mut game_over_high_score = 0;
+    let contents = fs::read_to_string("./img/score.dat").expect("Error reading the file");
+    if contents.len() > 0 {
+        let hscore = contents.trim().parse::<u32>();
+        match hscore {
+            Ok(val) => {
+                game_over_high_score = val;
+            }
+            Err(val) => {
+                println!("Error: {}", val);
+            }
+        }
+    }
+
     'main: loop {
         if cur_screen == 0 {
             for _event in e.poll_iter() {
@@ -213,9 +231,15 @@ fn main() {
             }
             can.present();
         } else if cur_screen == 1 {
+
             if grid.game_over == true {
                 cur_screen = 2;
                 grid.game_over = false;
+            } else {
+                game_over_score = grid.score;
+                if game_over_score > game_over_high_score  {
+                    game_over_high_score = game_over_score;
+                }
             }
             // draw game screen
             let start = SystemTime::now();
@@ -361,7 +385,30 @@ fn main() {
                 Some(Rect::new(0, 0, width, height)),
             )
             .expect("on copy");
+
+            let score = format!("Game Over Your Score: {}, Highscore: {}", game_over_score, game_over_high_score);
+            let text_surf = font
+                .render(&score)
+                .blended(Color::RGB(255, 255, 255))
+                .unwrap();
+            let text_surf_tex = tc.create_texture_from_surface(&text_surf).unwrap();
+            let TextureQuery {
+                width: wi,
+                height: hi,
+                ..
+            } = text_surf_tex.query();
+            can.fill_rect(Some(Rect::new(25, 25, wi , hi))).expect("on fill rect");
+            can.copy(
+                &text_surf_tex,
+                Some(Rect::new(0, 0, wi, hi)),
+                Some(Rect::new(25, 25, wi, hi)),
+            )
+            .expect("on font copy");
+
+
             can.present();
         }
     }
+    let mut cfile = File::create("./img/score.dat").expect("Error creating file");
+    writeln!(&mut cfile, "{}", game_over_high_score).expect("error on write");
 }
