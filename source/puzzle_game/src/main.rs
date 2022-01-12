@@ -102,7 +102,7 @@ fn main() {
     let height = game::WINDOW_HEIGHT as u32;
     let sdl = sdl2::init().unwrap();
     let video = sdl.video().unwrap();
-    let timer_delay: u64 = 1500;
+    let mut timer_delay: u64;
     let mut cur_screen: i32 = 0;
 
     let window = video
@@ -118,9 +118,7 @@ fn main() {
 
     let ttf_context = sdl2::ttf::init().map_err(|e| e.to_string()).unwrap();
     let tc = can.texture_creator();
-    let surf = Surface::load_bmp("./img/bg.bmp").unwrap();
     let game_over_surf = Surface::load_bmp("./img/gameover.bmp").unwrap();
-    let texture = tc.create_texture_from_surface(surf).unwrap();
     let game_over_texture = tc.create_texture_from_surface(game_over_surf).unwrap();
     let game_surf = Surface::load_bmp("./img/intro.bmp").unwrap();
     let game_texture = tc.create_texture_from_surface(game_surf).unwrap();
@@ -137,10 +135,18 @@ fn main() {
         "./img/block_red.bmp",
         "./img/block_yellow.bmp",
     ];
+
     let mut block_tex: Vec<sdl2::render::Texture> = Vec::new();
     for i in &blocks {
         let t_surf = Surface::load_bmp(i).unwrap();
         block_tex.push(tc.create_texture_from_surface(t_surf).unwrap());
+    }
+
+    let mut levels : Vec<sdl2::render::Texture> = Vec::new();
+    for i in 1..=8 {
+        let filename = format!("./img/level{}.bmp", i);
+        let t_surf = Surface::load_bmp(filename).unwrap();
+        levels.push(tc.create_texture_from_surface(t_surf).unwrap());
     }
 
     let logo = Surface::load_bmp("./img/lostlogo.bmp").unwrap();
@@ -213,6 +219,42 @@ fn main() {
             let ptick = tick - prev_tick;
             prev_tick = tick;
             tick_count += ptick;
+            let cur_level;
+            timer_delay = match grid.score {
+                0..=10 => {
+                    cur_level = 1;
+                    1500
+                }
+                11..=20 => {
+                    cur_level = 2;
+                    1200
+                }
+                21..=30 => {
+                    cur_level = 3;
+                    1000
+                }
+                31..=40 => {
+                    cur_level = 4;
+                    800
+                }
+                41..=50 => {
+                    cur_level = 5;
+                    700
+                }
+                51..=60 => {
+                    cur_level = 6;
+                    400
+                }
+                61..=65 => {
+                    cur_level = 7;
+                    300
+                }
+                66.. => {
+                    cur_level = 8;
+                    100
+                }
+            };
+
             if tick_count > timer_delay {
                 tick_count = 0;
                 grid.move_down();
@@ -264,10 +306,11 @@ fn main() {
             }
             can.set_draw_color(Color::RGB(0, 0, 0));
             can.clear();
-            can.copy(&texture, None, Some(Rect::new(0, 0, width, height)))
+
+            can.copy(&levels[cur_level-1], None, Some(Rect::new(0, 0, width, height)))
                 .expect("on copy");
             draw_grid(&grid, &mut can, &block_tex);
-            let score = format!("Score: {}", grid.score);
+            let score = format!("Score: {} Level: {}", grid.score, cur_level);
             let text_surf = font
                 .render(&score)
                 .blended(Color::RGB(255, 255, 255))
