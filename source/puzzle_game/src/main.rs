@@ -143,6 +143,9 @@ fn main() {
         block_tex.push(tc.create_texture_from_surface(t_surf).unwrap());
     }
 
+    let logo = Surface::load_bmp("./img/lostlogo.bmp").unwrap();
+    let lost_logo = tc.create_texture_from_surface(logo).unwrap();
+
     let mut e = sdl.event_pump().unwrap();
     can.set_draw_color(Color::RGB(0, 0, 0));
     can.clear();
@@ -158,6 +161,7 @@ fn main() {
     //let text_surf_tex = tc.create_texture_from_surface(&text_surf).unwrap();
     let mut prev_tick: u64 = 0;
     let mut tick_count: u64 = 0;
+    let mut starting_image = false;
     'main: loop {
         if cur_screen == 0 {
             for _event in e.poll_iter() {
@@ -174,10 +178,28 @@ fn main() {
                     _ => {}
                 }
             }
-            can.set_draw_color(Color::RGB(0, 0, 0));
-            can.clear();
-            can.copy(&game_texture, None, Some(Rect::new(0, 0, width, height)))
-                .expect("on copy");
+            if starting_image == false {
+                can.set_draw_color(Color::RGB(0, 0, 0));
+                can.clear();
+                can.copy(&lost_logo, None, None).expect("copy logo");
+
+                let start = SystemTime::now();
+                let se = start.duration_since(UNIX_EPOCH).expect("error on time");
+                let tick = se.as_secs();
+                if prev_tick == 0 {
+                    prev_tick = tick;
+                }
+                if tick > prev_tick + 2 {
+                    tick_count = 0;
+                    prev_tick = 0;
+                    starting_image = true;
+                }
+            } else {
+                can.set_draw_color(Color::RGB(0, 0, 0));
+                can.clear();
+                can.copy(&game_texture, None, Some(Rect::new(0, 0, width, height)))
+                    .expect("on copy");
+            }
             can.present();
         } else if cur_screen == 1 {
             if grid.game_over == true {
