@@ -158,6 +158,9 @@ fn main() {
     let logo = Surface::load_bmp("./img/lostlogo.bmp").unwrap();
     let lost_logo = tc.create_texture_from_surface(logo).unwrap();
 
+    let game_over_logo = Surface::load_bmp("./img/gameover_logo.bmp").unwrap();
+    let game_over_logo_ex = tc.create_texture_from_surface(game_over_logo).unwrap();
+
     let mut e = sdl.event_pump().unwrap();
     can.set_draw_color(Color::RGB(0, 0, 0));
     can.clear();
@@ -383,7 +386,10 @@ fn main() {
                         window_id: _,
                         text: s,
                     } => {
-                        if (game_over_score > 0 && score_menu.input.len() < 10) && (score_menu.scores.len() < 10 || score_menu.scores[9].1 < game_over_score) {
+                        if (game_over_score > 0 && score_menu.input.len() < 10)
+                            && (score_menu.scores.len() < 10
+                                || score_menu.scores[9].1 < game_over_score)
+                        {
                             score_menu.type_key(&s);
                         }
                     }
@@ -402,6 +408,18 @@ fn main() {
             if score_shown == true {
                 can.fill_rect(Some(Rect::new(25, 25, 1280 - 50, 720 - 50)))
                     .expect("on fill");
+
+                let TextureQuery {
+                    width: wix,
+                    height: hix,
+                    ..
+                } = game_over_logo_ex.query();
+                can.copy(
+                    &game_over_logo_ex,
+                    Some(Rect::new(0, 0, wix, hix)),
+                    Some(Rect::new(640, 50, 500, 250)),
+                )
+                .expect("on logo copy");
 
                 let mut pos_y = 75;
                 let mut index = 0;
@@ -452,9 +470,11 @@ fn main() {
 
                 let score;
 
-                if game_over_score > 0 && (score_menu.scores.len() < 10 || score_menu.scores[9].1 < game_over_score) {
+                if game_over_score > 0
+                    && (score_menu.scores.len() < 10 || score_menu.scores[9].1 < game_over_score)
+                {
                     score = format!(
-                        "Your Score: {} Enter your name: - {}",
+                        "Your Score: {} Enter your name and press Enter: - {}",
                         game_over_score, score_menu.input
                     );
                 } else {
@@ -473,7 +493,7 @@ fn main() {
                 can.copy(
                     &text_surf_tex,
                     Some(Rect::new(0, 0, wi, hi)),
-                    Some(Rect::new(1280 / 2, 720 / 2 - 25, wi, hi)),
+                    Some(Rect::new(1280 / 2 - 100, 720 / 2 - 25, wi, hi)),
                 )
                 .expect("on font copy");
             }

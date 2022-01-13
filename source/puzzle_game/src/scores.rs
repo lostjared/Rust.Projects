@@ -62,7 +62,9 @@ pub mod high_scores {
         }
 
         pub fn type_key(&mut self, key: &str) {
-            self.input.push_str(key);
+            if key.find(":") == None {
+                self.input.push_str(key);
+            }
         }
     }
 }
