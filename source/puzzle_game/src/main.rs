@@ -161,6 +161,10 @@ fn main() {
     let game_over_logo = Surface::load_bmp("./img/gameover_logo.bmp").unwrap();
     let game_over_logo_ex = tc.create_texture_from_surface(game_over_logo).unwrap();
 
+    let lost_game_over_logo = Surface::load_bmp("./img/lostsidedead_logo.bmp").unwrap();
+    let lost_game_over_logo_ex = tc.create_texture_from_surface(lost_game_over_logo).unwrap();
+
+
     let mut e = sdl.event_pump().unwrap();
     can.set_draw_color(Color::RGB(0, 0, 0));
     can.clear();
@@ -420,6 +424,20 @@ fn main() {
                     Some(Rect::new(640, 50, 500, 250)),
                 )
                 .expect("on logo copy");
+
+                let TextureQuery {
+                    width: wix1,
+                    height: hix1,
+                    ..
+                } = lost_game_over_logo_ex.query();
+                can.copy(
+                    &lost_game_over_logo_ex,
+                    Some(Rect::new(0, 0, wix1, hix1)),
+                    Some(Rect::new(1280/2-295, 580,wix1, hix1)),
+                )
+                .expect("on logo copy");
+
+
 
                 let mut pos_y = 75;
                 let mut index = 0;
