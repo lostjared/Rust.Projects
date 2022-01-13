@@ -2,19 +2,17 @@
 
 extern crate sdl2;
 mod puzzle;
+mod scores;
 
 use puzzle::game;
-
 use rand::Rng;
+use scores::high_scores;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 use sdl2::render::TextureQuery;
 use sdl2::surface::Surface;
-use std::fs;
-use std::fs::File;
-use std::io::Write;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 fn draw_grid(
@@ -106,7 +104,7 @@ fn main() {
     let sdl = sdl2::init().unwrap();
     let video = sdl.video().unwrap();
     let mut timer_delay: u64;
-    let mut cur_screen: i32 = 0;
+    let mut cur_screen: i32 = 2;
 
     let icon = Surface::load_bmp("./img/icon.bmp").unwrap();
 
@@ -176,27 +174,11 @@ fn main() {
     let mut prev_tick: u64 = 0;
     let mut tick_count: u64 = 0;
     let mut starting_image = false;
-    let mut game_over_score = 0;
-    let mut game_over_high_score = 0;
-    let contents1 = fs::read_to_string("./img/score.dat");
-    match contents1 {
-        Ok(contents) => {
-            if contents.len() > 0 {
-                let hscore = contents.trim().parse::<u32>();
-                match hscore {
-                    Ok(val) => {
-                        game_over_high_score = val;
-                    }
-                    Err(val) => {
-                        println!("Error: {}", val);
-                    }
-                }
-            }
-        }
-        Err(e) => {
-            println!("{}", e);
-        }
-    }
+    let mut game_over_score = 1;
+
+    let mut score_menu = high_scores::Score_Menu::new();
+    score_menu.load();
+
     'main: loop {
         if cur_screen == 0 {
             for _event in e.poll_iter() {
@@ -242,9 +224,6 @@ fn main() {
                 grid.game_over = false;
             } else {
                 game_over_score = grid.score;
-                if game_over_score > game_over_high_score {
-                    game_over_high_score = game_over_score;
-                }
             }
             // draw game screen
             let start = SystemTime::now();
@@ -391,32 +370,86 @@ fn main() {
             )
             .expect("on copy");
 
-            let score = format!(
-                "Game Over Your Score: {}, Highscore: {}",
-                game_over_score, game_over_high_score
-            );
-            let text_surf = font
-                .render(&score)
-                .blended(Color::RGB(255, 255, 255))
+            can.fill_rect(Some(Rect::new(25, 25, 1280 - 50, 720 - 50)))
+                .expect("on fill");
+
+            let mut pos_y = 75;
+            let mut index = 0;
+
+            let text_surf1 = font
+                .render("High Scores")
+                .blended(Color::RGB(255, 0, 0))
                 .unwrap();
-            let text_surf_tex = tc.create_texture_from_surface(&text_surf).unwrap();
+            let text_surf_tex1 = tc.create_texture_from_surface(&text_surf1).unwrap();
             let TextureQuery {
                 width: wi,
                 height: hi,
                 ..
-            } = text_surf_tex.query();
-            can.fill_rect(Some(Rect::new(25, 25, wi, hi)))
-                .expect("on fill rect");
+            } = text_surf_tex1.query();
+
             can.copy(
-                &text_surf_tex,
+                &text_surf_tex1,
                 Some(Rect::new(0, 0, wi, hi)),
-                Some(Rect::new(25, 25, wi, hi)),
+                Some(Rect::new(55, 40, wi, hi)),
             )
             .expect("on font copy");
 
+            for i in &score_menu.scores {
+                if index >= 9 {
+                    break;
+                }
+                index += 1;
+
+                let score = format!("Score: {} - {}", i.1, i.0);
+                let text_surf = font
+                    .render(&score)
+                    .blended(Color::RGB(255, 255, 255))
+                    .unwrap();
+                let text_surf_tex = tc.create_texture_from_surface(&text_surf).unwrap();
+                let TextureQuery {
+                    width: wi,
+                    height: hi,
+                    ..
+                } = text_surf_tex.query();
+                can.copy(
+                    &text_surf_tex,
+                    Some(Rect::new(0, 0, wi, hi)),
+                    Some(Rect::new(100, pos_y, wi, hi)),
+                )
+                .expect("on font copy");
+                pos_y += 25;
+            }
+
+            let score;
+
+            if game_over_score > 0 {
+                 score = format!(
+                    "Your Score: {} Enter your name: - {}",
+                    game_over_score, score_menu.input
+                );
+            } else {
+                score = format!("Press Space");
+            }
+                let text_surf = font
+                    .render(&score)
+                    .blended(Color::RGB(255, 255, 255))
+                    .unwrap();
+                let text_surf_tex = tc.create_texture_from_surface(&text_surf).unwrap();
+                let TextureQuery {
+                    width: wi,
+                    height: hi,
+                    ..
+                } = text_surf_tex.query();
+                can.copy(
+                    &text_surf_tex,
+                    Some(Rect::new(0, 0, wi, hi)),
+                    Some(Rect::new(1280/2, 720/2-25, wi, hi)),
+                )
+                .expect("on font copy");
+            
+            
             can.present();
         }
     }
-    let mut cfile = File::create("./img/score.dat").expect("Error creating file");
-    writeln!(&mut cfile, "{}", game_over_high_score).expect("error on write");
+    score_menu.save();
 }
