@@ -164,7 +164,6 @@ fn main() {
     let lost_game_over_logo = Surface::load_bmp("./img/lostsidedead_logo.bmp").unwrap();
     let lost_game_over_logo_ex = tc.create_texture_from_surface(lost_game_over_logo).unwrap();
 
-
     let mut e = sdl.event_pump().unwrap();
     can.set_draw_color(Color::RGB(0, 0, 0));
     can.clear();
@@ -433,11 +432,9 @@ fn main() {
                 can.copy(
                     &lost_game_over_logo_ex,
                     Some(Rect::new(0, 0, wix1, hix1)),
-                    Some(Rect::new(1280/2-295, 580,wix1, hix1)),
+                    Some(Rect::new(1280 / 2 - 295, 580, wix1, hix1)),
                 )
                 .expect("on logo copy");
-
-
 
                 let mut pos_y = 75;
                 let mut index = 0;
