@@ -377,13 +377,13 @@ fn main() {
                                 println!("here\n");
                             }
                         }
-                    },
+                    }
                     Event::TextInput {
                         timestamp: _,
                         window_id: _,
                         text: s,
                     } => {
-                        if game_over_score > 0 {
+                        if (game_over_score > 0 && score_menu.input.len() < 10) && (score_menu.scores.len() < 10 || score_menu.scores[9].1 < game_over_score) {
                             score_menu.type_key(&s);
                         }
                     }
@@ -400,38 +400,66 @@ fn main() {
             .expect("on copy");
 
             if score_shown == true {
+                can.fill_rect(Some(Rect::new(25, 25, 1280 - 50, 720 - 50)))
+                    .expect("on fill");
 
-            can.fill_rect(Some(Rect::new(25, 25, 1280 - 50, 720 - 50)))
-                .expect("on fill");
+                let mut pos_y = 75;
+                let mut index = 0;
 
-            let mut pos_y = 75;
-            let mut index = 0;
+                let text_surf1 = font
+                    .render("High Scores")
+                    .blended(Color::RGB(255, 0, 0))
+                    .unwrap();
+                let text_surf_tex1 = tc.create_texture_from_surface(&text_surf1).unwrap();
+                let TextureQuery {
+                    width: wi,
+                    height: hi,
+                    ..
+                } = text_surf_tex1.query();
 
-            let text_surf1 = font
-                .render("High Scores")
-                .blended(Color::RGB(255, 0, 0))
-                .unwrap();
-            let text_surf_tex1 = tc.create_texture_from_surface(&text_surf1).unwrap();
-            let TextureQuery {
-                width: wi,
-                height: hi,
-                ..
-            } = text_surf_tex1.query();
+                can.copy(
+                    &text_surf_tex1,
+                    Some(Rect::new(0, 0, wi, hi)),
+                    Some(Rect::new(55, 40, wi, hi)),
+                )
+                .expect("on font copy");
 
-            can.copy(
-                &text_surf_tex1,
-                Some(Rect::new(0, 0, wi, hi)),
-                Some(Rect::new(55, 40, wi, hi)),
-            )
-            .expect("on font copy");
+                for i in &score_menu.scores {
+                    if index >= 9 {
+                        break;
+                    }
+                    index += 1;
 
-            for i in &score_menu.scores {
-                if index >= 9 {
-                    break;
+                    let score = format!("Score: {} : {}", i.1, i.0);
+                    let text_surf = font
+                        .render(&score)
+                        .blended(Color::RGB(255, 255, 255))
+                        .unwrap();
+                    let text_surf_tex = tc.create_texture_from_surface(&text_surf).unwrap();
+                    let TextureQuery {
+                        width: wi,
+                        height: hi,
+                        ..
+                    } = text_surf_tex.query();
+                    can.copy(
+                        &text_surf_tex,
+                        Some(Rect::new(0, 0, wi, hi)),
+                        Some(Rect::new(100, pos_y, wi, hi)),
+                    )
+                    .expect("on font copy");
+                    pos_y += 25;
                 }
-                index += 1;
 
-                let score = format!("Score: {} : {}", i.1, i.0);
+                let score;
+
+                if game_over_score > 0 && (score_menu.scores.len() < 10 || score_menu.scores[9].1 < game_over_score) {
+                    score = format!(
+                        "Your Score: {} Enter your name: - {}",
+                        game_over_score, score_menu.input
+                    );
+                } else {
+                    score = format!("Press Space to Exit High Scores");
+                }
                 let text_surf = font
                     .render(&score)
                     .blended(Color::RGB(255, 255, 255))
@@ -445,40 +473,11 @@ fn main() {
                 can.copy(
                     &text_surf_tex,
                     Some(Rect::new(0, 0, wi, hi)),
-                    Some(Rect::new(100, pos_y, wi, hi)),
+                    Some(Rect::new(1280 / 2, 720 / 2 - 25, wi, hi)),
                 )
                 .expect("on font copy");
-                pos_y += 25;
             }
 
-            let score;
-
-            if game_over_score > 0 {
-                 score = format!(
-                    "Your Score: {} Enter your name: - {}",
-                    game_over_score, score_menu.input
-                );
-            } else {
-                score = format!("Press Space to Exit High Scores");
-            }
-                let text_surf = font
-                    .render(&score)
-                    .blended(Color::RGB(255, 255, 255))
-                    .unwrap();
-                let text_surf_tex = tc.create_texture_from_surface(&text_surf).unwrap();
-                let TextureQuery {
-                    width: wi,
-                    height: hi,
-                    ..
-                } = text_surf_tex.query();
-                can.copy(
-                    &text_surf_tex,
-                    Some(Rect::new(0, 0, wi, hi)),
-                    Some(Rect::new(1280/2, 720/2-25, wi, hi)),
-                )
-                .expect("on font copy");
-            }            
-            
             can.present();
         }
     }
