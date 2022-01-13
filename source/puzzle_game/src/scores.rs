@@ -4,22 +4,16 @@ pub mod high_scores {
     use std::fs::File;
     use std::io::Write;
 
-    pub struct Score_Menu {
+    pub struct ScoreMenu {
         pub scores: Vec<(String, u32)>,
-        width: u32,
-        height: u32,
         pub input: String,
-        index: u32,
     }
 
-    impl Score_Menu {
-        pub fn new() -> Score_Menu {
-            Score_Menu {
+    impl ScoreMenu {
+        pub fn new() -> ScoreMenu {
+            ScoreMenu {
                 scores: Vec::new(),
-                width: 1280 - 150,
-                height: 720 - 100,
                 input: String::new(),
-                index: 0,
             }
         }
 
@@ -65,6 +59,10 @@ pub mod high_scores {
             for i in &self.scores {
                 writeln!(&mut cfile, "{}:{}", i.0, i.1).expect("error on write");
             }
+        }
+
+        pub fn type_key(&mut self, key: &str) {
+            self.input.push_str(key);
         }
     }
 }

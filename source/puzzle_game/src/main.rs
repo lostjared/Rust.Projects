@@ -104,7 +104,7 @@ fn main() {
     let sdl = sdl2::init().unwrap();
     let video = sdl.video().unwrap();
     let mut timer_delay: u64;
-    let mut cur_screen: i32 = 2;
+    let mut cur_screen: i32 = 0;
 
     let icon = Surface::load_bmp("./img/icon.bmp").unwrap();
 
@@ -174,9 +174,9 @@ fn main() {
     let mut prev_tick: u64 = 0;
     let mut tick_count: u64 = 0;
     let mut starting_image = false;
-    let mut game_over_score = 1;
-
-    let mut score_menu = high_scores::Score_Menu::new();
+    let mut game_over_score = 0;
+    let mut score_shown = true;
+    let mut score_menu = high_scores::ScoreMenu::new();
     score_menu.load();
 
     'main: loop {
@@ -354,10 +354,39 @@ fn main() {
                         keycode: Some(Keycode::Escape),
                         ..
                     } => break 'main,
-                    Event::KeyDown {
-                        keycode: Some(Keycode::Space),
-                        ..
-                    } => cur_screen = 1,
+                    Event::KeyDown { keycode: key, .. } => {
+                        if key == Some(Keycode::Backspace) {
+                            score_menu.input.pop();
+                        }
+                        if key == Some(Keycode::Return) {
+                            //enter
+                            if score_menu.input.len() > 0 {
+                                let s = (String::from(&score_menu.input), game_over_score);
+                                score_menu.scores.push(s);
+                                score_menu.sort_scores();
+                                score_menu.input = String::new();
+                                game_over_score = 0;
+                            }
+                        }
+                        if key == Some(Keycode::Space) {
+                            if score_shown == true && game_over_score == 0 {
+                                score_shown = false;
+                            } else {
+                                cur_screen = 1;
+                                score_shown = true;
+                                println!("here\n");
+                            }
+                        }
+                    },
+                    Event::TextInput {
+                        timestamp: _,
+                        window_id: _,
+                        text: s,
+                    } => {
+                        if game_over_score > 0 {
+                            score_menu.type_key(&s);
+                        }
+                    }
                     _ => {}
                 }
             }
@@ -369,6 +398,8 @@ fn main() {
                 Some(Rect::new(0, 0, width, height)),
             )
             .expect("on copy");
+
+            if score_shown == true {
 
             can.fill_rect(Some(Rect::new(25, 25, 1280 - 50, 720 - 50)))
                 .expect("on fill");
@@ -400,7 +431,7 @@ fn main() {
                 }
                 index += 1;
 
-                let score = format!("Score: {} - {}", i.1, i.0);
+                let score = format!("Score: {} : {}", i.1, i.0);
                 let text_surf = font
                     .render(&score)
                     .blended(Color::RGB(255, 255, 255))
@@ -428,7 +459,7 @@ fn main() {
                     game_over_score, score_menu.input
                 );
             } else {
-                score = format!("Press Space");
+                score = format!("Press Space to Exit High Scores");
             }
                 let text_surf = font
                     .render(&score)
@@ -446,7 +477,7 @@ fn main() {
                     Some(Rect::new(1280/2, 720/2-25, wi, hi)),
                 )
                 .expect("on font copy");
-            
+            }            
             
             can.present();
         }
