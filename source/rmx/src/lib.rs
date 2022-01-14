@@ -1,5 +1,8 @@
+pub mod rmx_console;
+
 pub mod rmx_system {
 
+    use crate::rmx_console::Console;
     use sdl2::event::Event;
     use sdl2::keyboard::Keycode;
     use sdl2::pixels::Color;
@@ -8,6 +11,7 @@ pub mod rmx_system {
         pub canvas: sdl2::render::Canvas<sdl2::video::Window>,
         pub screen: usize,
         e: sdl2::EventPump,
+        pub console: Console,
     }
 
     pub trait ScreenTrait {
@@ -39,6 +43,7 @@ pub mod rmx_system {
                 canvas: can,
                 screen: 0,
                 e: e,
+                console: Console::new(20, 20, width-20, height-20),
             }
         }
 
@@ -46,7 +51,7 @@ pub mod rmx_system {
             self.screen = i;
         }
 
-        pub fn get_screen(&mut self) -> usize {
+        pub fn get_screen(&self) -> usize {
             self.screen
         }
 
@@ -74,7 +79,6 @@ pub mod rmx_system {
             }
             self.canvas.set_draw_color(Color::RGB(0, 0, 0));
             self.screen = obj.draw(self.screen, self);
-            self.canvas.present();
             1
         }
     }
