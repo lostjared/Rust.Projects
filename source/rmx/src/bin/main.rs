@@ -80,11 +80,19 @@ fn main() {
     screens.push(Box::new(scr));
     screens.push(Box::new(scr2));
     system.console.println("Hello, World!");
+    let mut counter = 0;
     'main: loop {
         let value = &mut screens[system.get_screen()];
         let cur_screen = value.as_mut();
-        if system.exec(cur_screen) == -1 {
-            break 'main;
+
+        match system.exec(cur_screen) {
+            -1 => {
+                break 'main;
+            }
+            _ => {
+                system.console.println(&format!("Tick: {}", counter));
+                counter += 1;
+            }
         }
         system.console.draw(false, &mut system.canvas, &tc, &fontx);
         system.canvas.present();
