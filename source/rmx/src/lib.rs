@@ -5,15 +5,15 @@ pub mod rmx_system {
     use sdl2::pixels::Color;
 
     pub struct System {
-        sdl: sdl2::Sdl,
-        can: sdl2::render::Canvas<sdl2::video::Window>,
+        pub can: sdl2::render::Canvas<sdl2::video::Window>,
         pub screen: usize,
+        e: sdl2::EventPump,
     }
 
     pub trait ScreenTrait {
-        fn draw(&mut self, can: &mut sdl2::render::Canvas<sdl2::video::Window>);
-        fn keydown(&mut self, k: sdl2::keyboard::Keycode);
-        fn keyup(&mut self, k: sdl2::keyboard::Keycode);
+        fn draw(&mut self, scr: usize, system: &mut System) -> usize;
+        fn keydown(&mut self, scr: usize, k: sdl2::keyboard::Keycode) -> usize;
+        fn keyup(&mut self, scr: usize, k: sdl2::keyboard::Keycode) -> usize;
     }
 
     impl System {
@@ -33,7 +33,13 @@ pub mod rmx_system {
                 .map_err(|e| e.to_string())
                 .expect("Error on canvas");
 
-            System { sdl: sdl, can: can, screen: 0 }
+            let e = sdl.event_pump().unwrap();
+
+            System {
+                can: can,
+                screen: 0,
+                e: e,
+            }
         }
 
         pub fn set_screen(&mut self, i: usize) {
@@ -44,36 +50,32 @@ pub mod rmx_system {
             self.screen
         }
 
-        pub fn exec<T: ScreenTrait>(&mut self, obj: &mut T) {
-            let mut e = self.sdl.event_pump().unwrap();
-            'main: loop {
-                for _event in e.poll_iter() {
-                    match _event {
-                        Event::Quit { .. }
-                        | Event::KeyDown {
-                            keycode: Some(Keycode::Escape),
-                            ..
-                        } => break 'main,
-                        Event::TextInput {
-                            timestamp: _,
-                            window_id: _,
-                            text: _s,
-                        } => {
-                           
-                        }
-                        Event::KeyDown { keycode: key, .. } => {
-                            obj.keydown(key.unwrap());
-                        }
-                        Event::KeyUp { keycode: key, .. } => {
-                            obj.keyup(key.unwrap());
-                        }
-                        _ => {}
+        pub fn exec<T: ScreenTrait>(&mut self, obj: &mut T) -> i32 {
+            for _event in self.e.poll_iter() {
+                match _event {
+                    Event::Quit { .. }
+                    | Event::KeyDown {
+                        keycode: Some(Keycode::Escape),
+                        ..
+                    } => return -1,
+                    Event::TextInput {
+                        timestamp: _,
+                        window_id: _,
+                        text: _s,
+                    } => {}
+                    Event::KeyDown { keycode: key, .. } => {
+                        self.screen = obj.keydown(self.screen, key.unwrap());
                     }
+                    Event::KeyUp { keycode: key, .. } => {
+                        self.screen = obj.keyup(self.screen, key.unwrap());
+                    }
+                    _ => {}
                 }
-                self.can.set_draw_color(Color::RGB(0, 0, 0));
-                obj.draw(&mut self.can);
-                self.can.present();
             }
+            self.can.set_draw_color(Color::RGB(0, 0, 0));
+            self.screen = obj.draw(self.screen, self);
+            self.can.present();
+            1
         }
     }
 }
