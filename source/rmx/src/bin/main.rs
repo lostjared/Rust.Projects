@@ -1,16 +1,15 @@
 extern crate rmx;
-
 use rmx::rmx_system;
 
 struct Screen1 {}
-
 impl Screen1 {
     pub fn load(&mut self) {}
 }
 
 struct Screen2 {}
-
-impl Screen2 {}
+impl Screen2 {
+    pub fn load(&mut self) {}
+}
 
 impl rmx_system::ScreenTrait for Screen2 {
     fn draw(&mut self, scr: usize, system: &mut rmx_system::System) -> usize {
@@ -59,6 +58,7 @@ fn main() {
     let mut scr = Screen1 {};
     let mut scr2 = Screen2 {};
     scr.load();
+    scr2.load();
     sys.set_screen(0);
     'main: loop {
         match sys.get_screen() {
