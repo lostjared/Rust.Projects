@@ -92,9 +92,9 @@ fn main() {
             _ => {
                 system.console.println(&format!("Tick: {}", counter));
                 counter += 1;
+                system.console.draw(false, &mut system.canvas, &tc, &fontx);
+                system.canvas.present();
             }
         }
-        system.console.draw(false, &mut system.canvas, &tc, &fontx);
-        system.canvas.present();
     }
 }
