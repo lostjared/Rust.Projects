@@ -63,35 +63,30 @@ fn main() {
     let fontx = ttf_context
         .load_font("./font.ttf", 18)
         .expect("font load test");
-    let mut sys = rmx_system::System::init("Skeleton", 1280, 720);
-    let tc = sys.canvas.texture_creator();
+    let mut system = rmx_system::System::init("Skeleton", 1280, 720);
+    let tc = system.canvas.texture_creator();
     let _text_surf = fontx
         .render("init")
         .blended(sdl2::pixels::Color::RGB(255, 255, 255))
         .unwrap();
-
-    sys.console.set_text_color(sdl2::pixels::Color::RGB(255, 255, 255));
-    sys.console.set_visible(true);
-      
+    system.console.set_text_color(sdl2::pixels::Color::RGB(255, 255, 255));
+    system.console.set_visible(true);
     let mut scr = Screen1 {};
     let mut scr2 = Screen2 {};
-
     scr.load();
     scr2.load();
-    sys.set_screen(SCREEN1);
+    system.set_screen(SCREEN1);
     let mut screens: Vec<Box<dyn rmx_system::ScreenTrait>> = Vec::new();
     screens.push(Box::new(scr));
     screens.push(Box::new(scr2));
-
-    sys.console.println("Hello, World!");
-
+    system.console.println("Hello, World!");
     'main: loop {
-        let value = &mut screens[sys.get_screen()];
+        let value = &mut screens[system.get_screen()];
         let cur_screen = value.as_mut();
-        if sys.exec(cur_screen) == -1 {
+        if system.exec(cur_screen) == -1 {
             break 'main;
         }
-        sys.console.draw(false, &mut sys.canvas, &tc, &fontx);
-        sys.canvas.present();
+        system.console.draw(false, &mut system.canvas, &tc, &fontx);
+        system.canvas.present();
     }
 }
