@@ -5,7 +5,7 @@ pub mod rmx_system {
     use sdl2::pixels::Color;
 
     pub struct System {
-        pub can: sdl2::render::Canvas<sdl2::video::Window>,
+        pub canvas: sdl2::render::Canvas<sdl2::video::Window>,
         pub screen: usize,
         e: sdl2::EventPump,
     }
@@ -36,7 +36,7 @@ pub mod rmx_system {
             let e = sdl.event_pump().unwrap();
 
             System {
-                can: can,
+                canvas: can,
                 screen: 0,
                 e: e,
             }
@@ -50,7 +50,7 @@ pub mod rmx_system {
             self.screen
         }
 
-        pub fn exec<T: ScreenTrait>(&mut self, obj: &mut T) -> i32 {
+        pub fn exec<T: ScreenTrait + ?Sized>(&mut self, obj: &mut T) -> i32 {
             for _event in self.e.poll_iter() {
                 match _event {
                     Event::Quit { .. }
@@ -72,9 +72,9 @@ pub mod rmx_system {
                     _ => {}
                 }
             }
-            self.can.set_draw_color(Color::RGB(0, 0, 0));
+            self.canvas.set_draw_color(Color::RGB(0, 0, 0));
             self.screen = obj.draw(self.screen, self);
-            self.can.present();
+            self.canvas.present();
             1
         }
     }
