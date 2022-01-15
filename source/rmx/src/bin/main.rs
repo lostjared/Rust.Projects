@@ -40,7 +40,7 @@ impl rmx_system::ScreenTrait for Screen1 {
     fn draw(&mut self, scr: usize, system: &mut rmx_system::System) -> usize {
         system
             .canvas
-            .set_draw_color(sdl2::pixels::Color::RGB(100, 0 , 0));
+            .set_draw_color(sdl2::pixels::Color::RGB(100, 0, 0));
         system.canvas.fill_rect(None).expect("Fill rect");
         scr
     }
@@ -69,7 +69,9 @@ fn main() {
         .render("init")
         .blended(sdl2::pixels::Color::RGB(255, 255, 255))
         .unwrap();
-    system.console.set_text_color(sdl2::pixels::Color::RGB(255, 255, 255));
+    system
+        .console
+        .set_text_color(sdl2::pixels::Color::RGB(255, 255, 255));
     system.console.set_visible(true);
     let mut scr = Screen1 {};
     let mut scr2 = Screen2 {};

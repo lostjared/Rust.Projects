@@ -43,7 +43,7 @@ pub mod rmx_system {
                 canvas: can,
                 screen: 0,
                 e: e,
-                console: Console::new(20, 20, width-20, height-20),
+                console: Console::new(20, 20, width - 20, height - 20),
             }
         }
 
