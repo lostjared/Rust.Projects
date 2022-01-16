@@ -8,11 +8,7 @@ use shuffle::irs::Irs;
 
 fn shuffle_list(input: &str) {
     let contents = fs::read_to_string(input).expect("Error reading the file");
-    let lines = contents.lines();
-    let mut lines_list : Vec<&str> = Vec::new();
-    for i in lines {
-        lines_list.push(i);
-    }
+    let mut lines_list : Vec<&str> = contents.lines().collect();
     let mut rng = thread_rng();
     let mut irs = Irs::default();
     irs.shuffle(&mut lines_list, &mut rng).expect("on shuffle");
