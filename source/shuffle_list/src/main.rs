@@ -7,7 +7,6 @@ use std::fs;
 use std::io;
 use std::io::prelude::*;
 
-
 fn shuffle_list(input: &str) {
     let contents = fs::read_to_string(input).expect("Error reading the file");
     let mut lines_list: Vec<&str> = contents.lines().collect();
@@ -20,9 +19,7 @@ fn shuffle_list(input: &str) {
 }
 
 fn shuffle_input() {
-
-    let mut v : Vec<String> = Vec::new();
-    
+    let mut v: Vec<String> = Vec::new();
     let stdin = io::stdin();
     for line in stdin.lock().lines() {
         match line {
