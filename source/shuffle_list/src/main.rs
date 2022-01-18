@@ -44,6 +44,8 @@ fn main() {
     if args.len() <= 1 {
         shuffle_input();
     } else {
-        shuffle_list(&args[1]);
+        for i in args.iter().skip(1) {
+            shuffle_list(i);
+        }
     }
 }
