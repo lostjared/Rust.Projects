@@ -26,7 +26,9 @@ fn main() {
             }
         }
         None => {
-            println!("value not found!\n");
+            println!("Program ran: 1");
+            config.setkey("program", "ran", "1");
+            config.save();
         }
     }
 }

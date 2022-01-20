@@ -26,10 +26,10 @@ pub mod config {
 
         // should not contain [] or =
         pub fn setkey(&mut self, id: &str, key: &str, value: &str) {
-            if key.find("[") != None || key.find("]") != None || key.find("=") != None {
+            if key.find("[") != None || key.find("]") != None || key.find("=") != None || key.find("\n") != None || key.find("\r") != None {
                 panic!("Invalid key contains invalid character");
             }
-            if value.find("[") != None || value.find("]") != None || value.find("=") != None {
+            if value.find("[") != None || value.find("]") != None || value.find("=") != None || value.find("\n") != None || value.find("\r") != None {
                 panic!("Invalid value contains invalid character");
             }
             let v = self.config.entry(String::from(id)).or_insert(HashMap::new());
@@ -64,25 +64,30 @@ pub mod config {
         }
 
         pub fn load(&mut self) {
-            let contents = fs::read_to_string(&self.filename).expect("Error reading the file");
-            let val: Vec<&str> = contents.lines().collect();
-            let mut id = String::new();
-            for i in &val {
-                let pos = i.find("[");
-                if pos != None {
-                    let pos2 = i.find("]");
-                    if pos2 != None {
-                        id = String::from(&i[pos.unwrap()+1..pos2.unwrap()]);
-                    }
-                } else {
-                    let eq = i.find("=");
-                    if eq != None {
-                        let eq_u = eq.unwrap();
-                        let left = &i[0..eq_u];
-                        let right = &i[eq_u+1..];
-                        self.setkey(&String::from(&id), &String::from(left), &String::from(right));
+            let con = fs::read_to_string(&self.filename);
+            match con {
+                Ok(contents) => {
+                    let val: Vec<&str> = contents.lines().collect();
+                    let mut id = String::new();
+                    for i in &val {
+                        let pos = i.find("[");
+                        if pos != None {
+                            let pos2 = i.find("]");
+                            if pos2 != None {
+                                id = String::from(&i[pos.unwrap()+1..pos2.unwrap()]);
+                            }
+                        } else {
+                            let eq = i.find("=");
+                            if eq != None {
+                                let eq_u = eq.unwrap();
+                                let left = &i[0..eq_u];
+                                let right = &i[eq_u+1..];
+                                self.setkey(&String::from(&id), &String::from(left), &String::from(right));
+                            }
+                        }
                     }
                 }
+                Err(_) => {}
             }
         }
     }
