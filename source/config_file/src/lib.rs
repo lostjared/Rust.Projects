@@ -26,6 +26,12 @@ pub mod config {
 
         // should not contain [] or =
         pub fn setkey(&mut self, id: &str, key: &str, value: &str) {
+            if key.find("[") != None || key.find("]") != None || key.find("=") != None {
+                panic!("Invalid key contains invalid character");
+            }
+            if value.find("[") != None || value.find("]") != None || value.find("=") != None {
+                panic!("Invalid value contains invalid character");
+            }
             let v = self.config.entry(String::from(id)).or_insert(HashMap::new());
             v.insert(String::from(key), String::from(value));
         }
