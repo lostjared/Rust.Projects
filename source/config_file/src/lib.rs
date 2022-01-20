@@ -15,21 +15,21 @@ pub mod config {
 
     impl Config {
 
-        pub fn create(m: HashMap<String, HashMap<String, String>>, filename: String) -> Config {
+        pub fn create(m: HashMap<String, HashMap<String, String>>, filename: &str) -> Config {
             Config {
                 config: m,
-                filename: filename,
+                filename: String::from(filename),
             }
         }
 
         // should not contain [] or =
-        pub fn setkey(&mut self, id: &String, key: &String, value: &String) {
+        pub fn setkey(&mut self, id: &str, key: &str, value: &str) {
             let v = self.config.entry(String::from(id)).or_insert(HashMap::new());
             v.insert(String::from(key), String::from(value));
         }
 
         // should not contain [] or =
-        pub fn getkey(&mut self, id: &String, key: &String) -> Option<String> {
+        pub fn getkey(&mut self, id: &str, key: &str) -> Option<String> {
             if self.config.contains_key(id) {
                 let v = self.config.entry(String::from(id)).or_default();
                 if v.contains_key(key) {

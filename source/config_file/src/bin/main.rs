@@ -4,12 +4,12 @@ use config_file::config::Config;
 use std::collections::HashMap;
 fn main() {
     let map : HashMap<String, HashMap<String, String>> = HashMap::new();
-    let mut config = Config::create(map, "test.cfg".to_string());
-    //config.setkey(&"id".to_string(), &"one".to_string(), &"value".to_string());
-    //config.setkey(&"id".to_string(), &"two".to_string(), &"value2".to_string());
-    //config.save();
+    let mut config = Config::create(map, "test.cfg");
+ //   config.setkey("id", "one", "value");
+ //   config.setkey("id","two","value2");
+ //   config.save();
     config.load();
-    let value = config.getkey(&"id".to_string(), &"one".to_string());
+    let value = config.getkey("id", "one");
     match value {
         Some(v) => {
             println!("The value is: {}", v);
