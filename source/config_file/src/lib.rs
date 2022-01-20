@@ -15,9 +15,11 @@ pub mod config {
 
     impl Config {
 
-        pub fn create(m: HashMap<String, HashMap<String, String>>, filename: &str) -> Config {
+        pub fn create(filename: &str) -> Config {
+
+            let tmap : HashMap<String, HashMap<String, String>> = HashMap::new();
             Config {
-                config: m,
+                config: tmap,
                 filename: String::from(filename),
             }
         }

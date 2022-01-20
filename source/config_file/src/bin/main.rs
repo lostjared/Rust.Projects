@@ -1,10 +1,9 @@
 extern crate config_file;
 
 use config_file::config::Config;
-use std::collections::HashMap;
+
 fn main() {
-    let map : HashMap<String, HashMap<String, String>> = HashMap::new();
-    let mut config = Config::create(map, "test.cfg");
+    let mut config = Config::create("test.cfg");
  //   config.setkey("id", "one", "value");
  //   config.setkey("id","two","value2");
  //   config.save();
