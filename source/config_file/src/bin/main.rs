@@ -4,9 +4,9 @@ use config_file::config::Config;
 
 fn main() {
     let mut config = Config::create("test.cfg");
- //   config.setkey("id", "one", "value");
- //   config.setkey("id","two","value2");
- //   config.save();
+    //   config.setkey("id", "one", "value");
+    //   config.setkey("id","two","value2");
+    //   config.save();
     config.load();
     let value = config.getkey("program", "ran");
     match value {
@@ -15,8 +15,8 @@ fn main() {
             let run = v.parse::<i32>();
             match run {
                 Ok(r) => {
-                    let ran = r+1;
-                    config.setkey("program", "ran",&format!("{}", ran));
+                    let ran = r + 1;
+                    config.setkey("program", "ran", &format!("{}", ran));
                     println!("Program ran: {} ", ran);
                     config.save();
                 }
