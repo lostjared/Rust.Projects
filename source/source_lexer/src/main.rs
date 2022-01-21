@@ -5,6 +5,8 @@ use std::env;
 use std::fs;
 use std::fs::File;
 use std::io::{self, Write};
+use rustyline::error::ReadlineError;
+use rustyline::Editor;
 
 mod lexer {
 
@@ -385,8 +387,13 @@ fn test_list() {
     }
 }
 
-fn proc_lex(input: String) {
+fn proc_lex(input: String) -> usize {
+
+    if input.trim().eq("quit") {
+        return 0;
+    }
     let mut val = lexer::Source::new(input);
+
     loop {
         let mut input = String::new();
         let tok = val.lex(&mut input);
@@ -395,6 +402,8 @@ fn proc_lex(input: String) {
             | lexer::TokenType::NUMBER
             | lexer::TokenType::OP
             | lexer::TokenType::STRING => {
+
+
                 println!(
                     "{} - [{}] - Line: {}",
                     input,
@@ -407,6 +416,7 @@ fn proc_lex(input: String) {
             }
         }
     }
+    1
 }
 
 fn convert_to_html(input: &String) -> String {
@@ -468,8 +478,7 @@ fn proc_lex_output(input: &String, output: &String) {
     writeln!(&mut cfile, "</table></body></html>").expect("error on write");
 }
 
-use rustyline::error::ReadlineError;
-use rustyline::Editor;
+
 
 
 fn main() {
@@ -486,8 +495,10 @@ fn main() {
                     rl.add_history_entry(line.as_str());
                     let mut iline = String::from(line);
                     iline.push_str("\n");
-                    proc_lex(iline);
-
+                    if proc_lex(iline) == 0 {
+                        rl.save_history("history.txt").expect("on save");
+                        std::process::exit(0);
+                    }
                 },
                 Err(ReadlineError::Interrupted) => {
                    // println!("CTRL-C");
