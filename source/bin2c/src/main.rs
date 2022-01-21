@@ -6,6 +6,7 @@ use std::env;
 fn bin2c(infile: &str) -> std::io::Result<()> {
     let mut f = File::open(infile).expect("could not open file");
     println!("unsigned char bytes[] = {{");
+    let mut len : usize = 0;
     loop {
         let mut buf : [u8; 256] = [0; 256];
         let val = f.read(&mut buf).expect("on read");
@@ -14,11 +15,14 @@ fn bin2c(infile: &str) -> std::io::Result<()> {
             print!("{:#04x},", buf[i]);
         }
 
+        len += val as usize;
+
         if val == 0 {
             break;
         }
     }
     println!("0x0}};\n");
+    println!("unsigned long length = {:#04x};", len);
     Ok(())
 }
 
