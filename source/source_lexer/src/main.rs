@@ -32,10 +32,10 @@ mod lexer {
         fn char_to_type(&self, index: usize) -> TokenType {
             let val = self.chars().nth(index).unwrap();
             match val {
-                'a' ..= 'z' | 'A' ..= 'Z' => {
+                'a'..='z' | 'A'..='Z' => {
                     return TokenType::ID;
                 }
-                '0' ..= '9' => {
+                '0'..='9' => {
                     return TokenType::NUMBER;
                 }
                 ' ' | '\t' | '\r' | '\n' => {
@@ -44,7 +44,8 @@ mod lexer {
                 '\"' => {
                     return TokenType::STRING;
                 }
-                '!' | '@' | '#' | '$' | '%' | '^' | '&' | '|' | '*' | '(' | ')' | '{' | '}' | '+' | '=' | '-' | '<' | '>' | '.' | ',' | ';' | '[' | ']' | '/' | '\\' => {
+                '!' | '@' | '#' | '$' | '%' | '^' | '&' | '|' | '*' | '(' | ')' | '{' | '}'
+                | '+' | '=' | '-' | '<' | '>' | '.' | ',' | ';' | '[' | ']' | '/' | '\\' => {
                     return TokenType::OP;
                 }
                 _ => {
@@ -55,8 +56,7 @@ mod lexer {
         }
     }
 
-
-    #[test] 
+    #[test]
     fn type_from_char() {
         let s = String::from("T!");
         assert_eq!(s.char_to_type(0), TokenType::ID);
@@ -80,10 +80,10 @@ mod lexer {
     impl Source {
         pub fn type_from_char(val: &char) -> TokenType {
             match val {
-                'a' ..= 'z' | 'A' ..= 'Z' => {
+                'a'..='z' | 'A'..='Z' => {
                     return TokenType::ID;
                 }
-                '0' ..= '9' => {
+                '0'..='9' => {
                     return TokenType::NUMBER;
                 }
                 ' ' | '\t' | '\r' | '\n' => {
@@ -92,7 +92,8 @@ mod lexer {
                 '\"' => {
                     return TokenType::STRING;
                 }
-                '!' | '@' | '#' | '$' | '%' | '^' | '&' | '|' | '*' | '(' | ')' | '{' | '}' | '+' | '=' | '-' | '<' | '>' | '.' | ',' | ';' | '[' | ']' | '/' | '\\' => {
+                '!' | '@' | '#' | '$' | '%' | '^' | '&' | '|' | '*' | '(' | ')' | '{' | '}'
+                | '+' | '=' | '-' | '<' | '>' | '.' | ',' | ';' | '[' | ']' | '/' | '\\' => {
                     return TokenType::OP;
                 }
                 _ => {
@@ -147,7 +148,7 @@ mod lexer {
                         self.index -= 1;
                         return token;
                     }
-               }
+                }
             }
             token
         }
@@ -236,14 +237,13 @@ mod lexer {
                                 'n' => token.push('\n'),
                                 't' => token.push('\t'),
                                 'r' => token.push('\r'),
-                                _ => { }
+                                _ => {}
                             }
                         } else {
                             token.push(ch);
                         }
                     }
                     _ => {
-                        
                         token.push(ch);
                     }
                 }
@@ -316,7 +316,6 @@ mod lexer {
     }
 }
 
-
 #[test]
 fn test_lex_id() {
     let s = String::from("test");
@@ -386,7 +385,6 @@ fn test_list() {
     }
 }
 
-
 fn proc_lex(input: String) {
     let mut val = lexer::Source::new(input);
     loop {
@@ -412,7 +410,7 @@ fn proc_lex(input: String) {
 }
 
 fn convert_to_html(input: &String) -> String {
-    let mut x : usize = 0;
+    let mut x: usize = 0;
     let mut s = String::new();
     while x < input.len() {
         let val = input.chars().nth(x).unwrap();
@@ -470,18 +468,40 @@ fn proc_lex_output(input: &String, output: &String) {
     writeln!(&mut cfile, "</table></body></html>").expect("error on write");
 }
 
+use rustyline::error::ReadlineError;
+use rustyline::Editor;
+
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() == 1 {
-        loop {
-            print!("Input data:> ");
-            io::stdout().flush().expect("error on flush");
+        let mut rl = Editor::<()>::new();
+        if rl.load_history("history.txt").is_err() {
 
-            let mut input = String::new();
-            io::stdin()
-                .read_line(&mut input)
-                .expect("Failed to readline");
-            proc_lex(input);
+        }
+        loop {
+            let readline = rl.readline("> ");
+            match readline {
+                Ok(line) => {
+                    rl.add_history_entry(line.as_str());
+                    let mut iline = String::from(line);
+                    iline.push_str("\n");
+                    proc_lex(iline);
+
+                },
+                Err(ReadlineError::Interrupted) => {
+                   // println!("CTRL-C");
+                    break
+                },
+                Err(ReadlineError::Eof) => {
+                 //   println!("CTRL-D");
+                    break
+                },
+                Err(err) => {
+                    println!("Error: {:?}", err);
+                    break
+                }
+            }
         }
     } else if args.len() == 2 {
         let value = args.get(1).unwrap();
