@@ -1,4 +1,4 @@
-use std::io::{self};
+use std::io;
 fn give() -> String {
     let mut input = String::new();
     io::stdin()
