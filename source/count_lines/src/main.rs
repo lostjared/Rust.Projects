@@ -23,6 +23,21 @@ fn count_lines(inputfile: &String) -> (usize, usize, usize) {
     (index, blanks, val.len())
 }
 
+fn count_lines_by_list(inputfile: &String) -> (usize, usize, usize) {
+    let contents = fs::read_to_string(inputfile).expect("Error reading the file");
+    let val: Vec<&str> = contents.lines().collect();
+    let mut num_lines = 0;
+    let mut total_blanks = 0;
+    let mut total_lines = 0;   
+    for i in val {
+        let rt_val = count_lines(&i.to_string());
+        total_lines += rt_val.0;
+        total_blanks += rt_val.1;
+        num_lines += rt_val.2;
+    }
+    (total_lines,total_blanks,num_lines)
+}
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() > 1 {
