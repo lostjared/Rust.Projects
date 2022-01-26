@@ -22,26 +22,26 @@ pub mod config {
 
         // should not contain [] or =
         pub fn setkey(&mut self, id: &str, key: &str, value: &str) {
-            if key.find("[") != None
-                || key.find("]") != None
-                || key.find("=") != None
-                || key.find("\n") != None
-                || key.find("\r") != None
+            if key.find('[') != None
+                || key.find(']') != None
+                || key.find('=') != None
+                || key.find('\n') != None
+                || key.find('\r') != None
             {
                 panic!("Invalid key contains invalid character");
             }
-            if value.find("[") != None
-                || value.find("]") != None
-                || value.find("=") != None
-                || value.find("\n") != None
-                || value.find("\r") != None
+            if value.find('[') != None
+                || value.find(']') != None
+                || value.find('=') != None
+                || value.find('\n') != None
+                || value.find('\r') != None
             {
                 panic!("Invalid value contains invalid character");
             }
             let v = self
                 .config
                 .entry(String::from(id))
-                .or_insert(HashMap::new());
+                .or_insert_with(HashMap::new);
             v.insert(String::from(key), String::from(value));
         }
 
@@ -51,12 +51,12 @@ pub mod config {
                 let v = self.config.entry(String::from(id)).or_default();
                 if v.contains_key(key) {
                     let value = v.get(key);
-                    return Some(String::from(value.unwrap()));
+                    Some(String::from(value.unwrap()))
                 } else {
-                    return None;
+                    None
                 }
             } else {
-                return None;
+                 None
             }
         }
 
@@ -77,14 +77,14 @@ pub mod config {
                     let val: Vec<&str> = contents.lines().collect();
                     let mut id = String::new();
                     for i in &val {
-                        let pos = i.find("[");
+                        let pos = i.find('[');
                         if pos != None {
-                            let pos2 = i.find("]");
+                            let pos2 = i.find(']');
                             if pos2 != None {
                                 id = String::from(&i[pos.unwrap() + 1..pos2.unwrap()]);
                             }
                         } else {
-                            let eq = i.find("=");
+                            let eq = i.find('=');
                             if eq != None {
                                 let eq_u = eq.unwrap();
                                 let left = &i[0..eq_u];
@@ -98,7 +98,7 @@ pub mod config {
                         }
                     }
                 }
-                Err(_) => {}
+                Err(e) => { println!("Error: {}", e); }
             }
         }
     }
