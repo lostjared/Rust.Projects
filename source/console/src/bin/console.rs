@@ -55,7 +55,7 @@ fn main() {
                         con.back();
                     }
                     if key == Some(Keycode::Return) {
-                        if con.get_visible() == false {
+                        if !con.get_visible() {
                             con.set_visible(true);
                         } else {
                             con.enter();
