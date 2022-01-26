@@ -21,9 +21,9 @@ pub mod high_scores {
             let contents1 = fs::read_to_string("./img/score.dat");
             match contents1 {
                 Ok(contents) => {
-                    if contents.len() > 0 {
+                    if !contents.is_empty() {
                         for i in contents.lines() {
-                            let pos = i.find(":");
+                            let pos = i.find(':');
                             if pos == None {
                                 continue;
                             }
@@ -62,7 +62,7 @@ pub mod high_scores {
         }
 
         pub fn type_key(&mut self, key: &str) {
-            if key.find(":") == None {
+            if key.find(':') == None {
                 self.input.push_str(key);
             }
         }

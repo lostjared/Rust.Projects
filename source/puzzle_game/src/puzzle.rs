@@ -113,8 +113,8 @@ pub mod game {
 
         pub fn shift_left(&mut self) {
             if self.piece_shape == 0
-                && self.check_block(0, self.piece[1].x - 1, self.piece[1].y - 1) == true
-                && self.check_block(0, self.piece[2].x - 2, self.piece[2].y - 2) == true
+                && self.check_block(0, self.piece[1].x - 1, self.piece[1].y - 1) 
+                && self.check_block(0, self.piece[2].x - 2, self.piece[2].y - 2) 
             {
                 self.piece[1].x -= 1;
                 self.piece[1].y -= 1;
@@ -122,8 +122,8 @@ pub mod game {
                 self.piece[2].y -= 2;
                 self.piece_shape = 1;
             } else if self.piece_shape == 1
-                && self.check_block(0, self.piece[1].x + 1, self.piece[1].y + 1) == true
-                && self.check_block(0, self.piece[2].x + 2, self.piece[2].y + 2) == true
+                && self.check_block(0, self.piece[1].x + 1, self.piece[1].y + 1) 
+                && self.check_block(0, self.piece[2].x + 2, self.piece[2].y + 2) 
             {
                 self.piece[1].x += 1;
                 self.piece[1].y += 1;
@@ -135,8 +135,8 @@ pub mod game {
 
         pub fn shift_right(&mut self) {
             if self.piece_shape == 0
-                && self.check_block(0, self.piece[1].x + 1, self.piece[1].y - 1) == true
-                && self.check_block(0, self.piece[2].x + 2, self.piece[2].y - 2) == true
+                && self.check_block(0, self.piece[1].x + 1, self.piece[1].y - 1) 
+                && self.check_block(0, self.piece[2].x + 2, self.piece[2].y - 2) 
             {
                 self.piece[1].x += 1;
                 self.piece[1].y -= 1;
@@ -144,8 +144,8 @@ pub mod game {
                 self.piece[2].y -= 2;
                 self.piece_shape = 2;
             } else if self.piece_shape == 2
-                && self.check_block(0, self.piece[1].x + 1, self.piece[1].y + 1) == true
-                && self.check_block(0, self.piece[2].x + 2, self.piece[2].y + 2) == true
+                && self.check_block(0, self.piece[1].x + 1, self.piece[1].y + 1) 
+                && self.check_block(0, self.piece[2].x + 2, self.piece[2].y + 2) 
             {
                 self.piece[1].x -= 1;
                 self.piece[1].y += 1;
@@ -165,7 +165,7 @@ pub mod game {
                     go = false;
                 }
             }
-            if go == true {
+            if go  {
                 for i in 0..3 {
                     self.piece[i].x -= 1;
                 }
@@ -182,7 +182,7 @@ pub mod game {
                     go = false;
                 }
             }
-            if go == true {
+            if go  {
                 for i in 0..3 {
                     self.piece[i].x += 1;
                 }
@@ -235,9 +235,9 @@ pub mod game {
                 && y < (TILE_H as i32)
                 && color == self.blocks[x as usize][y as usize].color
             {
-                return true;
+                true
             } else {
-                return false;
+                false
             }
         }
 
@@ -262,17 +262,17 @@ pub mod game {
                     let ypos: usize = y as usize;
                     let mut color: i32 = self.blocks[xpos][ypos].color;
                     if color >= 1 {
-                        if self.check_block(color, x + 1, y) == true
-                            && self.check_block(color, x + 2, y) == true
+                        if self.check_block(color, x + 1, y) 
+                            && self.check_block(color, x + 2, y) 
                         {
                             self.blocks[xpos][ypos].color = -1;
                             self.blocks[xpos + 1][ypos].color = -1;
                             self.blocks[xpos + 2][ypos].color = -1;
 
-                            if self.check_block(color, x + 3, y) == true {
+                            if self.check_block(color, x + 3, y)  {
                                 self.blocks[xpos + 3][ypos].color = -1;
                                 self.score += 1;
-                                if self.check_block(color, x + 4, y) == true {
+                                if self.check_block(color, x + 4, y)  {
                                     self.blocks[xpos + 4][ypos].color = -1;
                                     self.score += 1;
                                 }
@@ -281,17 +281,17 @@ pub mod game {
                             self.lines += 1;
                             return;
                         }
-                        if self.check_block(color, x, y + 1) == true
-                            && self.check_block(color, x, y + 2) == true
+                        if self.check_block(color, x, y + 1) 
+                            && self.check_block(color, x, y + 2) 
                         {
                             self.blocks[xpos][ypos].color = -1;
                             self.blocks[xpos][ypos + 1].color = -1;
                             self.blocks[xpos][ypos + 2].color = -1;
 
-                            if self.check_block(color, x, y + 3) == true {
+                            if self.check_block(color, x, y + 3)  {
                                 self.blocks[xpos][ypos + 3].color = -1;
                                 self.score += 1;
-                                if self.check_block(color, x, y + 4) == true {
+                                if self.check_block(color, x, y + 4)  {
                                     self.blocks[xpos][ypos + 4].color = -1;
                                     self.score += 1;
                                 }
@@ -301,17 +301,17 @@ pub mod game {
                             self.lines += 1;
                             return;
                         }
-                        if self.check_block(color, x + 1, y + 1) == true
-                            && self.check_block(color, x + 2, y + 2) == true
+                        if self.check_block(color, x + 1, y + 1) 
+                            && self.check_block(color, x + 2, y + 2) 
                         {
                             self.blocks[xpos][ypos].color = -1;
                             self.blocks[xpos + 1][ypos + 1].color = -1;
                             self.blocks[xpos + 2][ypos + 2].color = -1;
 
-                            if self.check_block(color, x + 3, y + 3) == true {
+                            if self.check_block(color, x + 3, y + 3)  {
                                 self.blocks[xpos + 3][ypos + 3].color = -1;
                                 self.score += 2;
-                                if self.check_block(color, x + 4, y + 4) == true {
+                                if self.check_block(color, x + 4, y + 4)  {
                                     self.blocks[xpos + 3][ypos + 3].color = -1;
                                     self.score += 2;
                                 }
@@ -321,17 +321,17 @@ pub mod game {
                             self.lines += 1;
                             return;
                         }
-                        if self.check_block(color, x + 1, y - 1) == true
-                            && self.check_block(color, x + 2, y - 2) == true
+                        if self.check_block(color, x + 1, y - 1) 
+                            && self.check_block(color, x + 2, y - 2) 
                         {
                             self.blocks[xpos][ypos].color = -1;
                             self.blocks[xpos + 1][ypos - 1].color = -1;
                             self.blocks[xpos + 2][ypos - 2].color = -1;
 
-                            if self.check_block(color, x + 3, y - 3) == true {
+                            if self.check_block(color, x + 3, y - 3)  {
                                 self.blocks[xpos + 3][ypos - 3].color = -1;
                                 self.score += 2;
-                                if self.check_block(color, x + 4, y - 4) == true {
+                                if self.check_block(color, x + 4, y - 4)  {
                                     self.blocks[xpos + 4][ypos - 4].color = -1;
                                     self.score += 2;
                                 }
@@ -341,8 +341,8 @@ pub mod game {
                             return;
                         }
                         /*
-                        if self.check_block(color, x - 1, y + 1) == true
-                            && self.check_block(color, x - 2, y + 2) == true
+                        if self.check_block(color, x - 1, y + 1) 
+                            && self.check_block(color, x - 2, y + 2) 
                         {
                             self.blocks[xpos][ypos].color = -1;
                             self.blocks[xpos - 1][ypos + 1].color = -1;

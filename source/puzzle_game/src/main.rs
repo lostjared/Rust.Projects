@@ -18,7 +18,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 fn draw_grid(
     grid: &game::Grid,
     can: &mut sdl2::render::Canvas<sdl2::video::Window>,
-    blocks: &Vec<sdl2::render::Texture>,
+    blocks:&[sdl2::render::Texture],
 ) {
     let offset = 0;
     for x in 0..grid.get_width() as usize {
@@ -27,7 +27,7 @@ fn draw_grid(
             if color >= 1 {
                 let b = blocks.get(color as usize).unwrap();
                 can.copy(
-                    &b,
+                    b,
                     None,
                     Some(Rect::new(x as i32 * 32, (y as i32 * 16) + offset, 32, 16)),
                 )
@@ -62,7 +62,7 @@ fn draw_grid(
     let block = grid.get_block();
     let b = blocks.get(block[0].color as usize).unwrap();
     can.copy(
-        &b,
+        b,
         None,
         Some(Rect::new(
             block[0].x as i32 * 32,
@@ -74,7 +74,7 @@ fn draw_grid(
     .expect("draw rect");
     let b2 = blocks.get(block[1].color as usize).unwrap();
     can.copy(
-        &b2,
+        b2,
         None,
         Some(Rect::new(
             block[1].x as i32 * 32,
@@ -86,7 +86,7 @@ fn draw_grid(
     .expect("draw rect");
     let b3 = blocks.get(block[2].color as usize).unwrap();
     can.copy(
-        &b3,
+        b3,
         None,
         Some(Rect::new(
             block[2].x as i32 * 32,
@@ -201,11 +201,12 @@ fn main() {
                     _ => {}
                 }
             }
-            if starting_image == false {
-                can.set_draw_color(Color::RGB(0, 0, 0));
-                can.clear();
-                can.copy(&lost_logo, None, None).expect("copy logo");
 
+            can.set_draw_color(Color::RGB(0, 0, 0));
+            can.clear();
+          
+            if !starting_image {
+                can.copy(&lost_logo, None, None).expect("copy logo");
                 let start = SystemTime::now();
                 let se = start.duration_since(UNIX_EPOCH).expect("error on time");
                 let tick = se.as_secs();
@@ -218,14 +219,12 @@ fn main() {
                     starting_image = true;
                 }
             } else {
-                can.set_draw_color(Color::RGB(0, 0, 0));
-                can.clear();
                 can.copy(&game_texture, None, Some(Rect::new(0, 0, width, height)))
                     .expect("on copy");
             }
             can.present();
         } else if cur_screen == 1 {
-            if grid.game_over == true {
+            if grid.game_over  {
                 cur_screen = 2;
                 grid.game_over = false;
             } else {
@@ -366,7 +365,7 @@ fn main() {
                         }
                         if key == Some(Keycode::Return) {
                             //enter
-                            if score_menu.input.len() > 0 {
+                            if !score_menu.input.is_empty() {
                                 let s = (String::from(&score_menu.input), game_over_score);
                                 score_menu.scores.push(s);
                                 score_menu.sort_scores();
@@ -375,7 +374,7 @@ fn main() {
                             }
                         }
                         if key == Some(Keycode::Space) {
-                            if score_shown == true && game_over_score == 0 {
+                            if score_shown  && game_over_score == 0 {
                                 score_shown = false;
                             } else {
                                 cur_screen = 1;
@@ -408,7 +407,7 @@ fn main() {
             )
             .expect("on copy");
 
-            if score_shown == true {
+            if score_shown  {
                 can.fill_rect(Some(Rect::new(25, 25, 1280 - 50, 720 - 50)))
                     .expect("on fill");
 
@@ -493,7 +492,7 @@ fn main() {
                         game_over_score, score_menu.input
                     );
                 } else {
-                    score = format!("Press Space to Exit High Scores");
+                    score = "Press Space to Exit High Scores".to_string();
                 }
                 let text_surf = font
                     .render(&score)
