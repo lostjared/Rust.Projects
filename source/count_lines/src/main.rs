@@ -41,6 +41,7 @@ fn count_lines_by_list(inputfile: &String) -> (usize, usize, usize) {
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() > 1 {
+        /*
         let mut num_lines = 0;
         let mut total_blanks = 0;
         let mut total_lines = 0;
@@ -53,8 +54,12 @@ fn main() {
         println!(
             "total lines: {}, total blanks: {}, total non-blank: {}",
             num_lines, total_blanks, total_lines
-        );
+        );*/
+        let val = count_lines_by_list(&args[1]);
+        println!("lines: {}, Total Blanks: {}, Total Lines: {}",val.0, val.1, val.2); 
+
     } else {
+
         println!("Error: input_file_list");
     }
 }
