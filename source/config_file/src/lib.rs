@@ -5,6 +5,7 @@ pub mod config {
     use std::fs::File;
     use std::io::Write;
 
+    #[derive(Debug)]
     pub struct Config {
         config: HashMap<String, HashMap<String, String>>,
         filename: String,
