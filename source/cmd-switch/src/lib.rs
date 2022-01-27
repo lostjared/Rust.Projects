@@ -23,7 +23,7 @@ pub mod cmd_sw {
         for (key, value) in desc {
             println!("\t--{} [{}]", key, value);
         }
-        print!("\n");
+        println!();
     }
 
     pub fn print_accepted_args_map(desc: &HashMap<String, Argument>) {
@@ -31,7 +31,7 @@ pub mod cmd_sw {
         for (key, value) in desc {
             println!("\t--{} [{}]", key, value.desc);
         }
-        print!("\n");
+        println!();
     }
 
     pub fn print_accepted_args_map_require(desc: &HashMap<String, (String, bool)>) {
@@ -39,26 +39,26 @@ pub mod cmd_sw {
         for (key, value) in desc {
             println!("\t--{} [{}] required: {}", key, value.0, value.1);
         }
-        print!("\n");
+        println!();
     }
 
     pub fn parse_args(
-        args: &Vec<String>,
+        args: &[String],
         desc: &HashMap<String, String>,
     ) -> HashMap<String, Argument> {
         let mut argz: HashMap<String, Argument> = HashMap::new();
-        for i in args.into_iter().skip(1) {
-            let pos = i.find("=");
+        for i in args.iter().skip(1) {
+            let pos = i.find('=');
             let mut pos_s = i.find("--");
             let mut pos_f = false;
             if pos_s == None {
-                pos_s = i.find("-");
+                pos_s = i.find('-');
                 pos_f = true;
             }
             if pos != None && pos_s != None {
                 let loc = (pos_s.unwrap(), pos.unwrap());
                 let key;
-                if pos_f == false {
+                if !pos_f {
                     key = &i[loc.0 + 2..loc.1];
                 } else {
                     key = &i[loc.0 + 1..loc.1];
@@ -75,10 +75,10 @@ pub mod cmd_sw {
             } else if pos_s != None && pos == None {
                 let loc = pos_s.unwrap();
                 let k;
-                if pos_f == false {
-                    k = &i[loc+2..];
+                if !pos_f {
+                    k = &i[loc + 2..];
                 } else {
-                    k = &i[loc+1..];
+                    k = &i[loc + 1..];
                 }
                 let d;
                 let s = desc.get(k);
@@ -95,23 +95,23 @@ pub mod cmd_sw {
     }
 
     pub fn parse_args_require(
-        args: &Vec<String>,
+        args: &[String],
         desc: &HashMap<String, (String, bool)>,
     ) -> HashMap<String, Argument> {
         let mut argz: HashMap<String, Argument> = HashMap::new();
         let mut arg_req: HashMap<String, bool> = HashMap::new();
-        for i in args.into_iter().skip(1) {
-            let pos = i.find("=");
+        for i in args.iter().skip(1) {
+            let pos = i.find('=');
             let mut pos_s = i.find("--");
             let mut pos_f = false;
             if pos_s == None {
-                pos_s = i.find("-");
+                pos_s = i.find('-');
                 pos_f = true;
             }
             if pos != None && pos_s != None {
                 let loc = (pos_s.unwrap(), pos.unwrap());
                 let key;
-                if pos_f == false {
+                if !pos_f {
                     key = &i[loc.0 + 2..loc.1];
                 } else {
                     key = &i[loc.0 + 1..loc.1];
@@ -131,10 +131,10 @@ pub mod cmd_sw {
             } else if pos_s != None && pos == None {
                 let loc = pos_s.unwrap();
                 let k;
-                if pos_f == false {
-                     k = &i[loc + 2..];
+                if !pos_f {
+                    k = &i[loc + 2..];
                 } else {
-                    k = &i[loc +1..];
+                    k = &i[loc + 1..];
                 }
                 let v = desc.get(k);
                 let d;
@@ -152,10 +152,8 @@ pub mod cmd_sw {
         }
 
         for (key, value) in desc {
-            if value.1 == true {
-                if !arg_req.contains_key(key) {
-                    panic!("Error required argument {} missing: [{}]\n", key, value.0);
-                }
+            if value.1 && !arg_req.contains_key(key) {
+                panic!("Error required argument {} missing: [{}]\n", key, value.0);
             }
         }
         argz
