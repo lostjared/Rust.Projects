@@ -1,12 +1,12 @@
 // practice learning rust
 #![allow(unreachable_code)]
 
+use rustyline::error::ReadlineError;
+use rustyline::Editor;
 use std::env;
 use std::fs;
 use std::fs::File;
 use std::io::{self, Write};
-use rustyline::error::ReadlineError;
-use rustyline::Editor;
 
 mod lexer {
 
@@ -191,33 +191,31 @@ mod lexer {
 
         fn grab_op(&mut self) -> String {
             let mut token: String = String::new();
-            loop {
-                let ch = self.getchar();
+            let ch = self.getchar();
 
-                match Source::type_from_char(&ch) {
-                    TokenType::OP => {
+            match Source::type_from_char(&ch) {
+                TokenType::OP => {
+                    let c = self.peekchar();
+                    if c == '=' {
+                        token.push(ch);
+                        token.push(c);
+                        self.index += 1;
+                        return token;
+                    } else {
                         let c = self.peekchar();
-                        if c == '=' {
+                        if ch == c {
                             token.push(ch);
                             token.push(c);
                             self.index += 1;
                             return token;
                         } else {
-                            let c = self.peekchar();
-                            if ch == c {
-                                token.push(ch);
-                                token.push(c);
-                                self.index += 1;
-                                return token;
-                            } else {
-                                token.push(ch);
-                                return token;
-                            }
+                            token.push(ch);
+                            return token;
                         }
                     }
-                    _ => {
-                        return token;
-                    }
+                }
+                _ => {
+                    return token;
                 }
             }
             token
@@ -358,7 +356,7 @@ fn proc_lex_list(input: String) -> Option<Vec<lexer::Token>> {
         let mut input = String::new();
         let tok = val.lex(&mut input);
         if tok == lexer::TokenType::NULL {
-            if v.len() == 0 {
+            if v.is_empty() {
                 return None;
             } else {
                 return Some(v);
@@ -388,7 +386,6 @@ fn test_list() {
 }
 
 fn proc_lex(input: String) -> usize {
-
     if input.trim().eq("quit") {
         return 0;
     }
@@ -402,8 +399,6 @@ fn proc_lex(input: String) -> usize {
             | lexer::TokenType::NUMBER
             | lexer::TokenType::OP
             | lexer::TokenType::STRING => {
-
-
                 println!(
                     "{} - [{}] - Line: {}",
                     input,
@@ -419,7 +414,7 @@ fn proc_lex(input: String) -> usize {
     1
 }
 
-fn convert_to_html(input: &String) -> String {
+fn convert_to_html(input: &str) -> String {
     let mut x: usize = 0;
     let mut s = String::new();
     while x < input.len() {
@@ -449,7 +444,7 @@ fn convert_to_html(input: &String) -> String {
     s
 }
 
-fn proc_lex_output(input: &String, output: &String) {
+fn proc_lex_output(input: &str, output: &str) {
     let mut val = lexer::Source::new(String::from(input));
     let mut cfile = File::create(output).expect("Error creating file");
     writeln!(&mut cfile, "<!doctype html><head><title>{} Lex Output Table</title></head><body><table border=\"1\" cellpadding=\"1\" cellspacing=\"1\"><tr><th>Line</th><th>Token</th><th>Type</th></tr>", output).expect("error on write");
@@ -478,39 +473,34 @@ fn proc_lex_output(input: &String, output: &String) {
     writeln!(&mut cfile, "</table></body></html>").expect("error on write");
 }
 
-
-
-
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() == 1 {
         let mut rl = Editor::<()>::new();
-        if rl.load_history("history.txt").is_err() {
-
-        }
+        if rl.load_history("history.txt").is_err() {}
         loop {
             let readline = rl.readline("> ");
             match readline {
                 Ok(line) => {
                     rl.add_history_entry(line.as_str());
-                    let mut iline = String::from(line);
-                    iline.push_str("\n");
+                    let mut iline = line;
+                    iline.push('\n');
                     if proc_lex(iline) == 0 {
                         rl.save_history("history.txt").expect("on save");
                         std::process::exit(0);
                     }
-                },
+                }
                 Err(ReadlineError::Interrupted) => {
-                   // println!("CTRL-C");
-                    break
-                },
+                    // println!("CTRL-C");
+                    break;
+                }
                 Err(ReadlineError::Eof) => {
-                 //   println!("CTRL-D");
-                    break
-                },
+                    //   println!("CTRL-D");
+                    break;
+                }
                 Err(err) => {
                     println!("Error: {:?}", err);
-                    break
+                    break;
                 }
             }
         }
