@@ -5,7 +5,7 @@ extern crate image;
 
 pub fn parse_split_int(t: &str) -> (i32, i32) {
     let text = String::from(t.trim());
-    let pos = text.find(",");
+    let pos = text.find(',');
     if pos == None {
         panic!("Could not find list seperator for argument..");
     }
@@ -17,7 +17,7 @@ pub fn parse_split_int(t: &str) -> (i32, i32) {
 
 pub fn parse_split_double(t: &str) -> (f32, f32) {
     let text = String::from(t.trim());
-    let pos = text.find(",");
+    let pos = text.find(',');
     if pos == None {
         panic!("Could not find list seperator for argument..");
     }
@@ -63,7 +63,7 @@ fn main() {
     draw_julia(&output.value, res_value, params, iterations);
 }
 
-pub fn draw_julia(filename: &String, res: (i32, i32), param: (f32, f32), iter: i32) {
+pub fn draw_julia(filename: &str, res: (i32, i32), param: (f32, f32), iter: i32) {
     // from image crate example website
     let imgx = res.0 as u32;
     let imgy = res.1 as u32;
