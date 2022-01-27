@@ -71,7 +71,7 @@ pub mod level {
                     let y : i32 = (z- start_row) * self.tsize + off_y;
                     let t : i32 = tile as i32;
                     if t != 0 {
-                        can.copy(&texture, Some(Rect::new((t-1) as i32 * self.tsize as i32, 0, self.tsize as u32, self.tsize as u32)), Some(Rect::new(x as i32, y as i32, self.tsize as u32, self.tsize as u32))).expect("on copy");
+                        can.copy(texture, Some(Rect::new((t-1) as i32 * self.tsize as i32, 0, self.tsize as u32, self.tsize as u32)), Some(Rect::new(x as i32, y as i32, self.tsize as u32, self.tsize as u32))).expect("on copy");
                     }
                 }
             }
