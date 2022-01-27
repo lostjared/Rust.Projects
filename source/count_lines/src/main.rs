@@ -1,13 +1,13 @@
 use std::env;
 use std::fs;
 
-fn count_lines(inputfile: &String) -> (usize, usize, usize) {
+fn count_lines(inputfile: &str) -> (usize, usize, usize) {
     let contents = fs::read_to_string(inputfile).expect("Error reading the file");
     let val: Vec<&str> = contents.lines().collect();
     let mut blanks = 0;
     let mut index = 0;
     for i in &val {
-        if i.trim().len() > 0 {
+        if !i.trim().is_empty() {
             index += 1;
         } else {
             blanks += 1;
@@ -23,7 +23,7 @@ fn count_lines(inputfile: &String) -> (usize, usize, usize) {
     (index, blanks, val.len())
 }
 
-fn count_lines_by_list(inputfile: &String) -> (usize, usize, usize) {
+fn count_lines_by_list(inputfile: &str) -> (usize, usize, usize) {
     let contents = fs::read_to_string(inputfile).expect("Error reading the file");
     let val: Vec<&str> = contents.lines().collect();
     let mut num_lines = 0;
