@@ -1,3 +1,4 @@
+
 use std::io;
 fn give() -> String {
     let mut input = String::new();
@@ -7,10 +8,10 @@ fn give() -> String {
     String::from(input.trim())
 }
 fn get(value: String) -> String {
-    if value.eq("love") == true {
+    if value.eq("love") {
         return String::from("1");
     }
-    if value.eq("fear") == true {
+    if value.eq("fear") {
         return String::from("0");
     }
     value
