@@ -78,9 +78,7 @@ fn main() {
     scr.load();
     scr2.load();
     system.set_screen(SCREEN1);
-    let mut screens: Vec<Box<dyn rmx_system::ScreenTrait>> = Vec::new();
-    screens.push(Box::new(scr));
-    screens.push(Box::new(scr2));
+    let mut screens: Vec<Box<dyn rmx_system::ScreenTrait>> = vec![Box::new(scr), Box::new(scr2)];
     system.console.println("Hello, World!");
     let mut counter = 0;
     'main: loop {

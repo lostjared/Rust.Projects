@@ -1,7 +1,6 @@
 pub use self::console::Console;
 
 pub mod console {
-
     use sdl2::rect::Rect;
     use sdl2::render::TextureQuery;
     use std::process::Command;
@@ -55,7 +54,7 @@ pub mod console {
         color: sdl2::pixels::Color,
         text: &str,
     ) {
-        if text.len() == 0 {
+        if text.is_empty() {
             return;
         }
 
@@ -79,7 +78,7 @@ pub mod console {
                 width += metrics.advance;
             }
         }
-        if value.len() > 0 {
+        if !value.is_empty() {
             vlst.push(value);
         }
 
@@ -87,7 +86,7 @@ pub mod console {
         let mut line_index: usize = 0;
 
         for i in &vlst {
-            if i.len() > 0 {
+            if !i.is_empty() {
                 printtext(can, tex, font, x, yy, color, i);
             }
             yy += metrics.advance + metrics.maxy;
@@ -98,7 +97,7 @@ pub mod console {
             }
         }
 
-        if blink == true {
+        if blink {
             can.set_draw_color(color);
             can.fill_rect(Rect::new(
                 width + 5,
@@ -117,7 +116,9 @@ pub mod console {
                 Some(hdir) => {
                     std::env::set_current_dir(hdir).expect("could not set directory");
                 }
-                _ => {}
+                None => {
+                    println!("no home directory");
+                }
             }
             Console {
                 x: xx,
@@ -160,18 +161,18 @@ pub mod console {
 
         pub fn println(&mut self, t: &str) {
             self.text.push_str(t);
-            self.text.push_str("\n");
+            self.text.push('\n');
         }
 
         pub fn type_key(&mut self, t: &str) {
-            if self.visible == true {
+            if self.visible {
                 self.input_text.push_str(t);
                 self.print(t);
             }
         }
 
         pub fn back(&mut self) {
-            if self.visible == true && self.input_text.len() > 0 {
+            if self.visible && !self.input_text.is_empty() {
                 self.input_text.pop();
                 self.text.pop();
             }
@@ -246,7 +247,7 @@ pub mod console {
                 }
                 "shell" => {
                     let output;
-                    if v.len() >= 1 && cmd.len() > 6 {
+                    if !v.is_empty() && cmd.len() > 6 {
                         let icmd = &cmd[6..cmd.len()];
                         output = Command::new("/bin/sh")
                             .arg("-c")
@@ -330,14 +331,14 @@ pub mod console {
         }
 
         pub fn enter(&mut self) {
-            if self.visible == false {
+            if !self.visible {
                 return;
             }
 
             // proc command
             let input = String::from(&self.input_text);
             let v: Vec<&str> = input.split(' ').collect();
-            if v.len() == 0 {
+            if v.is_empty() {
                 self.print("\n");
                 self.print_prompt();
                 return;
@@ -352,13 +353,12 @@ pub mod console {
             tex: &sdl2::render::TextureCreator<sdl2::video::WindowContext>,
             font: &sdl2::ttf::Font,
         ) {
-            if self.visible == false {
+            if !self.visible {
                 return;
             }
 
-            let f = self.text.find("\n");
-            let l: Vec<_> = self.text.lines().collect();
-            if f != None && l.len() > (self.line_height as usize) - 1 {
+            let f = self.text.find('\n');
+            if f != None && self.text.lines().count() > (self.line_height as usize) - 1 {
                 let v = &self.text[f.unwrap() + 1..self.text.len()];
                 self.text = String::from(v);
             }

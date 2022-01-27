@@ -37,12 +37,12 @@ pub mod rmx_system {
                 .map_err(|e| e.to_string())
                 .expect("Error on canvas");
 
-            let e = sdl.event_pump().unwrap();
+            let ev = sdl.event_pump().unwrap();
 
             System {
                 canvas: can,
                 screen: 0,
-                e: e,
+                e: ev,
                 console: Console::new(20, 20, width - 20, height - 20),
             }
         }
