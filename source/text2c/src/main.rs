@@ -3,7 +3,7 @@ use std::io;
 use std::io::prelude::*;
 use std::fs::File;
 
-fn print_data(inputfile: &String) -> io::Result<()> {
+fn print_data(inputfile: &str) -> io::Result<()> {
     let mut file = File::open(inputfile)?;
     let mut buffer = Vec::new();
     file.read_to_end(&mut buffer)?;
