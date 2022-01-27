@@ -4,7 +4,7 @@ use std::io::{self, Write};
 use std::{thread, time};
 
 
-fn scrolltext(text: &String, timeout: u64) {
+fn scrolltext(text: &str, timeout: u64) {
     let millis = time::Duration::from_millis(timeout);
     for i in text.chars() {
         print!("{}", i);
