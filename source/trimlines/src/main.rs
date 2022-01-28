@@ -3,12 +3,12 @@ use std::fs;
 use std::fs::File;
 use std::io::Write;
 
-fn trimlines(inputfile: &String, outputfile: &String) {
+fn trimlines(inputfile: &str, outputfile: &str) {
     let contents = fs::read_to_string(inputfile).expect("Error reading the file");
     let val: Vec<&str> = contents.lines().collect();
     let mut cfile = File::create(outputfile).expect("Error creating file");
     val.iter().for_each(|x| {
-        if x.len() > 0 {
+        if !x.is_empty() {
             writeln!(&mut cfile, "{}", x).expect("error on write");
         }
     });
