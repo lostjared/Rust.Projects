@@ -46,7 +46,7 @@ fn printtext_width(
     color: sdl2::pixels::Color,
     text: &str,
 ) {
-    if text.len() == 0 {
+    if text.is_empty() {
         return;
     }
 
@@ -70,7 +70,7 @@ fn printtext_width(
             width += metrics.advance;
         }
     }
-    if value.len() > 0 {
+    if !value.is_empty() {
         vlst.push(value);
     }
 
@@ -78,7 +78,7 @@ fn printtext_width(
     let mut line_index: usize = 0;
     
     for i in &vlst {
-        if i.len() > 0 {
+        if !i.is_empty() {
             printtext(can, tex, font, x, yy, color, i);
         }
         yy += metrics.advance + metrics.maxy;
@@ -89,7 +89,7 @@ fn printtext_width(
         }
     }
 
-    if blink == true {
+    if blink {
         can.set_draw_color(color);
         can.fill_rect(Rect::new(
             width + 5,
@@ -166,9 +166,8 @@ fn main() {
                 outputted_value.push(val);
                 index += 1;
 
-                let f = outputted_value.find("\n");
-                let l: Vec<_> = outputted_value.lines().collect();
-                if f != None && l.len() > (lines_height as usize) - 1 {
+                let f = outputted_value.find('\n');
+                if f != None && outputted_value.lines().count() > (lines_height as usize) - 1 {
                     let v = &outputted_value[f.unwrap() + 1..outputted_value.len()];
                     outputted_value = String::from(v);
                 }
