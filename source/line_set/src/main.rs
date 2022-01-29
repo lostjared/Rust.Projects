@@ -11,7 +11,6 @@ fn main() {
     if rl.load_history("history.txt").is_err() {
 
     }
-
     let mut line_map : HashMap<usize, String> = HashMap::new();
     let mut line_set : HashSet<usize> = HashSet::new();
 
@@ -21,8 +20,8 @@ fn main() {
         match readline {
             Ok(line) => {
                 rl.add_history_entry(line.as_str());
-                let iline = String::from(line);
-                let pos = iline.find(" ");
+                let iline = line;
+                let pos = iline.find(' ');
                 if pos != None {
                     let p = pos.unwrap();
                     let left = &iline[0..p];
