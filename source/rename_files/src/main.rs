@@ -1,13 +1,13 @@
 use std::env;
 use std::fs;
 
-fn rename_files(file_list: &String, name_prefix: &String) {
+fn rename_files(file_list: &str, name_prefix: &str) {
     let mut file_counter : u64 = 0;
     let contents = fs::read_to_string(file_list).expect("Error reading the file");
-    let counter = contents.matches("\n").count();
+    let counter = contents.matches('\n').count();
     let sval = format!("{}", counter);
     for i in contents.lines() {
-        if i.len() > 0 {
+        if !i.is_empty() {
             let prefix_string = String::from(&format!("{}{:0width$}_{}",name_prefix,file_counter+1, i, width=sval.len()));
             println!("{} => {}", i, prefix_string);
             fs::rename(i, prefix_string).expect("error on rename");
