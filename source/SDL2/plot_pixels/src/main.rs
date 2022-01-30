@@ -58,13 +58,13 @@ fn main() {
                     let mut gi = g as u32;
                     let mut bi = b as u32;
                     if ri > 255 {
-                        ri = ri%255;
+                        ri %= 255;
                     }
                     if gi > 255 {
-                        gi = gi%255;
+                        gi %= 255;
                     }
                     if bi > 255 {
-                        bi = bi%255;
+                        bi %= 255;
                     }
                     buffer[offset as usize] = ri as u8;
                     buffer[offset as usize + 1] = gi as u8;
