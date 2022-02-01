@@ -7,7 +7,7 @@ use std::env;
 use std::fs::File;
 use std::io::{self, BufRead};
 
-fn search_file_lines(filename: &Path, search: &String) -> (bool, u64) {
+fn search_file_lines(filename: &Path, search: &str) -> (bool, u64) {
     let f = File::open(filename).expect("could not open file");
     let it = io::BufReader::new(f);
     let mut index = 1;
@@ -36,11 +36,11 @@ fn list_dir(dir: &Path, files: &mut Vec<String>) -> io::Result<()> {
     Ok(())
 }
 
-fn proc_slice(values: &[String], search: &String) {
+fn proc_slice(values: &[String], search: &str) {
     println!("Searching slice of size: {}", values.len());
     for i in values {
         let result = search_file_lines(Path::new(i), search);
-        if result.0 != false && result.1 != 0 {
+        if result.0 && result.1 != 0 {
             println!("search found: {} at line {}", i, result.1);
         }
     }
