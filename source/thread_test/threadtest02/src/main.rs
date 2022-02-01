@@ -5,7 +5,7 @@ use std::env;
 use std::fs::File;
 use std::io::{self,BufRead};
 
-fn search_file_lines(filename: &String, search: String) -> (bool, u64) {
+fn search_file_lines(filename: &str, search: String) -> (bool, u64) {
     /*
     let contents = fs::read_to_string(filename).expect("Error reading the file");
     for line in contents.lines() {
