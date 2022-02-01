@@ -6,7 +6,7 @@ use std::env;
 use std::fs::File;
 use std::io::{self, BufRead};
 
-fn search_file_lines(filename: &Path, search: &String) -> (bool, u64) {
+fn search_file_lines(filename: &Path, search: &str) -> (bool, u64) {
     let f = File::open(filename).expect("could not open file");
     let it = io::BufReader::new(f);
     let mut index = 1;
@@ -20,7 +20,7 @@ fn search_file_lines(filename: &Path, search: &String) -> (bool, u64) {
     (false, 0)
 }
 
-fn list_dir(dir: &Path, search: &String) -> io::Result<()> {
+fn list_dir(dir: &Path, search: &str) -> io::Result<()> {
     if dir.is_dir() {
         for e in fs::read_dir(dir)? {
             let e = e?;
@@ -28,8 +28,8 @@ fn list_dir(dir: &Path, search: &String) -> io::Result<()> {
             if path.is_dir() {
                 list_dir(&path, search)?;
             } else if path.extension() != None && path.extension().unwrap().eq("rs") {
-                let val = search_file_lines(&path, &search);
-                if val.0 != false && val.1 != 0 {
+                let val = search_file_lines(&path, search);
+                if val.0 && val.1 != 0 {
                     println!("file: {} found: {} lines: {}", path.to_str().unwrap(), val.0, val.1);
                 }
             }
