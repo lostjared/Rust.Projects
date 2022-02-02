@@ -46,21 +46,27 @@ fn main() {
         cmd_sw::print_accepted_args_map_require(&desc);
         std::process::exit(0);
     }
+    let argx = cmd_sw::parse_args_require(&args, &desc);
+    match argx {
+        Ok(argz) => {
+            let output = &argz["output"];
+            let res = &argz["res"];
+            let res_value = parse_split_int(&res.value);
+            let param = &argz["param"];
+            let iter = &argz["iter"];
+            let iterations = iter.value.parse::<i32>().unwrap();
+            let params = parse_split_double(&param.value);
 
-    let argz = cmd_sw::parse_args_require(&args, &desc);
-    let output = &argz["output"];
-    let res = &argz["res"];
-    let res_value = parse_split_int(&res.value);
-    let param = &argz["param"];
-    let iter = &argz["iter"];
-    let iterations = iter.value.parse::<i32>().unwrap();
-    let params = parse_split_double(&param.value);
-
-    println!(
-        "output: [{}] resolution: ({}, {}) param: ({}, {}) iterations: {}",
-        output.value, res_value.0, res_value.1, params.0, params.1, iterations
-    );
-    draw_julia(&output.value, res_value, params, iterations);
+            println!(
+                "output: [{}] resolution: ({}, {}) param: ({}, {}) iterations: {}",
+                output.value, res_value.0, res_value.1, params.0, params.1, iterations
+            );
+            draw_julia(&output.value, res_value, params, iterations);
+        }
+        Err(e) => {
+            println!("Error: {}", e);
+        }
+    }
 }
 
 pub fn draw_julia(filename: &str, res: (i32, i32), param: (f32, f32), iter: i32) {
