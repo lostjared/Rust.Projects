@@ -18,7 +18,7 @@ fn return_value(x: u8) -> Result<ErrorType, &'static str> {
 
 fn main() {
     let mut input_string = String::new();
-    println!("input 0 for type1 or 2 for type2");
+    println!("input 0 for type1 or 1 for type2");
     std::io::stdin().read_line(&mut input_string).expect("on readline");
     let input_type: u8 = input_string.trim().parse::<u8>().unwrap();
     match return_value(input_type) {
