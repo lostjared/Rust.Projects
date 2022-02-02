@@ -97,7 +97,7 @@ pub mod cmd_sw {
     pub fn parse_args_require(
         args: &[String],
         desc: &HashMap<String, (String, bool)>,
-    ) -> Result<HashMap<String, Argument>, &'static str> {
+    ) -> Result<HashMap<String, Argument>, String> {
         let mut argz: HashMap<String, Argument> = HashMap::new();
         let mut arg_req: HashMap<String, bool> = HashMap::new();
         for i in args.iter().skip(1) {
@@ -153,7 +153,7 @@ pub mod cmd_sw {
 
         for (key, value) in desc {
             if value.1 && !arg_req.contains_key(key) {
-                return Err("Missing Argument");
+                return Err(format!("Missing argument: {}", key));
             }
         }
         Ok(argz)
