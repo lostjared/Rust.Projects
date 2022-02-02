@@ -15,16 +15,23 @@ fn main() {
     );
     desc.insert(String::from("space"), (String::from("with space"), false));
     cmd_sw::print_accepted_args_map_require(&desc);
-    let argz = cmd_sw::parse_args_require(&args, &desc);
-    let name = &argz["name"];
-    let times = &argz["times"];
-    let space;
-    if argz.contains_key("space") {
-        space = "\t";
-    } else {
-        space = "";
-    }
-    for i in 0..times.value.parse::<i32>().unwrap() {
-        println!("{}:{}{}", i, space, name.value);
+    let argzx = cmd_sw::parse_args_require(&args, &desc);
+    match argzx {
+        Ok(argz) => {
+            let name = &argz["name"];
+            let times = &argz["times"];
+            let space;
+            if argz.contains_key("space") {
+                space = "\t";
+            } else {
+                space = "";
+            }
+            for i in 0..times.value.parse::<i32>().unwrap() {
+                println!("{}:{}{}", i, space, name.value);
+            }
+        }
+        Err(e) => {
+            println!("Error: {}", e);
+        }
     }
 }

@@ -11,9 +11,16 @@ fn main() {
     );
     cmd_sw::print_accepted_args_map_require(&desc);
     let argz = cmd_sw::parse_args_require(&args, &desc);
-    for (key, value) in &argz {
-        println!("{} = {}", *key, value.value);
+    match argz {
+        Ok(argzx) => {
+            for (key, value) in &argzx {
+                println!("{} = {}", *key, value.value);
+            }
+            let v = argzx.get("hello").unwrap();
+            println!("Key is {} value is {} its for {}", v.key, v.value, v.desc);
+        }
+        Err(e) => {
+            println!("Error: {}", e);
+        }
     }
-    let v = argz.get("hello").unwrap();
-    println!("Key is {} value is {} its for {}", v.key, v.value, v.desc);
 }
