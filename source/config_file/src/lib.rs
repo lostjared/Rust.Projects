@@ -70,7 +70,7 @@ pub mod config {
             }
         }
 
-        pub fn load(&mut self) {
+        pub fn load(&mut self) -> std::io::Result<()> {
             let con = fs::read_to_string(&self.filename);
             match con {
                 Ok(contents) => {
@@ -98,8 +98,9 @@ pub mod config {
                         }
                     }
                 }
-                Err(e) => { println!("Error: {}", e); }
+                Err(e) => { println!("Error: {}", e); return Err(e) }
             }
+            Ok(())
         }
     }
 }

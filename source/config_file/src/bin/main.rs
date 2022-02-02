@@ -2,12 +2,12 @@ extern crate config_file;
 
 use config_file::config::Config;
 
-fn main() {
+fn main() -> std::io::Result<()> {
     let mut config = Config::create("test.cfg");
     //   config.setkey("id", "one", "value");
     //   config.setkey("id","two","value2");
     //   config.save();
-    config.load();
+    config.load()?;
     let value = config.getkey("program", "ran");
     match value {
         Some(v) => {
@@ -31,4 +31,5 @@ fn main() {
             config.save();
         }
     }
+    Ok(())
 }
