@@ -1,9 +1,11 @@
+
 #[derive(Debug)]
 enum ErrorType {
     Type1,
     Type2
 }
 
+// return value is either Ok or Err.
 fn return_value(x: u8) -> Result<ErrorType, &'static str> {
     match x {
         0 => { Ok(ErrorType::Type1) }
@@ -15,7 +17,11 @@ fn return_value(x: u8) -> Result<ErrorType, &'static str> {
 }
 
 fn main() {
-    match return_value(1) {
+    let mut input_string = String::new();
+    println!("input 0 for type1 or 2 for type2");
+    std::io::stdin().read_line(&mut input_string).expect("on readline");
+    let input_type: u8 = input_string.trim().parse::<u8>().unwrap();
+    match return_value(input_type) {
         Ok(e) => {
             println!("Returned value: {:?}", e);
         }
@@ -23,5 +29,4 @@ fn main() {
             println!("Error type: {}", e);
         }
     }
-
 }
