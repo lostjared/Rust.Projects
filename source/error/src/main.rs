@@ -16,7 +16,14 @@ fn return_value(x: u8) -> Result<ErrorType, &'static str> {
     }
 }
 
-fn main() {
+fn does_it_fail() -> std::io::Result<()> {
+    std::fs::File::open("test.txt")?;
+    Ok(())
+}
+
+
+
+fn main() -> std::io::Result<()> {
     let mut input_string = String::new();
     println!("input 0 for type1 or 1 for type2");
     std::io::stdin().read_line(&mut input_string).expect("on readline");
@@ -29,4 +36,6 @@ fn main() {
             println!("Error type: {}", e);
         }
     }
+    does_it_fail()?;
+    Ok(())
 }
