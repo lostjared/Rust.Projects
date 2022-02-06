@@ -3,7 +3,6 @@ use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::keyboard::Scancode;
 use sdl2::pixels::Color;
-use sdl2::pixels::PixelFormatEnum;
 use sdl2::rect::Rect;
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -75,12 +74,10 @@ fn proc_game(one: &mut Paddle, ball: &mut Ball) {
             ball.pos_x += speed;
             ball.pos_y += speed;
         }
-    } else {
-        if ball.dir == 1 || ball.dir == 3 {
-            ball.dir += 1;
-        } else if ball.dir == 2 || ball.dir == 4 {
-            ball.dir -= 1;
-        }
+    } else if ball.dir == 1 || ball.dir == 3 {
+        ball.dir += 1;
+    } else if ball.dir == 2 || ball.dir == 4 {
+        ball.dir -= 1;
     }
 
     if ball.pos_x < 6 {
@@ -106,11 +103,6 @@ fn main() {
         .build()
         .map_err(|e| e.to_string())
         .expect("Error on canvas");
-    let tc = can.texture_creator();
-    let mut texture = tc
-        .create_texture_streaming(PixelFormatEnum::RGB24, width, height)
-        .map_err(|e| e.to_string())
-        .expect("Error on texture create");
     let mut e = sdl.event_pump().unwrap();
     let mut paddle: Paddle = Paddle::new();
     let mut ball: Ball = Ball::new();
@@ -152,17 +144,16 @@ fn main() {
         tick_count += ptick;
 
         if tick_count > 15 {
-            if e.keyboard_state().is_scancode_pressed(Scancode::Up) {
-                if paddle.pos_y > 0 {
-                    paddle.pos_y -= 10;
-                }
+            if e.keyboard_state().is_scancode_pressed(Scancode::Up) && paddle.pos_y > 0 {
+                paddle.pos_y -= 10;
             }
 
-            if e.keyboard_state().is_scancode_pressed(Scancode::Down) {
-                if paddle.pos_y + (paddle.pos_h as i32) < height as i32 {
-                    paddle.pos_y += 10;
-                }
+            if e.keyboard_state().is_scancode_pressed(Scancode::Down)
+                && paddle.pos_y + (paddle.pos_h as i32) < height as i32
+            {
+                paddle.pos_y += 10;
             }
+
             tick_count = 0;
             proc_game(&mut paddle, &mut ball);
         }
