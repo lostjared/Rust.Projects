@@ -6,10 +6,10 @@ use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-
 static WIDTH: u32 = 1280;
 static HEIGHT: u32 = 720;
 
+#[derive(Debug)]
 struct Paddle {
     pub pos_x: i32,
     pub pos_y: i32,
@@ -28,6 +28,7 @@ impl Paddle {
     }
 }
 
+#[derive(Debug)]
 struct Ball {
     pub pos_x: i32,
     pub pos_y: i32,
@@ -64,14 +65,14 @@ fn proc_game(one: &mut Paddle, ball: &mut Ball) {
             ball.pos_y += speed;
         }
     } else if ball.dir == 3 && ball.pos_x < WIDTH as i32 && ball.pos_y > 17 {
-        if ball.pos_x > WIDTH as i32-20 {
+        if ball.pos_x > WIDTH as i32 - 20 {
             ball.dir = rng.gen_range(0..2) + 1;
         } else {
             ball.pos_x += speed;
             ball.pos_y -= speed;
         }
     } else if ball.dir == 4 && ball.pos_x < WIDTH as i32 && ball.pos_y < HEIGHT as i32 {
-        if ball.pos_x > WIDTH as i32-20 {
+        if ball.pos_x > WIDTH as i32 - 20 {
             ball.dir = rng.gen_range(0..2) + 1;
         } else {
             ball.pos_x += speed;
@@ -84,8 +85,8 @@ fn proc_game(one: &mut Paddle, ball: &mut Ball) {
     }
 
     if ball.pos_x < 6 {
-        ball.pos_x = WIDTH as i32/2;
-        ball.pos_y = HEIGHT as i32/2;
+        ball.pos_x = WIDTH as i32 / 2;
+        ball.pos_y = HEIGHT as i32 / 2;
         ball.dir = rng.gen_range(0..4) + 1;
         std::thread::sleep(std::time::Duration::from_secs(2));
     }
