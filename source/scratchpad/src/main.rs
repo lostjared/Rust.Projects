@@ -7,6 +7,18 @@ use sdl2::rect::Rect;
 static WIDTH: u32 = 1280;
 static HEIGHT: u32 = 720;
 
+fn getpos(x: i32, y: i32) -> (usize, usize) {
+    for i in 0..1280/16 as usize{
+        for z in 0..720/16 as usize {
+            if x as usize >= i*16 && x as usize <= i*16+16 && y as usize >= z*16  && y as usize <= z*16+16 {
+                return (i, z)    
+            }
+        }
+    }
+    (0, 0)
+}
+
+
 fn main() {
     let width = WIDTH;
     let height = HEIGHT;
@@ -55,5 +67,10 @@ fn main() {
             }
         }
         can.present();
+
+        if e.mouse_state().left() {
+            let pos = getpos(e.mouse_state().x(), e.mouse_state().y());
+            pixels[pos.0][pos.1] = 1;
+        }
     }
 }
