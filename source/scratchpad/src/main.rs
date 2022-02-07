@@ -29,7 +29,7 @@ fn main() {
 
     
     let window = video
-        .window("Scrachpad", width, height)
+        .window("Scrachpad - [Press Space to Clear]", width, height)
         .resizable()
         .opengl()
         .build()
@@ -48,6 +48,16 @@ fn main() {
                     keycode: Some(Keycode::Escape),
                     ..
                 } => break 'main,
+                | Event::KeyDown {
+                    keycode: Some(Keycode::Space),
+                    ..
+                } => {
+                    for i in 0..1280/16 as usize {
+                        for z in 0..720/16 as usize {
+                            pixels[i][z] = 0;
+                        }
+                    }
+                }
                 _ => {}
             }
         }
