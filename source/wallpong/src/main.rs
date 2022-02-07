@@ -43,7 +43,6 @@ impl Ball {
 fn proc_game(one: &mut Paddle, ball: &mut Ball) {
     let speed = 5;
     let mut rng = rand::thread_rng();
-
     if ball.dir == 1 && ball.pos_x > 5 && ball.pos_y > 17 {
         if ball.pos_x == one.pos_x + 10 && ball.pos_y >= one.pos_y && ball.pos_y <= one.pos_y + 100
         {
@@ -84,6 +83,7 @@ fn proc_game(one: &mut Paddle, ball: &mut Ball) {
         ball.pos_x = 315;
         ball.pos_y = 240;
         ball.dir = rng.gen_range(0..4) + 1;
+        std::thread::sleep(std::time::Duration::from_secs(2));
     }
 }
 
@@ -108,7 +108,6 @@ fn main() {
     let mut ball: Ball = Ball::new();
     let mut prev_tick = 0;
     let mut tick_count = 0;
-
     'main: loop {
         for _event in e.poll_iter() {
             match _event {
@@ -120,7 +119,6 @@ fn main() {
                 _ => {}
             }
         }
-
         can.set_draw_color(Color::RGB(0, 0, 0));
         can.clear();
         can.set_draw_color(Color::RGB(255, 255, 255));
@@ -142,7 +140,6 @@ fn main() {
         let ptick = tick - prev_tick;
         prev_tick = tick;
         tick_count += ptick;
-
         if tick_count > 15 {
             if e.keyboard_state().is_scancode_pressed(Scancode::Up) && paddle.pos_y > 0 {
                 paddle.pos_y -= 10;
@@ -153,7 +150,6 @@ fn main() {
             {
                 paddle.pos_y += 10;
             }
-
             tick_count = 0;
             proc_game(&mut paddle, &mut ball);
         }
