@@ -6,6 +6,10 @@ use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+
+static WIDTH: u32 = 1280;
+static HEIGHT: u32 = 720;
+
 struct Paddle {
     pub pos_x: i32,
     pub pos_y: i32,
@@ -51,7 +55,7 @@ fn proc_game(one: &mut Paddle, ball: &mut Ball) {
             ball.pos_x -= speed;
             ball.pos_y -= speed;
         }
-    } else if ball.dir == 2 && ball.pos_x > 5 && ball.pos_y < 480 {
+    } else if ball.dir == 2 && ball.pos_x > 5 && ball.pos_y < HEIGHT as i32 {
         if ball.pos_x == one.pos_x + 10 && ball.pos_y >= one.pos_y && ball.pos_y <= one.pos_y + 100
         {
             ball.dir = rng.gen_range(0..2) + 3;
@@ -59,15 +63,15 @@ fn proc_game(one: &mut Paddle, ball: &mut Ball) {
             ball.pos_x -= speed;
             ball.pos_y += speed;
         }
-    } else if ball.dir == 3 && ball.pos_x < 640 && ball.pos_y > 17 {
-        if ball.pos_x > 620 {
+    } else if ball.dir == 3 && ball.pos_x < WIDTH as i32 && ball.pos_y > 17 {
+        if ball.pos_x > WIDTH as i32-20 {
             ball.dir = rng.gen_range(0..2) + 1;
         } else {
             ball.pos_x += speed;
             ball.pos_y -= speed;
         }
-    } else if ball.dir == 4 && ball.pos_x < 640 && ball.pos_y < 480 {
-        if ball.pos_x > 620 {
+    } else if ball.dir == 4 && ball.pos_x < WIDTH as i32 && ball.pos_y < HEIGHT as i32 {
+        if ball.pos_x > WIDTH as i32-20 {
             ball.dir = rng.gen_range(0..2) + 1;
         } else {
             ball.pos_x += speed;
@@ -80,16 +84,16 @@ fn proc_game(one: &mut Paddle, ball: &mut Ball) {
     }
 
     if ball.pos_x < 6 {
-        ball.pos_x = 315;
-        ball.pos_y = 240;
+        ball.pos_x = WIDTH as i32/2;
+        ball.pos_y = HEIGHT as i32/2;
         ball.dir = rng.gen_range(0..4) + 1;
         std::thread::sleep(std::time::Duration::from_secs(2));
     }
 }
 
 fn main() {
-    let width = 640;
-    let height = 480;
+    let width = WIDTH;
+    let height = HEIGHT;
     let sdl = sdl2::init().unwrap();
     let video = sdl.video().unwrap();
     let window = video
