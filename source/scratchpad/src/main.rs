@@ -41,6 +41,8 @@ fn main() {
         .map_err(|e| e.to_string())
         .expect("Error on canvas");
     let mut e = sdl.event_pump().unwrap();
+    let mut mode = 1;
+
     'main: loop {
         for _event in e.poll_iter() {
             match _event {
@@ -59,12 +61,29 @@ fn main() {
                         }
                     }
                 }
+                Event::KeyDown {
+                    keycode: Some(Keycode::Right),
+                    ..
+                } => {
+                    mode = 1;
+                }
+                Event::KeyDown {
+                    keycode: Some(Keycode::Left),
+                    ..
+                } => {
+                    mode = 0;
+                }
                 _ => {}
             }
         }
         can.set_draw_color(Color::RGB(0, 0, 0));
         can.clear();
-
+        if mode == 1 {
+           can.set_draw_color(Color::RGB(0, 0, 0)); 
+        } else {
+            can.set_draw_color(Color::RGB(255,255,255));
+        }
+        can.fill_rect(Some(Rect::new(0, 0, width, height))).expect("on fill");
         for i in 0..1280 / 16_usize {
             for z in 0..720 / 16_usize {
                 let pos: &u8 = &pixels[i][z];
@@ -72,14 +91,17 @@ fn main() {
                 if *pos != 0 {
                     let x = i as i32;
                     let y = z as i32;
-                    can.set_draw_color(Color::RGB(255, 255, 255));
+                    if mode == 1 {
+                        can.set_draw_color(Color::RGB(255, 255, 255));
+                    } else {
+                        can.set_draw_color(Color::RGB(0, 0, 0));
+                    }
                     can.fill_rect(Some(Rect::new(x * 16_i32, y * 16_i32, 16, 16)))
                         .expect("on fill");
                 }
             }
         }
         can.present();
-
         if e.mouse_state().left() {
             let pos = getpos(e.mouse_state().x(), e.mouse_state().y());
             pixels[pos.0][pos.1] = 1;
