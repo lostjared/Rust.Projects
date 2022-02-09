@@ -27,6 +27,9 @@ fn main() {
     let sdl = sdl2::init().unwrap();
     let video = sdl.video().unwrap();
 
+    let mut background : Color = Color::RGB(0, 0, 0);
+    let mut foreground : Color = Color::RGB(255, 255, 255);
+
     let mut pixels: Box<[[u8; 720 / 16]; 1280 / 16]> = Box::new([[0; 720 / 16]; 1280 / 16]);
 
     let window = video
@@ -41,8 +44,6 @@ fn main() {
         .map_err(|e| e.to_string())
         .expect("Error on canvas");
     let mut e = sdl.event_pump().unwrap();
-    let mut mode = 1;
-
     'main: loop {
         for _event in e.poll_iter() {
             match _event {
@@ -65,24 +66,22 @@ fn main() {
                     keycode: Some(Keycode::Right),
                     ..
                 } => {
-                    mode = 1;
+                    foreground = Color::RGB(255, 255, 255);
+                    background = Color::RGB(0, 0, 0);
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Left),
                     ..
                 } => {
-                    mode = 0;
+                    foreground = Color::RGB(0, 0, 0);
+                    background = Color::RGB(255, 255, 255);
                 }
                 _ => {}
             }
         }
         can.set_draw_color(Color::RGB(0, 0, 0));
         can.clear();
-        if mode == 1 {
-           can.set_draw_color(Color::RGB(0, 0, 0)); 
-        } else {
-            can.set_draw_color(Color::RGB(255,255,255));
-        }
+        can.set_draw_color(background);
         can.fill_rect(Some(Rect::new(0, 0, width, height))).expect("on fill");
         for i in 0..1280 / 16_usize {
             for z in 0..720 / 16_usize {
@@ -91,11 +90,7 @@ fn main() {
                 if *pos != 0 {
                     let x = i as i32;
                     let y = z as i32;
-                    if mode == 1 {
-                        can.set_draw_color(Color::RGB(255, 255, 255));
-                    } else {
-                        can.set_draw_color(Color::RGB(0, 0, 0));
-                    }
+                    can.set_draw_color(foreground);
                     can.fill_rect(Some(Rect::new(x * 16_i32, y * 16_i32, 16, 16)))
                         .expect("on fill");
                 }
