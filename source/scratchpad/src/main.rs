@@ -26,21 +26,21 @@ fn main() {
     let height = HEIGHT;
     let sdl = sdl2::init().unwrap();
     let video = sdl.video().unwrap();
+    let background = vec![
+        Color::RGB(0, 0, 0),
+        Color::RGB(255, 0, 0),
+        Color::RGB(0, 255, 0),
+        Color::RGB(0, 0, 255),
+    ];
+    let foreground = vec![
+        Color::RGB(255, 255, 255),
+        Color::RGB(0, 0, 255),
+        Color::RGB(255, 0, 0),
+        Color::RGB(0, 255, 0),
+    ];
 
-    let mut background : Vec<Color> = Vec::new();
-    background.push(Color::RGB(0, 0, 0));
-    background.push(Color::RGB(255, 0, 0));
-    background.push(Color::RGB(0, 255, 0));
-    background.push(Color::RGB(0, 0, 255));
-    let mut foreground : Vec<Color> = Vec::new();
-    foreground.push(Color::RGB(255, 255, 255));
-    foreground.push(Color::RGB(0, 0, 255));
-    foreground.push(Color::RGB(255, 0, 0));
-    foreground.push(Color::RGB(0, 255, 0));
-    let mut index : usize = 0;
-
+    let mut index: usize = 0;
     let mut pixels: Box<[[u8; 720 / 16]; 1280 / 16]> = Box::new([[0; 720 / 16]; 1280 / 16]);
-
     let window = video
         .window("Scrachpad - [Press Space to Clear]", width, height)
         .resizable()
@@ -75,7 +75,7 @@ fn main() {
                     keycode: Some(Keycode::Right),
                     ..
                 } => {
-                    if index < foreground.len()-1 {
+                    if index < foreground.len() - 1 {
                         index += 1;
                     }
                 }
@@ -94,7 +94,8 @@ fn main() {
         can.clear();
         let mut color = &background[index];
         can.set_draw_color(*color);
-        can.fill_rect(Some(Rect::new(0, 0, width, height))).expect("on fill");
+        can.fill_rect(Some(Rect::new(0, 0, width, height)))
+            .expect("on fill");
         for i in 0..1280 / 16_usize {
             for z in 0..720 / 16_usize {
                 let pos: &u8 = &pixels[i][z];
