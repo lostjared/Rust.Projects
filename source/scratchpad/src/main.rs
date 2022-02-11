@@ -26,20 +26,16 @@ fn main() {
     let height = HEIGHT;
     let sdl = sdl2::init().unwrap();
     let video = sdl.video().unwrap();
-    let background = vec![
-        Color::RGB(0, 0, 0),
-        Color::RGB(255, 0, 0),
-        Color::RGB(0, 255, 0),
-        Color::RGB(0, 0, 255),
-    ];
+    let background = vec![Color::RGB(0, 0, 0), Color::RGB(255, 255, 255)];
     let foreground = vec![
-        Color::RGB(255, 255, 255),
-        Color::RGB(0, 0, 255),
         Color::RGB(255, 0, 0),
         Color::RGB(0, 255, 0),
+        Color::RGB(0, 0, 255),
     ];
 
     let mut index: usize = 0;
+    let mut fore_index: usize = 0;
+
     let mut pixels: Box<[[u8; 720 / 16]; 1280 / 16]> = Box::new([[0; 720 / 16]; 1280 / 16]);
     let window = video
         .window("Scrachpad - [Press Space to Clear]", width, height)
@@ -75,7 +71,7 @@ fn main() {
                     keycode: Some(Keycode::Right),
                     ..
                 } => {
-                    if index < foreground.len() - 1 {
+                    if index < background.len() - 1 {
                         index += 1;
                     }
                 }
@@ -85,6 +81,22 @@ fn main() {
                 } => {
                     if index > 0 {
                         index -= 1;
+                    }
+                }
+                Event::KeyDown {
+                    keycode: Some(Keycode::Down),
+                    ..
+                } => {
+                    if fore_index < foreground.len() - 1 {
+                        fore_index += 1;
+                    }
+                }
+                Event::KeyDown {
+                    keycode: Some(Keycode::Up),
+                    ..
+                } => {
+                    if fore_index > 0 {
+                        fore_index -= 1;
                     }
                 }
                 _ => {}
@@ -103,7 +115,7 @@ fn main() {
                 if *pos != 0 {
                     let x = i as i32;
                     let y = z as i32;
-                    color = &foreground[index];
+                    color = &foreground[fore_index];
                     can.set_draw_color(*color);
                     can.fill_rect(Some(Rect::new(x * 16_i32, y * 16_i32, 16, 16)))
                         .expect("on fill");
