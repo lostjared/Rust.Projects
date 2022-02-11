@@ -6,7 +6,7 @@ use sdl2::rect::Rect;
 static WIDTH: u32 = 1280;
 static HEIGHT: u32 = 720;
 
-fn getpos(x: i32, y: i32) -> (usize, usize) {
+fn getpos(x: i32, y: i32) -> Option<(usize, usize)> {
     for i in 0..1280 / 16_usize {
         for z in 0..720 / 16_usize {
             if x as usize >= i * 16
@@ -14,11 +14,11 @@ fn getpos(x: i32, y: i32) -> (usize, usize) {
                 && y as usize >= z * 16
                 && y as usize <= z * 16 + 16
             {
-                return (i, z);
+                return Some((i, z));
             }
         }
     }
-    (0, 0)
+    None
 }
 
 fn main() {
@@ -125,7 +125,10 @@ fn main() {
         can.present();
         if e.mouse_state().left() {
             let pos = getpos(e.mouse_state().x(), e.mouse_state().y());
-            pixels[pos.0][pos.1] = 1;
+            if pos != None {
+                let p = pos.unwrap();
+                pixels[p.0][p.1] = 1;
+            }
         }
     }
 }
