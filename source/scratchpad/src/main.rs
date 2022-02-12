@@ -3,9 +3,9 @@ use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 
-const SIZE_H : usize = 720;
-const SIZE_W : usize = 1280;
-const SIZE_X : usize = 8;
+const SIZE_H: usize = 720;
+const SIZE_W: usize = 1280;
+const SIZE_X: usize = 8;
 
 fn getpos(x: i32, y: i32) -> Option<(usize, usize)> {
     for i in 0..SIZE_W / SIZE_X {
@@ -39,9 +39,14 @@ fn main() {
 
     let mut index: usize = 0;
     let mut fore_index: usize = 0;
-    let mut pixels: Box<[[u8; SIZE_H / SIZE_X]; SIZE_W / SIZE_X]> = Box::new([[0; SIZE_H / SIZE_X]; SIZE_W / SIZE_X]);
+    let mut pixels: Box<[[u8; SIZE_H / SIZE_X]; SIZE_W / SIZE_X]> =
+        Box::new([[0; SIZE_H / SIZE_X]; SIZE_W / SIZE_X]);
     let window = video
-        .window("Scrachpad - [Press Space to Clear]", width as u32, height as u32)
+        .window(
+            "Scrachpad - [Press Space to Clear]",
+            width as u32,
+            height as u32,
+        )
         .resizable()
         .opengl()
         .build()
@@ -120,8 +125,13 @@ fn main() {
                     let y = z as i32;
                     color = &foreground[fore_index];
                     can.set_draw_color(*color);
-                    can.fill_rect(Some(Rect::new(x * SIZE_X as i32, y * SIZE_X as i32, SIZE_X as u32, SIZE_X as u32)))
-                        .expect("on fill");
+                    can.fill_rect(Some(Rect::new(
+                        x * SIZE_X as i32,
+                        y * SIZE_X as i32,
+                        SIZE_X as u32,
+                        SIZE_X as u32,
+                    )))
+                    .expect("on fill");
                 }
             }
         }
