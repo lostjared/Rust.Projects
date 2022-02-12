@@ -3,16 +3,17 @@ use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 
-static WIDTH: u32 = 1280;
-static HEIGHT: u32 = 720;
+const SIZE_H : usize = 720;
+const SIZE_W : usize = 1280;
+const SIZE_X : usize = 8;
 
 fn getpos(x: i32, y: i32) -> Option<(usize, usize)> {
-    for i in 0..1280 / 16_usize {
-        for z in 0..720 / 16_usize {
-            if x as usize >= i * 16
-                && x as usize <= i * 16 + 16
-                && y as usize >= z * 16
-                && y as usize <= z * 16 + 16
+    for i in 0..SIZE_W / SIZE_X {
+        for z in 0..SIZE_H / SIZE_X {
+            if x as usize >= i * SIZE_X
+                && x as usize <= i * SIZE_X + SIZE_X
+                && y as usize >= z * SIZE_X
+                && y as usize <= z * SIZE_X + SIZE_X
             {
                 return Some((i, z));
             }
@@ -22,8 +23,8 @@ fn getpos(x: i32, y: i32) -> Option<(usize, usize)> {
 }
 
 fn main() {
-    let width = WIDTH;
-    let height = HEIGHT;
+    let width = SIZE_W;
+    let height = SIZE_H;
     let sdl = sdl2::init().unwrap();
     let video = sdl.video().unwrap();
     let background = vec![Color::RGB(0, 0, 0), Color::RGB(255, 255, 255)];
@@ -31,14 +32,16 @@ fn main() {
         Color::RGB(255, 0, 0),
         Color::RGB(0, 255, 0),
         Color::RGB(0, 0, 255),
+        Color::RGB(255, 255, 0),
+        Color::RGB(0, 255, 255),
+        Color::RGB(255, 0, 255),
     ];
 
     let mut index: usize = 0;
     let mut fore_index: usize = 0;
-
-    let mut pixels: Box<[[u8; 720 / 16]; 1280 / 16]> = Box::new([[0; 720 / 16]; 1280 / 16]);
+    let mut pixels: Box<[[u8; SIZE_H / SIZE_X]; SIZE_W / SIZE_X]> = Box::new([[0; SIZE_H / SIZE_X]; SIZE_W / SIZE_X]);
     let window = video
-        .window("Scrachpad - [Press Space to Clear]", width, height)
+        .window("Scrachpad - [Press Space to Clear]", width as u32, height as u32)
         .resizable()
         .opengl()
         .build()
@@ -61,8 +64,8 @@ fn main() {
                     keycode: Some(Keycode::Space),
                     ..
                 } => {
-                    for i in 0..1280 / 16_usize {
-                        for z in 0..720 / 16_usize {
+                    for i in 0..SIZE_W / SIZE_X {
+                        for z in 0..SIZE_H / SIZE_X {
                             pixels[i][z] = 0;
                         }
                     }
@@ -106,10 +109,10 @@ fn main() {
         can.clear();
         let mut color = &background[index];
         can.set_draw_color(*color);
-        can.fill_rect(Some(Rect::new(0, 0, width, height)))
+        can.fill_rect(Some(Rect::new(0, 0, width as u32, height as u32)))
             .expect("on fill");
-        for i in 0..1280 / 16_usize {
-            for z in 0..720 / 16_usize {
+        for i in 0..SIZE_W / SIZE_X {
+            for z in 0..SIZE_H / SIZE_X {
                 let pos: &u8 = &pixels[i][z];
                 can.set_draw_color(Color::RGB(0, 0, 0));
                 if *pos != 0 {
@@ -117,7 +120,7 @@ fn main() {
                     let y = z as i32;
                     color = &foreground[fore_index];
                     can.set_draw_color(*color);
-                    can.fill_rect(Some(Rect::new(x * 16_i32, y * 16_i32, 16, 16)))
+                    can.fill_rect(Some(Rect::new(x * SIZE_X as i32, y * SIZE_X as i32, SIZE_X as u32, SIZE_X as u32)))
                         .expect("on fill");
                 }
             }
