@@ -60,19 +60,19 @@ fn printtext_width(
             width += metrics.advance;
         }
     }
-    if value.len() > 0 {
+    if !value.is_empty() {
         vlst.push(value);
     }
 
     let mut yy = y;
     for i in &vlst {
-        if i.len() > 0 {
+        if !i.is_empty() {
             printtext(can, tex, font, x, yy, color, i);
          }
          yy += metrics.advance + metrics.maxy;
     }
 
-    if blink == true {
+    if blink {
         can.set_draw_color(color);
         can.fill_rect(Rect::new(
             width + 5,
