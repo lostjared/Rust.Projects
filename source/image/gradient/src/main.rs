@@ -11,7 +11,7 @@ fn main() {
     for y in 0..256 {
         for x in 0..256 {
             let pixel = img.get_pixel_mut(x, y);
-            let image::Rgb(data) = *pixel;
+            let image::Rgb(_data) = *pixel;
             *pixel = image::Rgb([x as u8,y as u8,0]);
         }
     
