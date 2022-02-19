@@ -5,11 +5,10 @@ use image::*;
 use rayon::prelude::*;
 
 fn main() -> std::io::Result<()> {
-
     let img = ImageReader::open("image.png")?.decode().unwrap();
     let mut bytes : Vec<u8>  = Vec::from(img.as_bytes());
     println!("{}x{}", img.width(), img.height());
-    let values : Vec<(usize, &mut [u8])> = bytes.chunks_mut(img.width() as usize * 4 as usize).enumerate().collect();
+    let values : Vec<(usize, &mut [u8])> = bytes.chunks_mut(img.width() as usize * 4_usize).enumerate().collect();
     values.into_par_iter().for_each(|(_u, b)| {
         let mut x : usize = 0;
         let len = b.len()-1;
@@ -19,6 +18,6 @@ fn main() -> std::io::Result<()> {
             x += 4;
         }
     });
-    image::save_buffer("output.png", &mut bytes , img.width(), img.height(), image::ColorType::Rgba8).unwrap();
+    image::save_buffer("output.png", &bytes , img.width(), img.height(), image::ColorType::Rgba8).unwrap();
     Ok(())
 }
