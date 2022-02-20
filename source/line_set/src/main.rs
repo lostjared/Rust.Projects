@@ -14,7 +14,6 @@ fn main() {
     let mut line_map : HashMap<usize, String> = HashMap::new();
     let mut line_set : HashSet<usize> = HashSet::new();
 
-
     loop {
         let readline = rl.readline("> ");
         match readline {
@@ -40,7 +39,7 @@ fn main() {
                     for i in &line_set {
                         v.push(*i);
                     }
-                    v.sort();
+                    v.sort_unstable();
                      for i in &v {
                         let index = line_map.get(i).unwrap();
                         println!("{}", index);
