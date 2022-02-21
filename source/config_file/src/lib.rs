@@ -4,11 +4,18 @@ pub mod config {
     use std::fs;
     use std::fs::File;
     use std::io::Write;
+    use std::fmt::{self, Formatter, Display};
 
     #[derive(Debug)]
     pub struct Config {
         config: HashMap<String, HashMap<String, String>>,
         filename: String,
+    }
+
+    impl Display for Config {
+        fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+            write!(f, "Filename: {} config: {:?}", self.filename, self.config)
+        }
     }
 
     impl Config {
