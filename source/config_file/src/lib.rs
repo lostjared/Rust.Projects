@@ -14,7 +14,13 @@ pub mod config {
 
     impl Display for Config {
         fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-            write!(f, "Filename: {} config: {:?}", self.filename, self.config)
+            let mut values = String::new();
+            for value in self.config.values() {
+                for (key, v) in value {
+                    values.push_str(&format!("{}={}\n", key, v));
+                }
+            }
+            write!(f, "Filename: {} config: {}", self.filename, values)
         }
     }
 

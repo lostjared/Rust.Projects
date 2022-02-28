@@ -19,6 +19,7 @@ fn main() -> std::io::Result<()> {
                     config.setkey("program", "ran", &format!("{}", ran));
                     println!("Program ran: {} ", ran);
                     config.save();
+                    println!("config values: {}", config);
                 }
                 Err(e) => {
                     println!("Error converting data: {}...\n", e);
