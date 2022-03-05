@@ -1,5 +1,5 @@
 
-
+ #[derive(Debug)]
 enum ValueType {
     TYPE1,
     TYPE2,
@@ -7,7 +7,7 @@ enum ValueType {
 }
 
 fn to_value(t: ValueType) {
-    match t {
+    match &t {
         ValueType::TYPE1 => {
             println!("type 1");
         }
@@ -18,6 +18,7 @@ fn to_value(t: ValueType) {
             println!("type 3 {}", s);
         }
     }
+    println!("{:?}", t);
 }
 
 
