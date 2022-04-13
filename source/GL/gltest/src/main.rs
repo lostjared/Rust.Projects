@@ -16,6 +16,7 @@ fn main() {
         gl::load_with(|s| video_subsystem.gl_get_proc_address(s) as *const std::os::raw::c_void);
 
     unsafe {
+        gl::Viewport(0, 0, 1280, 720);
         gl::ClearColor(1.0, 1.0, 1.0, 1.0);
     }
 
