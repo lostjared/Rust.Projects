@@ -1,6 +1,8 @@
 extern crate gl;
 extern crate sdl2;
 
+use std::ffi::CStr;
+
 fn main() {
     let sdl = sdl2::init().unwrap();
     let video_subsystem = sdl.video().unwrap();
@@ -18,6 +20,9 @@ fn main() {
     unsafe {
         gl::Viewport(0, 0, 1280, 720);
         gl::ClearColor(1.0, 1.0, 1.0, 1.0);
+        let version = gl::GetString(gl::VERSION) as *const i8;
+        let version = String::from_utf8(CStr::from_ptr(version).to_bytes().to_vec()).unwrap();
+        println!("Version: {}", version);
     }
 
     let mut event_pump = sdl.event_pump().unwrap();
