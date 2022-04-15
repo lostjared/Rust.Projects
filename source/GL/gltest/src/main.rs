@@ -25,7 +25,7 @@ fn main() {
         println!("OpenGL Version: {}", v);
         let vendor = gl::GetString(gl::VENDOR) as *const i8;
         let ven = String::from_utf8(CStr::from_ptr(vendor).to_bytes().to_vec()).unwrap();
-        println!("OpenGL Vendoer: {}", ven);
+        println!("OpenGL Vendor: {}", ven);
     }
 
     let mut event_pump = sdl.event_pump().unwrap();
