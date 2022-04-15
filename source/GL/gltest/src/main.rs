@@ -21,8 +21,11 @@ fn main() {
         gl::Viewport(0, 0, 1280, 720);
         gl::ClearColor(1.0, 1.0, 1.0, 1.0);
         let version = gl::GetString(gl::VERSION) as *const i8;
-        let version = String::from_utf8(CStr::from_ptr(version).to_bytes().to_vec()).unwrap();
-        println!("Version: {}", version);
+        let v = String::from_utf8(CStr::from_ptr(version).to_bytes().to_vec()).unwrap();
+        println!("OpenGL Version: {}", v);
+        let vendor = gl::GetString(gl::VENDOR) as *const i8;
+        let ven = String::from_utf8(CStr::from_ptr(vendor).to_bytes().to_vec()).unwrap();
+        println!("OpenGL Vendoer: {}", ven);
     }
 
     let mut event_pump = sdl.event_pump().unwrap();
