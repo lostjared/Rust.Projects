@@ -59,6 +59,13 @@ pub mod tictactoe {
 
             -1
         }
+        
+        pub fn check_turn(&self, x: usize, y: usize) -> bool {
+            if self.grid[x][y] == 0 {
+                return true;
+            }
+            false
+        }
 
         pub fn switch_turn(&mut self) {
             if self.turn == 2 {
