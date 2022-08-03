@@ -7,8 +7,7 @@ fn guess_number() -> u32 {
     let mut input_text : String = String::new();
     io::stdin().read_line(&mut input_text).expect("error on readline");
     input_text.pop();
-    let num = input_text.parse().unwrap();
-    num
+    input_text.parse().unwrap()
 }
 
 fn main() {
