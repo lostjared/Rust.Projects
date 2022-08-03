@@ -1,11 +1,12 @@
-
-use std::io;
 use rand::Rng;
+use std::io;
 
 fn guess_number() -> u32 {
     println!("Enter number: ");
-    let mut input_text : String = String::new();
-    io::stdin().read_line(&mut input_text).expect("error on readline");
+    let mut input_text: String = String::new();
+    io::stdin()
+        .read_line(&mut input_text)
+        .expect("error on readline");
     input_text.pop();
     input_text.parse().unwrap()
 }
@@ -21,8 +22,10 @@ fn main() {
             println!("Incorrect you lose..\n");
         }
         println!("Try again (yes/no)");
-        let mut input_text : String = String::new();
-        io::stdin().read_line(&mut input_text).expect("error on readline");
+        let mut input_text: String = String::new();
+        io::stdin()
+            .read_line(&mut input_text)
+            .expect("error on readline");
         input_text.pop();
         if input_text != "yes" {
             break;
