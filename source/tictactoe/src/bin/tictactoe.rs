@@ -10,14 +10,33 @@ fn get_move(player: u32) -> (usize, usize, u32) {
         return get_move(player);
     }
     let value : Vec<&str> = input_text.split(" ").collect();
-    let x : usize = value[0].parse().unwrap();
-    let y : usize = value[1].parse().unwrap();
+    let x;
+    let y;
+    let xval = value[0].parse();
+    match xval {
+        Ok(o) => {
+            x = o;
+        }
+        Err(e) => {
+            println!("Invalid number...: {}", e);
+            return get_move(player);
+        }
+    }
+    let yval = value[1].parse();
+    match yval {
+        Ok(o) => {
+            y = o;
+        }
+        Err(e) => {
+            println!("Error invalid number try again: {}", e);
+            return get_move(player);
+        }
+    }
 
     if !(x <= 2 && y <= 2) {
         println!("must be value 0-2");
         return get_move(player);
     }
-
     (x, y, player)
 }
 
