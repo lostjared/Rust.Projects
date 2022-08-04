@@ -24,7 +24,7 @@ fn get_move(player: u32) -> (usize, usize, u32) {
         x = i;
     } else {
         println!("Invalid number data num 1 you gave: {}", value[0]);
-        return get_move(player)
+        return get_move(player);
     }
     if let Ok(i) = value[1].trim().parse() {
         y = i;
