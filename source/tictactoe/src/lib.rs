@@ -12,7 +12,7 @@ pub mod tictactoe {
     }
 
     impl Grid {
-        pub fn new() -> Grid {
+        pub fn new() -> Self {
             Grid {
                 grid: Box::new([[0; 4]; 4]),
                 turn: 1,
@@ -33,11 +33,9 @@ pub mod tictactoe {
             if self.grid[2][0] == t && self.grid[2][1] == t && self.grid[2][2] == t {
                 return true;
             }
-
             if self.grid[0][0] == t && self.grid[0][1] == t && self.grid[0][2] == t {
                 return true;
             }
-
             if self.grid[1][0] == t && self.grid[1][1] == t && self.grid[1][2] == t {
                 return true;
             }

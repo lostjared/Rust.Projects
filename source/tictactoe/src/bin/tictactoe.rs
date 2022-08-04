@@ -7,6 +7,12 @@ fn get_move(player: u32) -> (usize, usize, u32) {
         .read_line(&mut input_text)
         .expect("on readline");
     input_text.pop();
+
+    if input_text == "quit" || input_text == "exit" {
+        println!("Goodbye!");
+        std::process::exit(0);
+    }
+
     if !input_text.contains(' ') {
         println!("Needs to contain two numbers");
         return get_move(player);
