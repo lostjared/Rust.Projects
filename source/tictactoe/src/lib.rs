@@ -34,7 +34,7 @@ pub mod tictactoe {
 
             if self.grid[1][0] == t && self.grid[1][1] == t && self.grid[1][2] == t {
                 return true;
-            } 
+            }
             if self.grid[2][0] == t && self.grid[2][1] == t && self.grid[2][2] == t {
                 return true;
             }
@@ -48,7 +48,6 @@ pub mod tictactoe {
         }
 
         pub fn check_game_over(&self) -> i32 {
-
             if self.check_type(1) == true {
                 return 1;
             }
@@ -59,7 +58,7 @@ pub mod tictactoe {
 
             -1
         }
-        
+
         pub fn check_turn(&self, x: usize, y: usize) -> bool {
             if self.grid[x][y] == 0 {
                 return true;
@@ -81,11 +80,9 @@ pub mod tictactoe {
                 for i in 0..3 {
                     if self.grid[i][z] == 1 {
                         print!("X");
-                    }
-                    else if self.grid[i][z] == 2 {
-                       print!("O");
-                    }
-                    else {
+                    } else if self.grid[i][z] == 2 {
+                        print!("O");
+                    } else {
                         print!("_");
                     }
                 }

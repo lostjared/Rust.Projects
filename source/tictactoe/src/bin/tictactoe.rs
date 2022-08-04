@@ -2,14 +2,16 @@ use tictactoe::tictactoe::Grid;
 
 fn get_move(player: u32) -> (usize, usize, u32) {
     println!("Player {} Enter x y ", player);
-    let mut input_text : String = String::new();
-    std::io::stdin().read_line(&mut input_text).expect("on readline");
+    let mut input_text: String = String::new();
+    std::io::stdin()
+        .read_line(&mut input_text)
+        .expect("on readline");
     input_text.pop();
     if !input_text.contains(" ") {
         println!("Needs to contain two numbers");
         return get_move(player);
     }
-    let value : Vec<&str> = input_text.split(" ").collect();
+    let value: Vec<&str> = input_text.split(" ").collect();
     let x;
     let y;
     let xval = value[0].parse();
@@ -41,9 +43,9 @@ fn get_move(player: u32) -> (usize, usize, u32) {
 }
 
 fn main() {
-    let mut g : Grid = Grid::new();
+    let mut g: Grid = Grid::new();
     g.print_board();
-    loop  {
+    loop {
         let rt_val = get_move(g.turn);
         if g.check_turn(rt_val.0, rt_val.1) == true {
             g.go_turn(rt_val.0, rt_val.1, rt_val.2);
@@ -53,11 +55,11 @@ fn main() {
         }
         g.print_board();
         if g.check_game_over() == -1 {
-            g.switch_turn();        
+            g.switch_turn();
         } else {
             println!("Player {} Won!\n", g.check_game_over());
             g.print_board();
             break;
-        }          
+        }
     }
 }
