@@ -20,27 +20,18 @@ fn get_move(player: u32) -> (usize, usize, u32) {
     let value: Vec<&str> = input_text.split(' ').collect();
     let x;
     let y;
-    let xval = value[0].parse();
-    match xval {
-        Ok(o) => {
-            x = o;
-        }
-        Err(e) => {
-            println!("Invalid number...: {}", e);
-            return get_move(player);
-        }
+    if let Ok(i) = value[0].trim().parse() {
+        x = i;
+    } else {
+        println!("Invalid number data num 1 you gave: {}", value[0]);
+        return get_move(player)
     }
-    let yval = value[1].parse();
-    match yval {
-        Ok(o) => {
-            y = o;
-        }
-        Err(e) => {
-            println!("Error invalid number try again: {}", e);
-            return get_move(player);
-        }
+    if let Ok(i) = value[1].trim().parse() {
+        y = i;
+    } else {
+        println!("Invalid number data num 2 you gave; {}", value[1]);
+        return get_move(player);
     }
-
     if !(x <= 2 && y <= 2) {
         println!("must be value 0-2");
         return get_move(player);
