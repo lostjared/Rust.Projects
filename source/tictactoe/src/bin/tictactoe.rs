@@ -7,11 +7,11 @@ fn get_move(player: u32) -> (usize, usize, u32) {
         .read_line(&mut input_text)
         .expect("on readline");
     input_text.pop();
-    if !input_text.contains(" ") {
+    if !input_text.contains(' ') {
         println!("Needs to contain two numbers");
         return get_move(player);
     }
-    let value: Vec<&str> = input_text.split(" ").collect();
+    let value: Vec<&str> = input_text.split(' ').collect();
     let x;
     let y;
     let xval = value[0].parse();
@@ -47,7 +47,7 @@ fn main() {
     g.print_board();
     loop {
         let rt_val = get_move(g.turn);
-        if g.check_turn(rt_val.0, rt_val.1) == true {
+        if g.check_turn(rt_val.0, rt_val.1) {
             g.go_turn(rt_val.0, rt_val.1, rt_val.2);
         } else {
             println!("Space occupied...\n");

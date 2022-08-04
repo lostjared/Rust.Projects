@@ -5,6 +5,12 @@ pub mod tictactoe {
         pub turn: u32,
     }
 
+    impl Default for Grid {
+        fn default() -> Self {
+            Self::new()
+        }
+    }
+
     impl Grid {
         pub fn new() -> Grid {
             Grid {
@@ -48,11 +54,11 @@ pub mod tictactoe {
         }
 
         pub fn check_game_over(&self) -> i32 {
-            if self.check_type(1) == true {
+            if self.check_type(1) {
                 return 1;
             }
 
-            if self.check_type(2) == true {
+            if self.check_type(2) {
                 return 2;
             }
 
