@@ -1,7 +1,7 @@
 pub mod tictactoe {
 
     pub struct Grid {
-        grid: Box<[[u32; 4]; 4]>,
+        pub grid: Box<[[u32; 4]; 4]>,
         pub turn: u32,
     }
 
@@ -16,6 +16,36 @@ pub mod tictactoe {
             Grid {
                 grid: Box::new([[0; 4]; 4]),
                 turn: 1,
+            }
+        }
+
+        pub fn click(&mut self, x: i32, y: i32) {
+            println!("click: {} {}", x, y);
+            if x >= 100 && x <= 450 && y >= 30 && y <= 200 {
+                self.set_turn(0, 0);
+            } else if x >= 450 && x <= 850 && y >= 30 && y <= 200 {
+                self.set_turn(1, 0);
+            } else if x >= 800 && x <= 1100 && y >= 30 && y <= 200 {
+                self.set_turn(2, 0);
+            } else if x >= 100 && x <= 450 && y >= 250 && y <= 350 {
+                self.set_turn(0, 1);
+            } else if x >= 450 && x <= 850 && y >= 250 && y <= 350 {
+                self.set_turn(1, 1);
+            } else if x >= 800 && x <= 1100 && y >= 250 && y <= 350 {
+                self.set_turn(2, 1);   
+            } else if x >= 100 && x <= 450 && y > 400 && y <= 600 {
+                self.set_turn(0, 2);
+            } else if x >= 450 && x <= 850 && y > 400 && y <= 600 {
+                self.set_turn(1, 2);
+            } else if x >= 800 && x <= 1100 && y > 400 && y <= 600{
+                self.set_turn(2,2);
+            }
+        }
+
+        pub fn set_turn(&mut self, x: usize, y: usize) {
+            if self.check_turn(x, y) {
+                self.grid[x][y] = self.turn;
+                self.switch_turn();
             }
         }
 
