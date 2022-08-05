@@ -1,14 +1,11 @@
-use std::io::prelude::*;
-
-fn slash_seq(input: &String) -> String {
-    let mut value : String = String::new();
+fn slash_seq(input: &str) -> String {
+    let mut value: String = String::new();
     for i in input.chars() {
         if i == '\\' {
             value.push_str("\\\\");
         } else if i == '\"' {
             value.push_str("\\\"");
-        }
-        else {
+        } else {
             value.push(i);
         }
     }
@@ -16,17 +13,19 @@ fn slash_seq(input: &String) -> String {
 }
 
 fn convert_to_rs() -> String {
-    let mut value : String = String::new();
+    let mut value: String = String::new();
     value.push_str("let v = vec![");
     loop {
-        let mut input_text : String = String::new();
-        let val = std::io::stdin().read_line(&mut input_text).expect("on read");
+        let mut input_text: String = String::new();
+        let val = std::io::stdin()
+            .read_line(&mut input_text)
+            .expect("on read");
         input_text.pop();
         value.push_str(&format!("\n\"{}\"", &slash_seq(&input_text)));
-        if val == 0  {
+        if val == 0 {
             break;
         } else {
-            value.push_str(",");
+            value.push(',');
         }
     }
     value.push_str("];\n");
@@ -34,6 +33,6 @@ fn convert_to_rs() -> String {
 }
 
 fn main() {
-    let s : String = convert_to_rs();
+    let s: String = convert_to_rs();
     println!("{}", s);
 }
