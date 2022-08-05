@@ -31,13 +31,13 @@ pub mod tictactoe {
             } else if x >= 450 && x <= 850 && y >= 250 && y <= 350 {
                 self.set_turn(1, 1);
             } else if x >= 800 && x <= 1100 && y >= 250 && y <= 350 {
-                self.set_turn(2, 1);   
+                self.set_turn(2, 1);
             } else if x >= 100 && x <= 450 && y > 400 && y <= 600 {
                 self.set_turn(0, 2);
             } else if x >= 450 && x <= 850 && y > 400 && y <= 600 {
                 self.set_turn(1, 2);
-            } else if x >= 800 && x <= 1100 && y > 400 && y <= 600{
-                self.set_turn(2,2);
+            } else if x >= 800 && x <= 1100 && y > 400 && y <= 600 {
+                self.set_turn(2, 2);
             }
         }
 
@@ -74,7 +74,7 @@ pub mod tictactoe {
             }
             if self.grid[0][2] == t && self.grid[1][1] == t && self.grid[2][0] == t {
                 return true;
-            } 
+            }
             false
         }
 

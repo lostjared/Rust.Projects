@@ -4,7 +4,6 @@ use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 use tictactoe::tictactoe::Grid;
 
-
 fn main() {
     let row1 = vec![(250, 100), (650, 100), (1000, 100)];
     let row2 = vec![(250, 300), (650, 300), (1000, 300)];
@@ -16,7 +15,11 @@ fn main() {
     let sdl = sdl2::init().unwrap();
     let video = sdl.video().unwrap();
     let window = video
-        .window("TicTacToe App [ Press Return to Start Over ]", width, height)
+        .window(
+            "TicTacToe App [ Press Return to Start Over ]",
+            width,
+            height,
+        )
         .resizable()
         .opengl()
         .build()
@@ -30,16 +33,16 @@ fn main() {
     let tc = can.texture_creator();
     let font = ttf_context.load_font("./font.ttf", 18).expect("test");
     let _text_surf = font
-            .render("Hello, World!")
-            .blended(Color::RGB(255, 255, 255))
-            .unwrap();
+        .render("Hello, World!")
+        .blended(Color::RGB(255, 255, 255))
+        .unwrap();
 
-    let x_surf = font.render("X").blended(Color::RGB(255,255,255)).unwrap();
-    let o_surf = font.render("O").blended(Color::RGB(255,255,255)).unwrap();
+    let x_surf = font.render("X").blended(Color::RGB(255, 255, 255)).unwrap();
+    let o_surf = font.render("O").blended(Color::RGB(255, 255, 255)).unwrap();
     let x_text = tc.create_texture_from_surface(&x_surf).unwrap();
     let o_text = tc.create_texture_from_surface(&o_surf).unwrap();
 
-    let mut grid : Grid = Grid::new();
+    let mut grid: Grid = Grid::new();
     let mut e = sdl.event_pump().unwrap();
     'main: loop {
         for _event in e.poll_iter() {
@@ -55,15 +58,13 @@ fn main() {
                 } => {
                     game_over = false;
                     grid.clear();
-                },
+                }
                 Event::MouseButtonDown { x, y, .. } => {
                     if game_over == false {
                         grid.click(x, y)
                     }
                 }
-                _ => {
-
-                }
+                _ => {}
             }
         }
         can.set_draw_color(Color::RGB(0, 0, 0));
@@ -85,19 +86,28 @@ fn main() {
                 let x_pos = cords[z][i].0;
                 let y_pos = cords[z][i].1;
                 if t == 1 {
-                    can.copy(&x_text, None, Some(Rect::new(x_pos, y_pos, 32, 32))).expect("on copy");
+                    can.copy(&x_text, None, Some(Rect::new(x_pos, y_pos, 32, 32)))
+                        .expect("on copy");
                 } else if t == 2 {
-                    can.copy(&o_text, None, Some(Rect::new(x_pos, y_pos, 32, 32))).expect("on copy");
+                    can.copy(&o_text, None, Some(Rect::new(x_pos, y_pos, 32, 32)))
+                        .expect("on copy");
                 }
             }
         }
 
         if grid.check_game_over() != -1 {
-            let game_over_surf = font.render(&format!("Game Over Player: {} Wins", grid.check_game_over())).blended(Color::RGB(255,255,255)).unwrap();
+            let game_over_surf = font
+                .render(&format!(
+                    "Game Over Player: {} Wins",
+                    grid.check_game_over()
+                ))
+                .blended(Color::RGB(255, 255, 255))
+                .unwrap();
             let game_over_text = tc.create_texture_from_surface(&game_over_surf).unwrap();
-            can.copy(&game_over_text, None, Some(Rect::new(25, 25, 200, 25))).expect("on copy");
+            can.copy(&game_over_text, None, Some(Rect::new(25, 25, 200, 25)))
+                .expect("on copy");
             game_over = true;
-        } 
+        }
         can.present();
     }
 }
