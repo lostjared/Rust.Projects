@@ -60,7 +60,7 @@ fn main() {
                     grid.clear();
                 }
                 Event::MouseButtonDown { x, y, .. } => {
-                    if game_over == false {
+                    if !game_over {
                         grid.click(x, y)
                     }
                 }
@@ -104,9 +104,18 @@ fn main() {
                 .blended(Color::RGB(255, 255, 255))
                 .unwrap();
             let game_over_text = tc.create_texture_from_surface(&game_over_surf).unwrap();
-            can.copy(&game_over_text, None, Some(Rect::new(25, 25, 200, 25)))
+            can.copy(&game_over_text, None, Some(Rect::new(25, 25, 300, 25)))
                 .expect("on copy");
             game_over = true;
+        } else {
+            let turn_surf = font
+                .render(&format!("Player: {} Turn", grid.turn))
+                .blended(Color::RGB(255, 255, 255))
+                .unwrap();
+
+            let turn_surf_text = tc.create_texture_from_surface(&turn_surf).unwrap();
+            can.copy(&turn_surf_text, None, Some(Rect::new(25, 25, 200, 25)))
+                .expect("on copy");
         }
         can.present();
     }
