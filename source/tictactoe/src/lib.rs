@@ -1,7 +1,7 @@
 pub mod tictactoe {
 
     pub struct Grid {
-        pub grid: Box<[[u32; 4]; 4]>,
+        pub grid: Box<[[u32; 3]; 3]>,
         pub turn: u32,
     }
 
@@ -14,7 +14,7 @@ pub mod tictactoe {
     impl Grid {
         pub fn new() -> Self {
             Grid {
-                grid: Box::new([[0; 4]; 4]),
+                grid: Box::new([[0; 3]; 3]),
                 turn: 1,
             }
         }

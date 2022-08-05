@@ -112,7 +112,6 @@ fn main() {
                 .render(&format!("Player: {} Turn", grid.turn))
                 .blended(Color::RGB(255, 255, 255))
                 .unwrap();
-
             let turn_surf_text = tc.create_texture_from_surface(&turn_surf).unwrap();
             can.copy(&turn_surf_text, None, Some(Rect::new(25, 25, 200, 25)))
                 .expect("on copy");
