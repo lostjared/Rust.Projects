@@ -5,6 +5,8 @@ fn slash_seq(input: &String) -> String {
     for i in input.chars() {
         if i == '\\' {
             value.push_str("\\\\");
+        } else if i == '\"' {
+            value.push_str("\\\"");
         }
         else {
             value.push(i);
