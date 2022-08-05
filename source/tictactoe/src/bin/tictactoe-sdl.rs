@@ -10,7 +10,7 @@ fn main() {
     let row2 = vec![(250, 300), (650, 300), (1000, 300)];
     let row3 = vec![(250, 550), (650, 550), (1000, 550)];
     let cords = vec![row1, row2, row3];
-
+    let mut game_over = false;
     let width = 1280;
     let height = 720;
     let sdl = sdl2::init().unwrap();
@@ -50,7 +50,9 @@ fn main() {
                     ..
                 } => break 'main,
                 Event::MouseButtonDown { x, y, .. } => {
-                    grid.click(x, y)
+                    if game_over == false {
+                        grid.click(x, y)
+                    }
                 }
                 _ => {
 
@@ -82,6 +84,13 @@ fn main() {
                 }
             }
         }
+
+        if grid.check_game_over() != -1 {
+            let game_over_surf = font.render(&format!("Game Over Player: {} Wins", grid.check_game_over())).blended(Color::RGB(255,255,255)).unwrap();
+            let game_over_text = tc.create_texture_from_surface(&game_over_surf).unwrap();
+            can.copy(&game_over_text, None, Some(Rect::new(25, 25, 200, 25))).expect("on copy");
+            game_over = true;
+        } 
         can.present();
     }
 }

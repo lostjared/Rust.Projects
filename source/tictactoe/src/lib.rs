@@ -20,7 +20,6 @@ pub mod tictactoe {
         }
 
         pub fn click(&mut self, x: i32, y: i32) {
-            println!("click: {} {}", x, y);
             if x >= 100 && x <= 450 && y >= 30 && y <= 200 {
                 self.set_turn(0, 0);
             } else if x >= 450 && x <= 850 && y >= 30 && y <= 200 {
@@ -63,13 +62,10 @@ pub mod tictactoe {
             if self.grid[2][0] == t && self.grid[2][1] == t && self.grid[2][2] == t {
                 return true;
             }
-            if self.grid[0][0] == t && self.grid[0][1] == t && self.grid[0][2] == t {
+            if self.grid[0][1] == t && self.grid[1][1] == t && self.grid[2][1] == t {
                 return true;
             }
-            if self.grid[1][0] == t && self.grid[1][1] == t && self.grid[1][2] == t {
-                return true;
-            }
-            if self.grid[2][0] == t && self.grid[2][1] == t && self.grid[2][2] == t {
+            if self.grid[0][2] == t && self.grid[1][2] == t && self.grid[2][2] == t {
                 return true;
             }
             if self.grid[0][0] == t && self.grid[1][1] == t && self.grid[2][2] == t {
