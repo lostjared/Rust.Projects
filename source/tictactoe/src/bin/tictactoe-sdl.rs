@@ -49,6 +49,13 @@ fn main() {
                     keycode: Some(Keycode::Escape),
                     ..
                 } => break 'main,
+                Event::KeyDown {
+                    keycode: Some(Keycode::Return),
+                    ..
+                } => {
+                    game_over = false;
+                    grid.clear();
+                },
                 Event::MouseButtonDown { x, y, .. } => {
                     if game_over == false {
                         grid.click(x, y)

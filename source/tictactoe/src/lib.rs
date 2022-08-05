@@ -41,6 +41,14 @@ pub mod tictactoe {
             }
         }
 
+        pub fn clear(&mut self) {
+            for i in 0..3 {
+                for z in 0..3 {
+                    self.grid[i][z] = 0;
+                }
+            }
+        }
+
         pub fn set_turn(&mut self, x: usize, y: usize) {
             if self.check_turn(x, y) {
                 self.grid[x][y] = self.turn;
