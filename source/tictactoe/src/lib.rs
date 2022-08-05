@@ -61,27 +61,20 @@ pub mod tictactoe {
         }
 
         pub fn check_type(&self, t: u32) -> bool {
-            if self.grid[0][0] == t && self.grid[0][1] == t && self.grid[0][2] == t {
-                return true;
-            }
-            if self.grid[1][0] == t && self.grid[1][1] == t && self.grid[1][2] == t {
-                return true;
-            }
-            if self.grid[2][0] == t && self.grid[2][1] == t && self.grid[2][2] == t {
-                return true;
-            }
-            if self.grid[0][1] == t && self.grid[1][1] == t && self.grid[2][1] == t {
-                return true;
-            }
-            if self.grid[0][2] == t && self.grid[1][2] == t && self.grid[2][2] == t {
-                return true;
+            for i in 0..3 {
+                if self.grid[i][0] == t && self.grid[i][1] == t && self.grid[i][2] == t {
+                    return true;
+                }
+                if self.grid[0][i] == t && self.grid[1][i] == t && self.grid[2][i] == t {
+                    return true;
+                }
             }
             if self.grid[0][0] == t && self.grid[1][1] == t && self.grid[2][2] == t {
                 return true;
             }
             if self.grid[0][2] == t && self.grid[1][1] == t && self.grid[2][0] == t {
                 return true;
-            }
+            } 
             false
         }
 
