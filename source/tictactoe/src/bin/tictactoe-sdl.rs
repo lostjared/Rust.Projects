@@ -16,7 +16,7 @@ fn main() {
     let sdl = sdl2::init().unwrap();
     let video = sdl.video().unwrap();
     let window = video
-        .window("TicTacToe App", width, height)
+        .window("TicTacToe App [ Press Return to Start Over ]", width, height)
         .resizable()
         .opengl()
         .build()
