@@ -1,10 +1,10 @@
 
 
 fn output_hex<T: std::io::BufRead + Sized>(mut reader: T) {
+    let mut counter = 0;
     loop {
         let mut buf: [u8; 256] = [0; 256];
         let val = reader.read(&mut buf).expect("on read");
-        let mut counter = 0;
         for i in 0..val {
             print!("{:#04x} ", buf[i]);
             counter += 1;
