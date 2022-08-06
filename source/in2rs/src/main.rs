@@ -1,5 +1,5 @@
 use std::io::BufRead;
-
+use std::io::BufReader;
 
 fn slash_seq(input: &str) -> String {
     let mut value: String = String::new();
@@ -36,8 +36,19 @@ fn convert_to_rs<T: BufRead + Sized>(mut reader: T) -> String {
 }
 
 fn main() {
-    let i = std::io::stdin();
-    let r = i.lock();
-    let s: String = convert_to_rs(r);
-    println!("{}", s);
+
+    let args: Vec<String> = std::env::args().collect();
+    if args.len() <= 1 {
+        let i = std::io::stdin();
+        let r = i.lock();
+        let s: String = convert_to_rs(r);
+        println!("{}", s);
+    } else {
+        for i in args.iter().skip(1) {
+            let f = std::fs::File::open(i).unwrap();
+            let r = BufReader::new(f);
+            let s: String = convert_to_rs(r);
+            println!("{}", s);
+        }
+    }
 }
