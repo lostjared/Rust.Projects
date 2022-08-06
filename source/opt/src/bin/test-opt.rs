@@ -1,10 +1,9 @@
-
 use opt::argz;
 
 fn main() {
     let args = std::env::args().collect();
-    argz::optarg(&args,"i:o:a", |i: char, param: String| {
-        if param.len() > 0 {
+    argz::optarg(&args, "i:o:a", |i: char, param: String| {
+        if !param.is_empty() {
             println!("ch: {} param: {} ", i, param);
         } else {
             println!("chars: {}", i);
@@ -15,12 +14,13 @@ fn main() {
             }
             'o' => {
                 println!("Output argument: {}", param);
-
             }
             'a' => {
                 println!("A argument\n");
             }
-            _ => { println!("unknown argument "); }
+            _ => {
+                println!("unknown argument ");
+            }
         }
     });
 }
