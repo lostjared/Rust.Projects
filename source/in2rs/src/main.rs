@@ -1,3 +1,6 @@
+use std::io::BufRead;
+
+
 fn slash_seq(input: &str) -> String {
     let mut value: String = String::new();
     for i in input.chars() {
@@ -12,12 +15,12 @@ fn slash_seq(input: &str) -> String {
     value
 }
 
-fn convert_to_rs() -> String {
+fn convert_to_rs<T: BufRead + Sized>(mut reader: T) -> String {
     let mut value: String = String::new();
     value.push_str("let v = vec![");
     loop {
         let mut input_text: String = String::new();
-        let val = std::io::stdin()
+        let val = reader
             .read_line(&mut input_text)
             .expect("on read");
         input_text.pop();
@@ -33,6 +36,8 @@ fn convert_to_rs() -> String {
 }
 
 fn main() {
-    let s: String = convert_to_rs();
+    let i = std::io::stdin();
+    let r = i.lock();
+    let s: String = convert_to_rs(r);
     println!("{}", s);
 }
