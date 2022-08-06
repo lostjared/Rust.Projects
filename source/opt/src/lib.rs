@@ -1,5 +1,10 @@
+//! Get command line arguments
+
+
+/// module
 pub mod argz {
 
+    /// this function process a vector of command line arguments using string input and closeure F(char,String)
     pub fn getopt<F: Fn(char, String)>(args: &Vec<String>, input: &str, f: F) -> u32 {
         let mut arg_count = 0;
         for i in 1..args.len() {
