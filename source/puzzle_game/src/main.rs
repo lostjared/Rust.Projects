@@ -15,6 +15,7 @@ use sdl2::render::TextureQuery;
 use sdl2::surface::Surface;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+/// draw the games grid on screen
 fn draw_grid(
     grid: &game::Grid,
     can: &mut sdl2::render::Canvas<sdl2::video::Window>,
@@ -98,6 +99,7 @@ fn draw_grid(
     .expect("draw rect");
 }
 
+/// main function contains game code 
 fn main() {
     let width = game::WINDOW_WIDTH as u32;
     let height = game::WINDOW_HEIGHT as u32;
