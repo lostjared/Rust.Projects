@@ -18,10 +18,6 @@ fn main() {
                 o_op = true;
             }
             'i' => {
-                if param.is_empty() {
-                    eprintln!("Error requires input argument...");
-                    panic!("invalid input");
-                }
                 input = param.clone();
             }
             _ => {
