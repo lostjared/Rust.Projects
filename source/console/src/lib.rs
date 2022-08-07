@@ -4,6 +4,7 @@ pub mod console_system {
     use sdl2::render::TextureQuery;
     use std::process::Command;
     use std::process::Stdio;
+    /// Console struct containing information for console
     pub struct Console {
         x: i32,
         y: i32,
@@ -16,6 +17,7 @@ pub mod console_system {
         visible: bool,
     }
 
+    /// printtext function for printing text to the screen
     pub fn printtext(
         can: &mut sdl2::render::Canvas<sdl2::video::Window>,
         tex: &sdl2::render::TextureCreator<sdl2::video::WindowContext>,
@@ -40,6 +42,7 @@ pub mod console_system {
         .expect("on font copy");
     }
 
+    /// printtext width function for printing text to the screen aligned by a certain width
     pub fn printtext_width(
         blink: bool,
         line_height: &mut usize,
@@ -108,7 +111,9 @@ pub mod console_system {
         }
     }
 
+
     impl Console {
+        /// create a new console
         pub fn new(xx: i32, yx: i32, wx: u32, hx: u32) -> Console {
             let home_dir = dirs::home_dir();
             match home_dir {
@@ -132,18 +137,22 @@ pub mod console_system {
             }
         }
 
+        /// set console text color
         pub fn set_text_color(&mut self, col: sdl2::pixels::Color) {
             self.color = col;
         }
 
+        /// set console is visible or not
         pub fn set_visible(&mut self, v: bool) {
             self.visible = v;
         }
 
+        /// get console visible or not
         pub fn get_visible(&mut self) -> bool {
             self.visible
         }
 
+        /// change console directory
         pub fn change_dir(&mut self, d: &str) {
             let result = std::env::set_current_dir(std::path::Path::new(d));
             match result {
@@ -154,15 +163,18 @@ pub mod console_system {
             }
         }
 
+        /// print text to the console
         pub fn print(&mut self, t: &str) {
             self.text.push_str(t);
         }
 
+        /// print text to the console with trailing newline
         pub fn println(&mut self, t: &str) {
             self.text.push_str(t);
             self.text.push('\n');
         }
 
+        /// input keypress to the console
         pub fn type_key(&mut self, t: &str) {
             if self.visible {
                 self.input_text.push_str(t);
@@ -170,6 +182,7 @@ pub mod console_system {
             }
         }
 
+        /// input backspace key to the console
         pub fn back(&mut self) {
             if self.visible && !self.input_text.is_empty() {
                 self.input_text.pop();
@@ -177,11 +190,13 @@ pub mod console_system {
             }
         }
 
+        /// print the prompt
         pub fn print_prompt(&mut self) {
             let path = std::env::current_dir().unwrap();
             self.print(&format!("[{}]=)>", path.display()));
         }
 
+        /// process a shell command
         pub fn proc_command(&mut self, v: Vec<&str>, cmd: &str) {
             let name = v[0];
             match name {
@@ -329,6 +344,7 @@ pub mod console_system {
             self.print_prompt();
         }
 
+        /// send enter key to console
         pub fn enter(&mut self) {
             if !self.visible {
                 return;
@@ -345,6 +361,7 @@ pub mod console_system {
             self.proc_command(v, &input);
         }
 
+        /// draw the console
         pub fn draw(
             &mut self,
             blink: bool,
