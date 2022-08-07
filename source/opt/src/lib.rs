@@ -21,7 +21,7 @@ pub mod argz {
                             if next == None {
                                 eprintln!("Error required arugment for {} not found", ch);
                                 continue;
-                            } 
+                            }
                             let n = next.unwrap();
                             if n.find('-') != None {
                                 eprintln!("Error required argument for {} not found", ch);
