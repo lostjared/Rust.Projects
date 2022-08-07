@@ -4,6 +4,7 @@ use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 use tictactoe::tictactoe::Grid;
 
+/// main function where game play happens
 fn main() {
     let row1 = vec![(250, 100), (650, 100), (1000, 100)];
     let row2 = vec![(250, 300), (650, 300), (1000, 300)];

@@ -1,5 +1,8 @@
+
+//! TicTacToe Module
 pub mod tictactoe {
 
+    /// game grid structure
     pub struct Grid {
         pub grid: Box<[[u32; 3]; 3]>,
         pub turn: u32,
@@ -12,6 +15,7 @@ pub mod tictactoe {
     }
 
     impl Grid {
+        /// create a new Grid structure
         pub fn new() -> Self {
             Grid {
                 grid: Box::new([[0; 3]; 3]),
@@ -19,6 +23,7 @@ pub mod tictactoe {
             }
         }
 
+        /// process mouse click
         pub fn click(&mut self, x: i32, y: i32) {
             if x >= 100 && x <= 450 && y >= 30 && y <= 200 {
                 self.set_turn(0, 0);
@@ -41,6 +46,7 @@ pub mod tictactoe {
             }
         }
 
+        /// clear the grid
         pub fn clear(&mut self) {
             for i in 0..3 {
                 for z in 0..3 {
@@ -48,7 +54,7 @@ pub mod tictactoe {
                 }
             }
         }
-
+        /// set whos turn it is based off whether the space is occupied
         pub fn set_turn(&mut self, x: usize, y: usize) {
             if self.check_turn(x, y) {
                 self.grid[x][y] = self.turn;
@@ -56,10 +62,12 @@ pub mod tictactoe {
             }
         }
 
+        /// execute a turn
         pub fn go_turn(&mut self, x: usize, y: usize, t: u32) {
             self.grid[x][y] = t;
         }
 
+        /// check if game is over and who won
         pub fn check_type(&self, t: u32) -> bool {
             for i in 0..3 {
                 if self.grid[i][0] == t && self.grid[i][1] == t && self.grid[i][2] == t {
@@ -78,6 +86,7 @@ pub mod tictactoe {
             false
         }
 
+        /// return whether a game is over or not
         pub fn check_game_over(&self) -> i32 {
             if self.check_type(1) {
                 return 1;
@@ -90,6 +99,7 @@ pub mod tictactoe {
             -1
         }
 
+        /// check is this move is allowed
         pub fn check_turn(&self, x: usize, y: usize) -> bool {
             if self.grid[x][y] == 0 {
                 return true;
@@ -97,6 +107,7 @@ pub mod tictactoe {
             false
         }
 
+        /// switch whos turn it is
         pub fn switch_turn(&mut self) {
             if self.turn == 2 {
                 self.turn = 1;
@@ -105,6 +116,7 @@ pub mod tictactoe {
             }
         }
 
+        /// print the board to stdout
         pub fn print_board(&self) {
             for z in 0..3 {
                 print!("|");

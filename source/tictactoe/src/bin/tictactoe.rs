@@ -1,5 +1,6 @@
 use tictactoe::tictactoe::Grid;
 
+/// get the players move
 fn get_move(player: u32) -> (usize, usize, u32) {
     println!("Player {} Turn Enter X Y coordinates ", player);
     let mut input_text: String = String::new();
@@ -39,6 +40,7 @@ fn get_move(player: u32) -> (usize, usize, u32) {
     (x, y, player)
 }
 
+/// main function where game play happens
 fn main() {
     let mut g: Grid = Grid::new();
     g.print_board();
