@@ -8,7 +8,7 @@ pub mod argz {
         let mut arg_count = 0;
         let mut i = 1;
         while i < args.len() {
-        let arg = args.get(i).unwrap();
+            let arg = args.get(i).unwrap();
             let pos = arg.find('-');
             if pos != None {
                 for z in pos.unwrap() + 1..arg.len() {
