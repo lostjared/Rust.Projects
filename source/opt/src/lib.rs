@@ -6,7 +6,7 @@ pub mod argz {
     /// this function process a vector of command line arguments using string input and closeure F(char,String)
     pub fn getopt<F: FnMut(char, String)>(args: &Vec<String>, input: &str, mut f: F) -> u32 {
         let mut arg_count = 0;
-        for i in 1..args.len() {
+        for mut i in 1..args.len() {
             let arg = args.get(i).unwrap();
             let pos = arg.find('-');
             if pos != None {
@@ -29,6 +29,7 @@ pub mod argz {
                             }
                             f(ch, String::from(n));
                             arg_count += 1;
+                            i += 1;
                         } else {
                             f(ch, String::new());
                             arg_count += 1;
