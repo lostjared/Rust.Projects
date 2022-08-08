@@ -17,7 +17,7 @@ fn main() {
             input = param.clone();
         }
         _ => {
-            println!("invalid arg");
+            println!("arg: {}", param);
         }
     });
     println!(

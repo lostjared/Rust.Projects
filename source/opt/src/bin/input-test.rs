@@ -12,7 +12,7 @@ fn main() {
             println!("{}", s);
         }
         _ => {
-            println!("Unknown arguments");
+            println!("argument: {}", param);
         }
     });
     if rt_val == 0 {

@@ -13,7 +13,7 @@ fn main() {
             println!("A argument\n");
         }
         _ => {
-            println!("unknown argument ");
+            println!("argument: {}", param);
         }
     });
 

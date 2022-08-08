@@ -6,8 +6,9 @@ pub mod argz {
     /// this function process a vector of command line arguments using string input and closeure F(char,String)
     pub fn getopt<F: FnMut(char, String)>(args: &Vec<String>, input: &str, mut f: F) -> u32 {
         let mut arg_count = 0;
-        for mut i in 1..args.len() {
-            let arg = args.get(i).unwrap();
+        let mut i = 1;
+        while i < args.len() {
+        let arg = args.get(i).unwrap();
             let pos = arg.find('-');
             if pos != None {
                 for z in pos.unwrap() + 1..arg.len() {
@@ -38,6 +39,10 @@ pub mod argz {
                         println!("Unrecongized argument: {}", ch);
                     }
                 }
+                i += 1;
+            } else {
+                f('-', String::from(arg));
+                i += 1;
             }
         }
         arg_count
