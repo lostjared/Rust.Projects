@@ -17,29 +17,28 @@ fn process_image(input: &str, output_file: &str, id: u8) {
 fn main() {
     let args: Vec<String> = std::env::args().collect();
 
-    let mut input : String = String::new();
-    let mut output : String = String::new();
-    let mut index : u8 = 0;
-    let count = opt::argz::getopt(&args, "i:o:n:", |i: char, param: String| {
-        match i {
-            'i' => {
-                input = param.clone();
-            }
-            'o' => {
-                output = param.clone();
-            }
-            'n' => {
-                index = param.parse().unwrap();
-            }
-            _ => {
-
-            }
+    let mut input: String = String::new();
+    let mut output: String = String::new();
+    let mut index: u8 = 0;
+    let count = opt::argz::getopt(&args, "i:o:n:", |i: char, param: String| match i {
+        'i' => {
+            input = param.clone();
         }
+        'o' => {
+            output = param.clone();
+        }
+        'n' => {
+            index = param.parse().unwrap();
+        }
+        _ => {}
     });
 
     if count == 3 && !input.is_empty() && !output.is_empty() {
         process_image(&input, &output, index);
     } else {
-        println!("{}: -i input.png -o output.png -n level_index", args.get(0).unwrap());
+        println!(
+            "{}: -i input.png -o output.png -n level_index",
+            args.get(0).unwrap()
+        );
     }
 }
