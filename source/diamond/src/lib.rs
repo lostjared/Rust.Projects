@@ -2,6 +2,7 @@
 pub mod dmd {
 
     use std::io::BufRead;
+    use std::fmt;
 
     pub struct Diamond {
         files: Vec<String>,
@@ -41,6 +42,12 @@ pub mod dmd {
         type Item = String;
         fn next(&mut self) -> Option<Self::Item> {
             self.read_next()
+        }
+    }
+
+    impl fmt::Display for Diamond {
+        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            write!(f, "{:?} len: {}", self.files, self.files.len())
         }
     }
 }
