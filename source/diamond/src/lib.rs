@@ -36,4 +36,11 @@ pub mod dmd {
             self.read_next()
         }
     }
+
+    impl Iterator for Diamond {
+        type Item = String;
+        fn next(&mut self) -> Option<Self::Item> {
+            self.read_next()
+        }
+    }
 }
