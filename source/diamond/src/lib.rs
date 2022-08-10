@@ -15,7 +15,7 @@ pub mod dmd {
                 files: args.to_owned(),
                 cur_index: 0,
                 file_open: std::io::BufReader::new(
-                    std::fs::File::open(args.get(1).unwrap()).unwrap(),
+                    std::fs::File::open(args.get(0).unwrap()).unwrap(),
                 ),
             }
         }
