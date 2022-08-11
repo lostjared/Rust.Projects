@@ -20,40 +20,29 @@ fn output_hex<T: std::io::BufRead + Sized>(mut reader: T) {
 }*/
 
 fn output_hex_line<T: std::io::BufRead + Sized>(mut reader: T) {
-    loop {
-        let mut buf : [u8; 256] = [0; 256];
-        let val = reader.read(&mut buf).expect("on read");
-        let mut index = 0;
-        while index < val {
-
+    let mut buffer = Vec::new();
+    reader.read_to_end(&mut buffer).expect("on read");
+    let mut index = 0;
+    while index < buffer.len() {
             for i in 0..6 {
-                if i+index < val {
-                    print!("{:#04x} ", buf[i+index]);
-                } else {
-                    print!("{:#04x} ", 0);
-                }
+                if i+index < buffer.len() {
+                    print!("{:#04x} ", buffer[i+index]);
+                } 
             }
             for i in 0..6 {
-                if i+index < val {
-                    if buf[i+index] == 32 || buf[i+index] == 10 || buf[i+index] == 13 || buf[i+index] == 9 {
-                        print!(". ");
+                if i+index < buffer.len() {
+                    if buffer[i+index] == 32 || buffer[i+index] == 10 || buffer[i+index] == 13 || buffer[i+index] == 9 {
+                        print!(".");
+                    } else {
+                        print!("{}", buffer[i+index] as char);
                     }
-                    else {
-                        print!("{} ", buf[i+index] as char);
-                    }
-                } else {
-                    print!(". ");
-                }
-            }
-
-            index += 6;
-            print!("\n");
+               } else {
+                    print!(".");
+               }
+           }
+           index += 6;
+           println!("\n");
         }
-        if val == 0 {
-            break;
-        }
-    }
-
 }
 
 fn main() {
