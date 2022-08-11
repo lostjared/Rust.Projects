@@ -1,10 +1,10 @@
 //!like perls <> operator
 pub mod dmd {
 
-    use std::io::BufRead;
     use std::fmt;
+    use std::io::BufRead;
 
-    // Diamond structure
+    /// Diamond structure
     pub struct Diamond {
         files: Vec<String>,
         cur_index: usize,
