@@ -1,5 +1,6 @@
 
 
+/*
 fn output_hex<T: std::io::BufRead + Sized>(mut reader: T) {
     let mut counter = 0;
     loop {
@@ -16,10 +17,9 @@ fn output_hex<T: std::io::BufRead + Sized>(mut reader: T) {
             break;
         } 
     }
-}
+}*/
 
 fn output_hex_line<T: std::io::BufRead + Sized>(mut reader: T) {
-    let counter = 0;
     loop {
         let mut buf : [u8; 256] = [0; 256];
         let val = reader.read(&mut buf).expect("on read");
@@ -35,7 +35,7 @@ fn output_hex_line<T: std::io::BufRead + Sized>(mut reader: T) {
             }
             for i in 0..6 {
                 if i+index < val {
-                    if buf[i+index] == 32 || buf[i+index] == 10 || buf[i+index] == 13 {
+                    if buf[i+index] == 32 || buf[i+index] == 10 || buf[i+index] == 13 || buf[i+index] == 9 {
                         print!(". ");
                     }
                     else {
