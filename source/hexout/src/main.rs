@@ -36,7 +36,12 @@ fn output_hex_line<T: std::io::BufRead + Sized>(mut reader: T) {
                 {
                     print!(".");
                 } else {
-                    print!("{}", buffer[i + index] as char);
+                    let ch = buffer[i + index] as char;
+                    if ch.is_ascii_alphanumeric() || ch.is_ascii_graphic() {
+                        print!("{}", buffer[i + index] as char);
+                    } else {
+                        print!(".");
+                    }
                 }
             } else {
                 print!(".");
