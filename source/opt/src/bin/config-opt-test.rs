@@ -14,7 +14,7 @@ fn main() {
             o_op = true;
         }
         'i' => {
-            input = param.clone();
+            input = param;
         }
         _ => {
             println!("arg: {}", param);
