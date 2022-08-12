@@ -1,3 +1,4 @@
+//! Basic Snake Game
 use rand::Rng;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
@@ -6,11 +7,13 @@ use sdl2::rect::Rect;
 use std::collections::VecDeque;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+/// public constants
 pub const TILE_W: usize = 1280 / 8;
 pub const TILE_H: usize = 720 / 8;
 pub const WIDTH: i32 = 1280 / 8;
 pub const HEIGHT: i32 = 720 / 8;
 
+/// game Grid 
 struct Grid {
     pub blocks: Box<[[u8; TILE_H]; TILE_W]>,
 }
@@ -21,7 +24,7 @@ impl Grid {
         Grid { blocks: g }
     }
 }
-
+/// Point on the Screen
 struct Point {
     pub x: i32,
     pub y: i32,
@@ -32,14 +35,14 @@ impl Point {
         Point { x: xi, y: yi }
     }
 }
-
+/// Current Snake Direction
 enum Dir {
     Left,
     Right,
     Down,
     Up,
 }
-
+/// main function
 fn main() {
     let width = 1280;
     let height = 720;
@@ -229,7 +232,7 @@ fn main() {
         }
     }
 }
-
+/// check if the snake is out of bounds
 fn check_out(pos: &VecDeque<Point>) -> bool {
     for i in pos.iter() {
         if i.x <= 0 || i.x > WIDTH - 1 {
