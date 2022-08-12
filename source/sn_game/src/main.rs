@@ -1,10 +1,10 @@
+use rand::Rng;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 use std::collections::VecDeque;
 use std::time::{SystemTime, UNIX_EPOCH};
-use rand::Rng;
 
 pub const TILE_W: usize = 1280 / 8;
 pub const TILE_H: usize = 720 / 8;
@@ -67,11 +67,11 @@ fn main() {
 
     let mut prev_tick: u64 = 0;
     let mut tick_count = 0;
-    let mut pos : Point = Point::new(10, 13);
+    let mut pos: Point = Point::new(10, 13);
 
     let mut rng = rand::thread_rng();
-    let ix = rng.gen_range(2..WIDTH-2);
-    let iy = rng.gen_range(2..HEIGHT-2);
+    let ix = rng.gen_range(2..WIDTH - 2);
+    let iy = rng.gen_range(2..HEIGHT - 2);
     grid.blocks[ix as usize][iy as usize] = 2;
 
     'main: loop {
@@ -140,12 +140,12 @@ fn main() {
                                         sn.push_back(Point::new(pos.x, pos.y + 1));
                                     }
                                 }
-                                grid.blocks[i][z] = 0; 
+                                grid.blocks[i][z] = 0;
                                 let mut rng = rand::thread_rng();
-                                let ix = rng.gen_range(2..WIDTH-2);
-                                let iy = rng.gen_range(2..HEIGHT-2);
+                                let ix = rng.gen_range(2..WIDTH - 2);
+                                let iy = rng.gen_range(2..HEIGHT - 2);
                                 grid.blocks[ix as usize][iy as usize] = 2;
-                                break;            
+                                break;
                             }
                         }
                     }
@@ -232,9 +232,9 @@ fn main() {
 
 fn check_out(pos: &VecDeque<Point>) -> bool {
     for i in pos.iter() {
-        if i.x <= 0 || i.x >  WIDTH-1 {
+        if i.x <= 0 || i.x > WIDTH - 1 {
             return true;
-        } else if i.y <= 0 || i.y > HEIGHT-1 {
+        } else if i.y <= 0 || i.y > HEIGHT - 1 {
             return true;
         }
     }
