@@ -64,13 +64,10 @@ fn main() {
     let mut sn: VecDeque<Point> = VecDeque::new();
     let mut direction: Dir = Dir::Down;
     sn.push_back(Point::new(10, 10));
-    sn.push_back(Point::new(10, 11));
-    sn.push_back(Point::new(10, 12));
-    sn.push_back(Point::new(10, 13));
 
     let mut prev_tick: u64 = 0;
     let mut tick_count = 0;
-    let mut pos: Point = Point::new(10, 13);
+    let mut pos: Point = Point::new(10, 10);
 
     let mut rng = rand::thread_rng();
     let ix = rng.gen_range(2..WIDTH - 2);
@@ -176,64 +173,70 @@ fn main() {
         let ptick = tick - prev_tick;
         prev_tick = tick;
         tick_count += ptick;
+
         if tick_count > 50 {
             tick_count = 0;
 
             match direction {
                 Dir::Left => {
+                    if check_out(&pos, &sn) {
+                        sn.clear();
+                        sn.push_back(Point::new(10, 10));
+                        pos.x = 10;
+                        pos.y = 10;
+                        direction = Dir::Right;
+                        continue;
+                    }
                     sn.pop_front();
                     sn.push_back(Point::new(pos.x - 1, pos.y));
                     pos.x -= 1;
-                    if check_out(&sn) {
+                }
+                Dir::Right => {
+                    if check_out(&pos, &sn) {
                         sn.clear();
                         sn.push_back(Point::new(10, 10));
                         pos.x = 10;
-                        pos.y = 13;
+                        pos.y = 10;
                         direction = Dir::Right;
+                        continue;
                     }
-                }
-                Dir::Right => {
                     sn.pop_front();
                     sn.push_back(Point::new(pos.x + 1, pos.y));
                     pos.x += 1;
-                    if check_out(&sn) {
+                }
+                Dir::Down => {
+                    if check_out(&pos, &sn) {
                         sn.clear();
                         sn.push_back(Point::new(10, 10));
                         pos.x = 10;
-                        pos.y = 13;
+                        pos.y = 10;
                         direction = Dir::Right;
+                        continue;
                     }
-                }
-                Dir::Down => {
                     sn.pop_front();
                     sn.push_back(Point::new(pos.x, pos.y + 1));
                     pos.y += 1;
-                    if check_out(&sn) {
-                        sn.clear();
-                        sn.push_back(Point::new(10, 10));
-                        pos.x = 10;
-                        pos.y = 13;
-                        direction = Dir::Right;
-                    }
                 }
                 Dir::Up => {
-                    sn.pop_front();
-                    sn.push_back(Point::new(pos.x, pos.y - 1));
-                    pos.y -= 1;
-                    if check_out(&sn) {
+                    if check_out(&pos, &sn) {
                         sn.clear();
                         sn.push_back(Point::new(10, 10));
                         pos.x = 10;
-                        pos.y = 13;
+                        pos.y = 10;
                         direction = Dir::Right;
+                        continue;
                     }
+                    sn.pop_front();
+                    sn.push_back(Point::new(pos.x, pos.y - 1));
+
+                    pos.y -= 1;
                 }
             }
         }
     }
 }
 /// check if the snake is out of bounds
-fn check_out(pos: &VecDeque<Point>) -> bool {
+fn check_out(cur_point: &Point, pos: &VecDeque<Point>) -> bool {
     for i in pos.iter() {
         if i.x <= 0 || i.x > WIDTH - 1 {
             return true;
