@@ -1,7 +1,5 @@
 //! Basic Snake Game
-
-// todo: add check if snake colides with itself
-
+// todo: check if snake colides with itself
 use rand::Rng;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
@@ -162,6 +160,7 @@ fn main() {
             }
         }
 
+
         for i in &sn {
             can.set_draw_color(Color::RGB(0, 255, 0));
             can.fill_rect(Some(Rect::new(i.x * 8, i.y * 8, 8, 8)))
@@ -238,7 +237,7 @@ fn main() {
 }
 
 /// check if the snake is out of bounds
-fn check_out(cur_point: &Point, pos: &VecDeque<Point>) -> bool {
+fn check_out(_cur_point: &Point, pos: &VecDeque<Point>) -> bool {
     for i in pos.iter() {
         if i.x <= 0 || i.x > WIDTH - 1 {
             return true;
