@@ -34,10 +34,10 @@ impl Point {
 }
 
 enum Dir {
-    LEFT,
-    RIGHT,
-    DOWN,
-    UP,
+    Left,
+    Right,
+    Down,
+    Up,
 }
 
 fn main() {
@@ -59,7 +59,7 @@ fn main() {
     let mut e = sdl.event_pump().unwrap();
     let mut grid: Grid = Grid::new();
     let mut sn: VecDeque<Point> = VecDeque::new();
-    let mut direction: Dir = Dir::DOWN;
+    let mut direction: Dir = Dir::Down;
     sn.push_back(Point::new(10, 10));
     sn.push_back(Point::new(10, 11));
     sn.push_back(Point::new(10, 12));
@@ -86,25 +86,25 @@ fn main() {
                     keycode: Some(Keycode::Left),
                     ..
                 } => {
-                    direction = Dir::LEFT;
+                    direction = Dir::Left;
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Right),
                     ..
                 } => {
-                    direction = Dir::RIGHT;
+                    direction = Dir::Right;
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Down),
                     ..
                 } => {
-                    direction = Dir::DOWN;
+                    direction = Dir::Down;
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Up),
                     ..
                 } => {
-                    direction = Dir::UP;
+                    direction = Dir::Up;
                 }
                 _ => {}
             }
@@ -127,16 +127,16 @@ fn main() {
                         for a in &sn {
                             if a.x as usize == i && a.y as usize == z {
                                 match direction {
-                                    Dir::LEFT => {
+                                    Dir::Left => {
                                         sn.push_back(Point::new(pos.x - 1, pos.y));
                                     }
-                                    Dir::RIGHT => {
+                                    Dir::Right => {
                                         sn.push_back(Point::new(pos.x + 1, pos.y));
                                     }
-                                    Dir::UP => {
+                                    Dir::Up => {
                                         sn.push_back(Point::new(pos.x, pos.y - 1));
                                     }
-                                    Dir::DOWN => {
+                                    Dir::Down => {
                                         sn.push_back(Point::new(pos.x, pos.y + 1));
                                     }
                                 }
@@ -177,7 +177,7 @@ fn main() {
             tick_count = 0;
 
             match direction {
-                Dir::LEFT => {
+                Dir::Left => {
                     sn.pop_front();
                     sn.push_back(Point::new(pos.x - 1, pos.y));
                     pos.x -= 1;
@@ -186,10 +186,10 @@ fn main() {
                         sn.push_back(Point::new(10, 10));
                         pos.x = 10;
                         pos.y = 13;
-                        direction = Dir::RIGHT;
+                        direction = Dir::Right;
                     }
                 }
-                Dir::RIGHT => {
+                Dir::Right => {
                     sn.pop_front();
                     sn.push_back(Point::new(pos.x + 1, pos.y));
                     pos.x += 1;
@@ -198,10 +198,10 @@ fn main() {
                         sn.push_back(Point::new(10, 10));
                         pos.x = 10;
                         pos.y = 13;
-                        direction = Dir::RIGHT;
+                        direction = Dir::Right;
                     }
                 }
-                Dir::DOWN => {
+                Dir::Down => {
                     sn.pop_front();
                     sn.push_back(Point::new(pos.x, pos.y + 1));
                     pos.y += 1;
@@ -210,10 +210,10 @@ fn main() {
                         sn.push_back(Point::new(10, 10));
                         pos.x = 10;
                         pos.y = 13;
-                        direction = Dir::RIGHT;
+                        direction = Dir::Right;
                     }
                 }
-                Dir::UP => {
+                Dir::Up => {
                     sn.pop_front();
                     sn.push_back(Point::new(pos.x, pos.y - 1));
                     pos.y -= 1;
@@ -222,7 +222,7 @@ fn main() {
                         sn.push_back(Point::new(10, 10));
                         pos.x = 10;
                         pos.y = 13;
-                        direction = Dir::RIGHT;
+                        direction = Dir::Right;
                     }
                 }
             }
@@ -234,7 +234,8 @@ fn check_out(pos: &VecDeque<Point>) -> bool {
     for i in pos.iter() {
         if i.x <= 0 || i.x > WIDTH - 1 {
             return true;
-        } else if i.y <= 0 || i.y > HEIGHT - 1 {
+        } 
+        if i.y <= 0 || i.y > HEIGHT - 1 {
             return true;
         }
     }
