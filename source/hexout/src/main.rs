@@ -25,6 +25,8 @@ fn output_hex_line<T: std::io::BufRead + Sized>(mut reader: T) {
         for i in 0..6 {
             if i + index < buffer.len() {
                 print!("{:#04x} ", buffer[i + index]);
+            } else {
+                print!("{:04x} ", 0);
             }
         }
         for i in 0..6 {
