@@ -173,7 +173,7 @@ fn main() {
                                         grid.blocks[apple.0][apple.1] = 2;
                                     }
                                 }
-                                 score += 1;
+                                score += 1;
                                 break;
                             }
                         }
