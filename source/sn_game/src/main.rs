@@ -25,6 +25,7 @@ struct Grid {
 }
 
 impl Grid {
+    /// create a new grid
     pub fn new() -> Grid {
         let g = Box::new([[0; TILE_H]; TILE_W]);
         Grid {
@@ -35,14 +36,14 @@ impl Grid {
             apple_num: 1,
         }
     }
-
+    /// reset game lives and apple count
     pub fn reset_lives(&mut self) {
         self.score = 0;
         self.lives = 4;
         self.apple_count = 1;
         self.apple_num = 1;
     }
-
+    /// clear the grid and reset lives
     pub fn clear(&mut self) {
         for i in 0..TILE_W {
             for z in 0..TILE_H {
@@ -54,6 +55,7 @@ impl Grid {
         self.set_apple(apple);
     }
 
+    /// generate a random apple
     pub fn rand_apple(&mut self) -> (usize, usize) {
         let mut rng = rand::thread_rng();
         let ix = rng.gen_range(2..WIDTH - 2);
@@ -64,6 +66,7 @@ impl Grid {
         return (ix as usize, iy as usize);
     }
 
+    /// set apple in grid
     pub fn set_apple(&mut self, apple: (usize, usize)) {
         self.blocks[apple.0][apple.1] = 2;
     }
@@ -88,6 +91,7 @@ enum Dir {
     Up,
 }
 
+/// game's snake structure
 struct Snake {
     pub direction: Dir,
     pub sn: VecDeque<Point>,
@@ -126,13 +130,12 @@ impl Snake {
         }
         false
     }
-
+    /// grow snake
     pub fn grow(&mut self) {
         let tail = self.sn.get(self.sn.len() - 1).cloned().unwrap();
         self.grow_tail(&tail);
     }
-
-
+    /// grow snake by tail
     pub fn grow_tail(&mut self, tail: &Point) {
         match self.direction {
             Dir::Left => {
@@ -149,11 +152,12 @@ impl Snake {
             }
         }
     }
-
+    /// move snake in direction
     pub fn move_snake(&mut self, tail: &Point) {
         self.sn.pop_front();
         self.grow_tail(tail);
     }
+    /// reset snake back to 1 block
     pub fn reset_snake(&mut self) {
         self.sn.clear();
         self.sn.push_back(Point::new(10, 10));
@@ -266,15 +270,25 @@ fn main() {
                     }
                 }
                 can.set_draw_color(color);
-                can.fill_rect(Some(Rect::new(i as i32 * SIZE, z as i32 * SIZE, SIZE as u32, SIZE as u32)))
-                    .expect("on fill");
+                can.fill_rect(Some(Rect::new(
+                    i as i32 * SIZE,
+                    z as i32 * SIZE,
+                    SIZE as u32,
+                    SIZE as u32,
+                )))
+                .expect("on fill");
             }
         }
 
         for i in &snake.sn {
             can.set_draw_color(Color::RGB(0, 255, 0));
-            can.fill_rect(Some(Rect::new(i.x * SIZE, i.y * SIZE, SIZE as u32, SIZE as u32)))
-                .expect("on fill");
+            can.fill_rect(Some(Rect::new(
+                i.x * SIZE,
+                i.y * SIZE,
+                SIZE as u32,
+                SIZE as u32,
+            )))
+            .expect("on fill");
         }
 
         let turn_surf = font
