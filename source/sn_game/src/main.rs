@@ -314,52 +314,15 @@ fn main() {
         if tick_count > 50 {
             tick_count = 0;
             let tail = snake.sn.get(snake.sn.len() - 1).cloned().unwrap();
-            match snake.direction {
-                Dir::Left => {
-                    if snake.check_out() {
-                        snake.reset_snake();
-                        grid.lives -= 1;
-                        if grid.lives <= 0 {
-                            grid.clear();
-                        }
-                        continue;
-                    }
-                    snake.move_snake(&tail);
+            if snake.check_out() {
+                snake.reset_snake();
+                grid.lives -= 1;
+                if grid.lives <= 0 {
+                    grid.clear();
                 }
-                Dir::Right => {
-                    if snake.check_out() {
-                        snake.reset_snake();
-                        grid.lives -= 1;
-                        if grid.lives <= 0 {
-                            grid.clear();
-                        }
-                        continue;
-                    }
-                    snake.move_snake(&tail);
-                }
-                Dir::Down => {
-                    if snake.check_out() {
-                        snake.reset_snake();
-                        grid.lives -= 1;
-                        if grid.lives <= 0 {
-                            grid.clear();
-                        }
-                        continue;
-                    }
-                    snake.move_snake(&tail);
-                }
-                Dir::Up => {
-                    if snake.check_out() {
-                        snake.reset_snake();
-                        grid.lives -= 1;
-                        if grid.lives <= 0 {
-                            grid.clear();
-                        }
-                        continue;
-                    }
-                    snake.move_snake(&tail);
-                }
+                continue;
             }
+            snake.move_snake(&tail);
         }
     }
 }
