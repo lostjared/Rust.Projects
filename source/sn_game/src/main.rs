@@ -233,6 +233,8 @@ fn main() {
                             grid.clear();
                             let apple = rand_apple(&grid);
                             grid.blocks[apple.0][apple.1] = 2;
+                            apple_num = 1;
+                            apple_count = 1;
                         }
                         continue;
                     }
@@ -254,6 +256,8 @@ fn main() {
                             grid.clear();
                             let apple = rand_apple(&grid);
                             grid.blocks[apple.0][apple.1] = 2;
+                            apple_num = 1;
+                            apple_count = 1;
                         }
                         continue;
                     }
@@ -275,6 +279,8 @@ fn main() {
                             grid.clear();
                             let apple = rand_apple(&grid);
                             grid.blocks[apple.0][apple.1] = 2;
+                            apple_num = 1;
+                            apple_count = 1;
                         }
                         continue;
                     }
@@ -296,6 +302,8 @@ fn main() {
                             grid.clear();
                             let apple = rand_apple(&grid);
                             grid.blocks[apple.0][apple.1] = 2;
+                            apple_num = 1;
+                            apple_count = 1;
                         }
                         continue;
                     }
@@ -309,8 +317,9 @@ fn main() {
 }
 /// check for duplicate parts of the snake
 fn duplicates(pos: &VecDeque<Point>) -> bool {
-    let top = pos.get(0).cloned().unwrap();
-    for i in pos.iter().skip(1) {
+    let top = pos.get(pos.len() -1).cloned().unwrap();
+    for ix in  0..pos.len()-1 {
+        let i = pos.get(ix).cloned().unwrap();
         if top.x == i.x && top.y == i.y {
             return true;
         }
