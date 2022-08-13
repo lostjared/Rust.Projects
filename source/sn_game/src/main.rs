@@ -26,6 +26,7 @@ impl Grid {
     }
 }
 /// Point on the Screen
+#[derive(Clone, Debug)]
 struct Point {
     pub x: i32,
     pub y: i32,
@@ -127,18 +128,21 @@ fn main() {
 
                         for a in &sn {
                             if a.x as usize == i && a.y as usize == z {
+
+                                let tail = sn.get(sn.len()-1).cloned().unwrap();
+
                                 match direction {
                                     Dir::Left => {
-                                        sn.push_back(Point::new(pos.x - 1, pos.y));
+                                        sn.push_back(Point::new(tail.x - 1, tail.y));
                                     }
                                     Dir::Right => {
-                                        sn.push_back(Point::new(pos.x + 1, pos.y));
+                                        sn.push_back(Point::new(tail.x + 1, tail.y));
                                     }
                                     Dir::Up => {
-                                        sn.push_back(Point::new(pos.x, pos.y - 1));
+                                        sn.push_back(Point::new(tail.x, tail.y - 1));
                                     }
                                     Dir::Down => {
-                                        sn.push_back(Point::new(pos.x, pos.y + 1));
+                                        sn.push_back(Point::new(tail.x, tail.y + 1));
                                     }
                                 }
                                 grid.blocks[i][z] = 0;
@@ -174,9 +178,12 @@ fn main() {
         prev_tick = tick;
         tick_count += ptick;
 
+        let tail = sn.get(sn.len()-1).cloned().unwrap();
+
         if tick_count > 50 {
             tick_count = 0;
 
+            
             match direction {
                 Dir::Left => {
                     if check_out(&pos, &sn) {
@@ -188,7 +195,7 @@ fn main() {
                         continue;
                     }
                     sn.pop_front();
-                    sn.push_back(Point::new(pos.x - 1, pos.y));
+                    sn.push_back(Point::new(tail.x - 1, tail.y));
                     pos.x -= 1;
                 }
                 Dir::Right => {
@@ -201,7 +208,7 @@ fn main() {
                         continue;
                     }
                     sn.pop_front();
-                    sn.push_back(Point::new(pos.x + 1, pos.y));
+                    sn.push_back(Point::new(tail.x + 1, tail.y));
                     pos.x += 1;
                 }
                 Dir::Down => {
@@ -214,7 +221,7 @@ fn main() {
                         continue;
                     }
                     sn.pop_front();
-                    sn.push_back(Point::new(pos.x, pos.y + 1));
+                    sn.push_back(Point::new(tail.x, tail.y + 1));
                     pos.y += 1;
                 }
                 Dir::Up => {
@@ -227,8 +234,7 @@ fn main() {
                         continue;
                     }
                     sn.pop_front();
-                    sn.push_back(Point::new(pos.x, pos.y - 1));
-
+                    sn.push_back(Point::new(tail.x, tail.y - 1));
                     pos.y -= 1;
                 }
             }
@@ -246,5 +252,8 @@ fn check_out(_cur_point: &Point, pos: &VecDeque<Point>) -> bool {
             return true;
         }
     }
+
+    
+
     false
 }
