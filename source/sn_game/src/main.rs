@@ -1,5 +1,4 @@
 //! Basic Snake Game
-// todo: check if snake colides with itself
 use rand::Rng;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
@@ -242,6 +241,16 @@ fn main() {
     }
 }
 
+fn duplicates(pos: &VecDeque<Point>) -> bool {
+    let top = pos.get(0).cloned().unwrap();
+    for i in pos.iter().skip(1) {
+        if top.x == i.x && top.y == i.y {
+            return true;
+        }
+    }
+    false
+}
+
 /// check if the snake is out of bounds
 fn check_out(_cur_point: &Point, pos: &VecDeque<Point>) -> bool {
     for i in pos.iter() {
@@ -252,8 +261,8 @@ fn check_out(_cur_point: &Point, pos: &VecDeque<Point>) -> bool {
             return true;
         }
     }
-
-    
-
+    if duplicates(pos) {
+        return true;
+    }
     false
 }
