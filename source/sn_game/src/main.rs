@@ -19,19 +19,19 @@ struct Grid {
     pub score: i32,
     pub lives: i32,
     pub apple_num: i32,
-    pub apple_count: i32
+    pub apple_count: i32,
 }
 
 impl Grid {
     pub fn new() -> Grid {
         let g = Box::new([[0; TILE_H]; TILE_W]);
-        Grid { 
+        Grid {
             blocks: g,
             score: 0,
             lives: 4,
             apple_count: 1,
             apple_num: 1,
-         }
+        }
     }
 
     pub fn reset_lives(&mut self) {
@@ -85,6 +85,47 @@ enum Dir {
     Down,
     Up,
 }
+
+struct Snake {
+    pub direction: Dir,
+    pub sn: VecDeque<Point>,
+}
+
+impl Snake {
+    fn new() -> Self {
+        Snake {
+            direction: Dir::Right,
+            sn: VecDeque::new(),
+        }
+    }
+    /// check for duplicate parts of the snake
+    fn duplicates(&mut self) -> bool {
+        let top = self.sn.get(self.sn.len() - 1).cloned().unwrap();
+        for ix in 0..self.sn.len() - 1 {
+            let i = self.sn.get(ix).cloned().unwrap();
+            if top.x == i.x && top.y == i.y {
+                return true;
+            }
+        }
+        false
+    }
+    /// check if the snake is out of bounds
+    fn check_out(&mut self) -> bool {
+        for i in self.sn.iter() {
+            if i.x <= 0 || i.x > WIDTH - 1 {
+                return true;
+            }
+            if i.y <= 0 || i.y > HEIGHT - 1 {
+                return true;
+            }
+        }
+        if self.duplicates() {
+            return true;
+        }
+        false
+    }
+}
+
 /// main function
 fn main() {
     let width = 1280;
@@ -112,9 +153,8 @@ fn main() {
         .unwrap();
 
     let mut grid: Grid = Grid::new();
-    let mut sn: VecDeque<Point> = VecDeque::new();
-    let mut direction: Dir = Dir::Down;
-    sn.push_back(Point::new(10, 10));
+    let mut snake: Snake = Snake::new();
+    snake.sn.push_back(Point::new(10, 10));
     let mut prev_tick: u64 = 0;
     let mut tick_count = 0;
     let mut pos: Point = Point::new(10, 10);
@@ -132,25 +172,25 @@ fn main() {
                     keycode: Some(Keycode::Left),
                     ..
                 } => {
-                    direction = Dir::Left;
+                    snake.direction = Dir::Left;
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Right),
                     ..
                 } => {
-                    direction = Dir::Right;
+                    snake.direction = Dir::Right;
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Down),
                     ..
                 } => {
-                    direction = Dir::Down;
+                    snake.direction = Dir::Down;
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Up),
                     ..
                 } => {
-                    direction = Dir::Up;
+                    snake.direction = Dir::Up;
                 }
                 _ => {}
             }
@@ -170,21 +210,21 @@ fn main() {
                     2 => {
                         color = Color::RGB(255, 0, 0);
 
-                        for a in &sn {
+                        for a in &snake.sn {
                             if a.x as usize == i && a.y as usize == z {
-                                let tail = sn.get(sn.len() - 1).cloned().unwrap();
-                                match direction {
+                                let tail = snake.sn.get(snake.sn.len() - 1).cloned().unwrap();
+                                match snake.direction {
                                     Dir::Left => {
-                                        sn.push_back(Point::new(tail.x - 1, tail.y));
+                                        snake.sn.push_back(Point::new(tail.x - 1, tail.y));
                                     }
                                     Dir::Right => {
-                                        sn.push_back(Point::new(tail.x + 1, tail.y));
+                                        snake.sn.push_back(Point::new(tail.x + 1, tail.y));
                                     }
                                     Dir::Up => {
-                                        sn.push_back(Point::new(tail.x, tail.y - 1));
+                                        snake.sn.push_back(Point::new(tail.x, tail.y - 1));
                                     }
                                     Dir::Down => {
-                                        sn.push_back(Point::new(tail.x, tail.y + 1));
+                                        snake.sn.push_back(Point::new(tail.x, tail.y + 1));
                                     }
                                 }
                                 grid.blocks[i][z] = 0;
@@ -212,7 +252,7 @@ fn main() {
             }
         }
 
-        for i in &sn {
+        for i in &snake.sn {
             can.set_draw_color(Color::RGB(0, 255, 0));
             can.fill_rect(Some(Rect::new(i.x * 8, i.y * 8, 8, 8)))
                 .expect("on fill");
@@ -238,108 +278,79 @@ fn main() {
         let ptick = tick - prev_tick;
         prev_tick = tick;
         tick_count += ptick;
-        let tail = sn.get(sn.len() - 1).cloned().unwrap();
         if tick_count > 50 {
             tick_count = 0;
-
-            match direction {
+            let tail = snake.sn.get(snake.sn.len() - 1).cloned().unwrap();
+            match snake.direction {
                 Dir::Left => {
-                    if check_out(&pos, &sn) {
-                        sn.clear();
-                        sn.push_back(Point::new(10, 10));
+                    if snake.check_out() {
+                        snake.sn.clear();
+                        snake.sn.push_back(Point::new(10, 10));
                         pos.x = 10;
                         pos.y = 10;
-                        direction = Dir::Right;
+                        snake.direction = Dir::Right;
                         grid.lives -= 1;
                         if grid.lives <= 0 {
                             grid.clear();
                         }
                         continue;
                     }
-                    sn.pop_front();
-                    sn.push_back(Point::new(tail.x - 1, tail.y));
+                    snake.sn.pop_front();
+                    snake.sn.push_back(Point::new(tail.x - 1, tail.y));
                     pos.x -= 1;
                 }
                 Dir::Right => {
-                    if check_out(&pos, &sn) {
-                        sn.clear();
-                        sn.push_back(Point::new(10, 10));
+                    if snake.check_out() {
+                        snake.sn.clear();
+                        snake.sn.push_back(Point::new(10, 10));
                         pos.x = 10;
                         pos.y = 10;
-                        direction = Dir::Right;
+                        snake.direction = Dir::Right;
                         grid.lives -= 1;
                         if grid.lives <= 0 {
                             grid.clear();
                         }
                         continue;
                     }
-                    sn.pop_front();
-                    sn.push_back(Point::new(tail.x + 1, tail.y));
+                    snake.sn.pop_front();
+                    snake.sn.push_back(Point::new(tail.x + 1, tail.y));
                     pos.x += 1;
                 }
                 Dir::Down => {
-                    if check_out(&pos, &sn) {
-                        sn.clear();
-                        sn.push_back(Point::new(10, 10));
+                    if snake.check_out() {
+                        snake.sn.clear();
+                        snake.sn.push_back(Point::new(10, 10));
                         pos.x = 10;
                         pos.y = 10;
-                        direction = Dir::Right;
+                        snake.direction = Dir::Right;
                         grid.lives -= 1;
                         if grid.lives <= 0 {
                             grid.clear();
                         }
                         continue;
                     }
-                    sn.pop_front();
-                    sn.push_back(Point::new(tail.x, tail.y + 1));
+                    snake.sn.pop_front();
+                    snake.sn.push_back(Point::new(tail.x, tail.y + 1));
                     pos.y += 1;
                 }
                 Dir::Up => {
-                    if check_out(&pos, &sn) {
-                        sn.clear();
-                        sn.push_back(Point::new(10, 10));
+                    if snake.check_out() {
+                        snake.sn.clear();
+                        snake.sn.push_back(Point::new(10, 10));
                         pos.x = 10;
                         pos.y = 10;
-                        direction = Dir::Right;
+                        snake.direction = Dir::Right;
                         grid.lives -= 1;
                         if grid.lives <= 0 {
                             grid.clear();
                         }
                         continue;
                     }
-                    sn.pop_front();
-                    sn.push_back(Point::new(tail.x, tail.y - 1));
+                    snake.sn.pop_front();
+                    snake.sn.push_back(Point::new(tail.x, tail.y - 1));
                     pos.y -= 1;
                 }
             }
         }
     }
 }
-/// check for duplicate parts of the snake
-fn duplicates(pos: &VecDeque<Point>) -> bool {
-    let top = pos.get(pos.len() -1).cloned().unwrap();
-    for ix in  0..pos.len()-1 {
-        let i = pos.get(ix).cloned().unwrap();
-        if top.x == i.x && top.y == i.y {
-            return true;
-        }
-    }
-    false
-}
-/// check if the snake is out of bounds
-fn check_out(_cur_point: &Point, pos: &VecDeque<Point>) -> bool {
-    for i in pos.iter() {
-        if i.x <= 0 || i.x > WIDTH - 1 {
-            return true;
-        }
-        if i.y <= 0 || i.y > HEIGHT - 1 {
-            return true;
-        }
-    }
-    if duplicates(pos) {
-        return true;
-    }
-    false
-}
-
-
