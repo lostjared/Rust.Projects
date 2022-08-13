@@ -129,6 +129,11 @@ impl Snake {
 
     pub fn grow(&mut self) {
         let tail = self.sn.get(self.sn.len() - 1).cloned().unwrap();
+        self.grow_tail(&tail);
+    }
+
+
+    pub fn grow_tail(&mut self, tail: &Point) {
         match self.direction {
             Dir::Left => {
                 self.sn.push_back(Point::new(tail.x - 1, tail.y));
@@ -145,6 +150,10 @@ impl Snake {
         }
     }
 
+    pub fn move_snake(&mut self, tail: &Point) {
+        self.sn.pop_front();
+        self.grow_tail(tail);
+    }
     pub fn reset_snake(&mut self) {
         self.sn.clear();
         self.sn.push_back(Point::new(10, 10));
@@ -301,8 +310,7 @@ fn main() {
                         }
                         continue;
                     }
-                    snake.sn.pop_front();
-                    snake.sn.push_back(Point::new(tail.x - 1, tail.y));
+                    snake.move_snake(&tail);
                 }
                 Dir::Right => {
                     if snake.check_out() {
@@ -313,8 +321,7 @@ fn main() {
                         }
                         continue;
                     }
-                    snake.sn.pop_front();
-                    snake.sn.push_back(Point::new(tail.x + 1, tail.y));
+                    snake.move_snake(&tail);
                 }
                 Dir::Down => {
                     if snake.check_out() {
@@ -325,8 +332,7 @@ fn main() {
                         }
                         continue;
                     }
-                    snake.sn.pop_front();
-                    snake.sn.push_back(Point::new(tail.x, tail.y + 1));
+                    snake.move_snake(&tail);
                 }
                 Dir::Up => {
                     if snake.check_out() {
@@ -337,8 +343,7 @@ fn main() {
                         }
                         continue;
                     }
-                    snake.sn.pop_front();
-                    snake.sn.push_back(Point::new(tail.x, tail.y - 1));
+                    snake.move_snake(&tail);
                 }
             }
         }
