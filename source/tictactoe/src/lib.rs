@@ -1,4 +1,3 @@
-
 //! TicTacToe Module
 pub mod tictactoe {
 
@@ -95,7 +94,7 @@ pub mod tictactoe {
             if self.check_type(2) {
                 return 2;
             }
-            
+
             -1
         }
 

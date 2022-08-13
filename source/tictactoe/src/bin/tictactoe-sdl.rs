@@ -2,8 +2,8 @@ use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
+use sdl2::render::TextureQuery;
 use tictactoe::tictactoe::Grid;
-
 /// main function where game play happens
 fn main() {
     let row1 = vec![(250, 100), (650, 100), (1000, 100)];
@@ -105,7 +105,14 @@ fn main() {
                 .blended(Color::RGB(255, 255, 255))
                 .unwrap();
             let game_over_text = tc.create_texture_from_surface(&game_over_surf).unwrap();
-            can.copy(&game_over_text, None, Some(Rect::new(25, 25, 300, 25)))
+
+            let TextureQuery {
+                width: wi,
+                height: hi,
+                ..
+            } = game_over_text.query();
+
+            can.copy(&game_over_text, None, Some(Rect::new(25, 25, wi, hi)))
                 .expect("on copy");
             game_over = true;
         } else {
@@ -114,7 +121,14 @@ fn main() {
                 .blended(Color::RGB(255, 255, 255))
                 .unwrap();
             let turn_surf_text = tc.create_texture_from_surface(&turn_surf).unwrap();
-            can.copy(&turn_surf_text, None, Some(Rect::new(25, 25, 200, 25)))
+
+            let TextureQuery {
+                width: wi,
+                height: hi,
+                ..
+            } = turn_surf_text.query();
+
+            can.copy(&turn_surf_text, None, Some(Rect::new(25, 25, wi, hi)))
                 .expect("on copy");
         }
         can.present();
