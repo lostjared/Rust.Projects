@@ -16,12 +16,29 @@ pub const HEIGHT: i32 = 720 / 8;
 /// game Grid
 struct Grid {
     pub blocks: Box<[[u8; TILE_H]; TILE_W]>,
+    pub score: i32,
+    pub lives: i32,
+    pub apple_num: i32,
+    pub apple_count: i32
 }
 
 impl Grid {
     fn new() -> Grid {
         let g = Box::new([[0; TILE_H]; TILE_W]);
-        Grid { blocks: g }
+        Grid { 
+            blocks: g,
+            score: 0,
+            lives: 4,
+            apple_count: 1,
+            apple_num: 1,
+         }
+    }
+
+    fn reset_lives(&mut self) {
+        self.score = 0;
+        self.lives = 4;
+        self.apple_count = 1;
+        self.apple_num = 1;
     }
 
     fn clear(&mut self) {
@@ -30,6 +47,7 @@ impl Grid {
                 self.blocks[i][z] = 0;
             }
         }
+        self.reset_lives();
     }
 }
 /// Point on the Screen
@@ -53,8 +71,6 @@ enum Dir {
 }
 /// main function
 fn main() {
-    let mut score = 0;
-    let mut lives = 4;
     let width = 1280;
     let height = 720;
     let sdl = sdl2::init().unwrap();
@@ -87,9 +103,7 @@ fn main() {
     let mut tick_count = 0;
     let mut pos: Point = Point::new(10, 10);
     let apple_pos = rand_apple(&grid);
-    let mut apple_num = 1;
-    let mut apple_count = 1;
-    
+
     grid.blocks[apple_pos.0][apple_pos.1] = 2;
 
     'main: loop {
@@ -160,16 +174,16 @@ fn main() {
                                     }
                                 }
                                 grid.blocks[i][z] = 0;
-                                apple_num -= 1;
-                                if apple_num == 0 {
-                                    apple_count += 1;
-                                    apple_num = apple_count;
-                                    for _ in 0..apple_num {
+                                grid.apple_num -= 1;
+                                if grid.apple_num == 0 {
+                                    grid.apple_count += 1;
+                                    grid.apple_num = grid.apple_count;
+                                    for _ in 0..grid.apple_num {
                                         let apple = rand_apple(&grid);
                                         grid.blocks[apple.0][apple.1] = 2;
                                     }
                                 }
-                                score += 1;
+                                grid.score += 1;
                                 break;
                             }
                         }
@@ -191,7 +205,7 @@ fn main() {
         }
 
         let turn_surf = font
-            .render(&format!("Score: {} Lives: {}", score, lives))
+            .render(&format!("Score: {} Lives: {}", grid.score, grid.lives))
             .blended(Color::RGB(255, 255, 255))
             .unwrap();
         let turn_surf_text = tc.create_texture_from_surface(&turn_surf).unwrap();
@@ -222,15 +236,11 @@ fn main() {
                         pos.x = 10;
                         pos.y = 10;
                         direction = Dir::Right;
-                        lives -= 1;
-                        if lives <= 0 {
-                            score = 0;
-                            lives = 4;
+                        grid.lives -= 1;
+                        if grid.lives <= 0 {
                             grid.clear();
                             let apple = rand_apple(&grid);
                             grid.blocks[apple.0][apple.1] = 2;
-                            apple_num = 1;
-                            apple_count = 1;
                         }
                         continue;
                     }
@@ -245,17 +255,13 @@ fn main() {
                         pos.x = 10;
                         pos.y = 10;
                         direction = Dir::Right;
-                        lives -= 1;
-                        if lives <= 0 {
-                            score = 0;
-                            lives = 4;
+                        grid.lives -= 1;
+                        if grid.lives <= 0 {
                             grid.clear();
                             let apple = rand_apple(&grid);
                             grid.blocks[apple.0][apple.1] = 2;
-                            apple_num = 1;
-                            apple_count = 1;
+                            continue;
                         }
-                        continue;
                     }
                     sn.pop_front();
                     sn.push_back(Point::new(tail.x + 1, tail.y));
@@ -268,15 +274,11 @@ fn main() {
                         pos.x = 10;
                         pos.y = 10;
                         direction = Dir::Right;
-                        lives -= 1;
-                        if lives <= 0 {
-                            score = 0;
-                            lives = 4;
+                        grid.lives -= 1;
+                        if grid.lives <= 0 {
                             grid.clear();
                             let apple = rand_apple(&grid);
                             grid.blocks[apple.0][apple.1] = 2;
-                            apple_num = 1;
-                            apple_count = 1;
                         }
                         continue;
                     }
@@ -291,15 +293,11 @@ fn main() {
                         pos.x = 10;
                         pos.y = 10;
                         direction = Dir::Right;
-                        lives -= 1;
-                        if lives <= 0 {
-                            score = 0;
-                            lives = 4;
+                        grid.lives -= 1;
+                        if grid.lives <= 0 {
                             grid.clear();
                             let apple = rand_apple(&grid);
                             grid.blocks[apple.0][apple.1] = 2;
-                            apple_num = 1;
-                            apple_count = 1;
                         }
                         continue;
                     }
