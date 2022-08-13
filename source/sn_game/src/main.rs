@@ -181,7 +181,6 @@ fn main() {
     snake.sn.push_back(Point::new(10, 10));
     let mut prev_tick: u64 = 0;
     let mut tick_count = 0;
-    let mut pos: Point = Point::new(10, 10);
     let apple = grid.rand_apple();
     grid.set_apple(apple);
     'main: loop {
@@ -302,7 +301,6 @@ fn main() {
                     }
                     snake.sn.pop_front();
                     snake.sn.push_back(Point::new(tail.x - 1, tail.y));
-                    pos.x -= 1;
                 }
                 Dir::Right => {
                     if snake.check_out() {
@@ -315,7 +313,6 @@ fn main() {
                     }
                     snake.sn.pop_front();
                     snake.sn.push_back(Point::new(tail.x + 1, tail.y));
-                    pos.x += 1;
                 }
                 Dir::Down => {
                     if snake.check_out() {
@@ -328,7 +325,6 @@ fn main() {
                     }
                     snake.sn.pop_front();
                     snake.sn.push_back(Point::new(tail.x, tail.y + 1));
-                    pos.y += 1;
                 }
                 Dir::Up => {
                     if snake.check_out() {
@@ -341,7 +337,6 @@ fn main() {
                     }
                     snake.sn.pop_front();
                     snake.sn.push_back(Point::new(tail.x, tail.y - 1));
-                    pos.y -= 1;
                 }
             }
         }
