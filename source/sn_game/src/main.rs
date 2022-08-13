@@ -4,9 +4,9 @@ use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
+use sdl2::render::TextureQuery;
 use std::collections::VecDeque;
 use std::time::{SystemTime, UNIX_EPOCH};
-
 /// public constants
 pub const TILE_W: usize = 1280 / 8;
 pub const TILE_H: usize = 720 / 8;
@@ -45,6 +45,8 @@ enum Dir {
 }
 /// main function
 fn main() {
+    let mut score = 0;
+    let mut lives = 4;
     let width = 1280;
     let height = 720;
     let sdl = sdl2::init().unwrap();
@@ -61,6 +63,14 @@ fn main() {
         .map_err(|e| e.to_string())
         .expect("Error on canvas");
     let mut e = sdl.event_pump().unwrap();
+    let ttf_context = sdl2::ttf::init().map_err(|e| e.to_string()).unwrap();
+    let tc = can.texture_creator();
+    let font = ttf_context.load_font("./font.ttf", 18).expect("test");
+    let _text_surf = font
+        .render("Hello, World!")
+        .blended(Color::RGB(255, 255, 255))
+        .unwrap();
+
     let mut grid: Grid = Grid::new();
     let mut sn: VecDeque<Point> = VecDeque::new();
     let mut direction: Dir = Dir::Down;
@@ -128,7 +138,6 @@ fn main() {
                         for a in &sn {
                             if a.x as usize == i && a.y as usize == z {
                                 let tail = sn.get(sn.len() - 1).cloned().unwrap();
-
                                 match direction {
                                     Dir::Left => {
                                         sn.push_back(Point::new(tail.x - 1, tail.y));
@@ -148,6 +157,7 @@ fn main() {
                                 let ix = rng.gen_range(2..WIDTH - 2);
                                 let iy = rng.gen_range(2..HEIGHT - 2);
                                 grid.blocks[ix as usize][iy as usize] = 2;
+                                score += 1;
                                 break;
                             }
                         }
@@ -167,6 +177,20 @@ fn main() {
             can.fill_rect(Some(Rect::new(i.x * 8, i.y * 8, 8, 8)))
                 .expect("on fill");
         }
+
+        let turn_surf = font
+            .render(&format!("Score: {} Lives: {}", score, lives))
+            .blended(Color::RGB(255, 255, 255))
+            .unwrap();
+        let turn_surf_text = tc.create_texture_from_surface(&turn_surf).unwrap();
+        let TextureQuery {
+            width: wi,
+            height: hi,
+            ..
+        } = turn_surf_text.query();
+        can.copy(&turn_surf_text, None, Some(Rect::new(25, 25, wi, hi)))
+            .expect("on copy");
+
         can.present();
         let start = SystemTime::now();
         let se = start.duration_since(UNIX_EPOCH).expect("error on time");
@@ -188,6 +212,11 @@ fn main() {
                         pos.x = 10;
                         pos.y = 10;
                         direction = Dir::Right;
+                        lives -= 1;
+                        if lives <= 0 {
+                            score = 0;
+                            lives = 4;
+                        }
                         continue;
                     }
                     sn.pop_front();
@@ -201,6 +230,11 @@ fn main() {
                         pos.x = 10;
                         pos.y = 10;
                         direction = Dir::Right;
+                        lives -= 1;
+                        if lives <= 0 {
+                            score = 0;
+                            lives = 4;
+                        }
                         continue;
                     }
                     sn.pop_front();
@@ -214,6 +248,11 @@ fn main() {
                         pos.x = 10;
                         pos.y = 10;
                         direction = Dir::Right;
+                        lives -= 1;
+                        if lives <= 0 {
+                            score = 0;
+                            lives = 4;
+                        }
                         continue;
                     }
                     sn.pop_front();
@@ -227,6 +266,11 @@ fn main() {
                         pos.x = 10;
                         pos.y = 10;
                         direction = Dir::Right;
+                        lives -= 1;
+                        if lives <= 0 {
+                            score = 0;
+                            lives = 4;
+                        }
                         continue;
                     }
                     sn.pop_front();
@@ -237,7 +281,6 @@ fn main() {
         }
     }
 }
-
 /// check for duplicate parts of the snake
 fn duplicates(pos: &VecDeque<Point>) -> bool {
     let top = pos.get(0).cloned().unwrap();
@@ -248,7 +291,6 @@ fn duplicates(pos: &VecDeque<Point>) -> bool {
     }
     false
 }
-
 /// check if the snake is out of bounds
 fn check_out(_cur_point: &Point, pos: &VecDeque<Point>) -> bool {
     for i in pos.iter() {
