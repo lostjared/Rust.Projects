@@ -189,7 +189,7 @@ fn main() {
 
     let mut grid: Grid = Grid::new();
     let mut snake: Snake = Snake::new();
-    snake.sn.push_back(Point::new(10, 10));
+    snake.reset_snake();
     let mut prev_tick: u64 = 0;
     let mut tick_count = 0;
     let apple = grid.rand_apple();
