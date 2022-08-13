@@ -142,6 +142,12 @@ impl Snake {
             }
         }
     }
+
+    pub fn reset_snake(&mut self) {
+        self.sn.clear();
+        self.sn.push_back(Point::new(10, 10));
+        self.direction = Dir::Right;
+    }
 }
 
 /// main function
@@ -287,11 +293,7 @@ fn main() {
             match snake.direction {
                 Dir::Left => {
                     if snake.check_out() {
-                        snake.sn.clear();
-                        snake.sn.push_back(Point::new(10, 10));
-                        pos.x = 10;
-                        pos.y = 10;
-                        snake.direction = Dir::Right;
+                        snake.reset_snake();
                         grid.lives -= 1;
                         if grid.lives <= 0 {
                             grid.clear();
@@ -304,11 +306,7 @@ fn main() {
                 }
                 Dir::Right => {
                     if snake.check_out() {
-                        snake.sn.clear();
-                        snake.sn.push_back(Point::new(10, 10));
-                        pos.x = 10;
-                        pos.y = 10;
-                        snake.direction = Dir::Right;
+                        snake.reset_snake();
                         grid.lives -= 1;
                         if grid.lives <= 0 {
                             grid.clear();
@@ -321,11 +319,7 @@ fn main() {
                 }
                 Dir::Down => {
                     if snake.check_out() {
-                        snake.sn.clear();
-                        snake.sn.push_back(Point::new(10, 10));
-                        pos.x = 10;
-                        pos.y = 10;
-                        snake.direction = Dir::Right;
+                        snake.reset_snake();
                         grid.lives -= 1;
                         if grid.lives <= 0 {
                             grid.clear();
@@ -338,11 +332,7 @@ fn main() {
                 }
                 Dir::Up => {
                     if snake.check_out() {
-                        snake.sn.clear();
-                        snake.sn.push_back(Point::new(10, 10));
-                        pos.x = 10;
-                        pos.y = 10;
-                        snake.direction = Dir::Right;
+                        snake.reset_snake();
                         grid.lives -= 1;
                         if grid.lives <= 0 {
                             grid.clear();
