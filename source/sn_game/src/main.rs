@@ -23,6 +23,14 @@ impl Grid {
         let g = Box::new([[0; TILE_H]; TILE_W]);
         Grid { blocks: g }
     }
+
+    fn clear(&mut self) {
+        for i in 0..TILE_W {
+            for z in 0..TILE_H {
+                self.blocks[i][z] = 0;
+            }
+        }
+    }
 }
 /// Point on the Screen
 #[derive(Clone, Debug)]
@@ -83,6 +91,9 @@ fn main() {
     let mut rng = rand::thread_rng();
     let ix = rng.gen_range(2..WIDTH - 2);
     let iy = rng.gen_range(2..HEIGHT - 2);
+    let mut apple_num = 1;
+    let mut apple_count = 1;
+
     grid.blocks[ix as usize][iy as usize] = 2;
 
     'main: loop {
@@ -153,11 +164,16 @@ fn main() {
                                     }
                                 }
                                 grid.blocks[i][z] = 0;
-                                let mut rng = rand::thread_rng();
-                                let ix = rng.gen_range(2..WIDTH - 2);
-                                let iy = rng.gen_range(2..HEIGHT - 2);
-                                grid.blocks[ix as usize][iy as usize] = 2;
-                                score += 1;
+                                apple_num -= 1;
+                                if apple_num == 0 {
+                                    apple_count += 1;
+                                    apple_num = apple_count;
+                                    for _ in 0..apple_num {
+                                        let apple = rand_apple(&grid);
+                                        grid.blocks[apple.0][apple.1] = 2;
+                                    }
+                                }
+                                 score += 1;
                                 break;
                             }
                         }
@@ -198,9 +214,7 @@ fn main() {
         let ptick = tick - prev_tick;
         prev_tick = tick;
         tick_count += ptick;
-
         let tail = sn.get(sn.len() - 1).cloned().unwrap();
-
         if tick_count > 50 {
             tick_count = 0;
 
@@ -216,6 +230,9 @@ fn main() {
                         if lives <= 0 {
                             score = 0;
                             lives = 4;
+                            grid.clear();
+                            let apple = rand_apple(&grid);
+                            grid.blocks[apple.0][apple.1] = 2;
                         }
                         continue;
                     }
@@ -234,6 +251,9 @@ fn main() {
                         if lives <= 0 {
                             score = 0;
                             lives = 4;
+                            grid.clear();
+                            let apple = rand_apple(&grid);
+                            grid.blocks[apple.0][apple.1] = 2;
                         }
                         continue;
                     }
@@ -252,6 +272,9 @@ fn main() {
                         if lives <= 0 {
                             score = 0;
                             lives = 4;
+                            grid.clear();
+                            let apple = rand_apple(&grid);
+                            grid.blocks[apple.0][apple.1] = 2;
                         }
                         continue;
                     }
@@ -270,6 +293,9 @@ fn main() {
                         if lives <= 0 {
                             score = 0;
                             lives = 4;
+                            grid.clear();
+                            let apple = rand_apple(&grid);
+                            grid.blocks[apple.0][apple.1] = 2;
                         }
                         continue;
                     }
@@ -305,4 +331,14 @@ fn check_out(_cur_point: &Point, pos: &VecDeque<Point>) -> bool {
         return true;
     }
     false
+}
+
+fn rand_apple(g: &Grid) -> (usize, usize) {
+    let mut rng = rand::thread_rng();
+    let ix = rng.gen_range(2..WIDTH - 2);
+    let iy = rng.gen_range(2..HEIGHT - 2);
+    if g.blocks[ix as usize][iy as usize] == 2 {
+        return rand_apple(g);
+    }
+    return (ix as usize, iy as usize);
 }
