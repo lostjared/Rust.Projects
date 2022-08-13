@@ -83,18 +83,14 @@ fn main() {
     let mut sn: VecDeque<Point> = VecDeque::new();
     let mut direction: Dir = Dir::Down;
     sn.push_back(Point::new(10, 10));
-
     let mut prev_tick: u64 = 0;
     let mut tick_count = 0;
     let mut pos: Point = Point::new(10, 10);
-
-    let mut rng = rand::thread_rng();
-    let ix = rng.gen_range(2..WIDTH - 2);
-    let iy = rng.gen_range(2..HEIGHT - 2);
+    let apple_pos = rand_apple(&grid);
     let mut apple_num = 1;
     let mut apple_count = 1;
-
-    grid.blocks[ix as usize][iy as usize] = 2;
+    
+    grid.blocks[apple_pos.0][apple_pos.1] = 2;
 
     'main: loop {
         for _event in e.poll_iter() {
