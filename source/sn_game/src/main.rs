@@ -8,10 +8,12 @@ use sdl2::render::TextureQuery;
 use std::collections::VecDeque;
 use std::time::{SystemTime, UNIX_EPOCH};
 /// public constants
-pub const TILE_W: usize = 1280 / 8;
-pub const TILE_H: usize = 720 / 8;
-pub const WIDTH: i32 = 1280 / 8;
-pub const HEIGHT: i32 = 720 / 8;
+pub const TILE_SIZE: usize = 16;
+pub const SIZE: i32 = 16;
+pub const TILE_W: usize = 1280 / TILE_SIZE;
+pub const TILE_H: usize = 720 / TILE_SIZE;
+pub const WIDTH: i32 = 1280 / SIZE;
+pub const HEIGHT: i32 = 720 / SIZE;
 
 /// game Grid
 struct Grid {
@@ -255,14 +257,14 @@ fn main() {
                     }
                 }
                 can.set_draw_color(color);
-                can.fill_rect(Some(Rect::new(i as i32 * 8, z as i32 * 8, 8, 8)))
+                can.fill_rect(Some(Rect::new(i as i32 * SIZE, z as i32 * SIZE, SIZE as u32, SIZE as u32)))
                     .expect("on fill");
             }
         }
 
         for i in &snake.sn {
             can.set_draw_color(Color::RGB(0, 255, 0));
-            can.fill_rect(Some(Rect::new(i.x * 8, i.y * 8, 8, 8)))
+            can.fill_rect(Some(Rect::new(i.x * SIZE, i.y * SIZE, SIZE as u32, SIZE as u32)))
                 .expect("on fill");
         }
 
