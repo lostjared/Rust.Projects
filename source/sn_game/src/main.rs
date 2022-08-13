@@ -13,7 +13,7 @@ pub const TILE_H: usize = 720 / 8;
 pub const WIDTH: i32 = 1280 / 8;
 pub const HEIGHT: i32 = 720 / 8;
 
-/// game Grid 
+/// game Grid
 struct Grid {
     pub blocks: Box<[[u8; TILE_H]; TILE_W]>,
 }
@@ -127,8 +127,7 @@ fn main() {
 
                         for a in &sn {
                             if a.x as usize == i && a.y as usize == z {
-
-                                let tail = sn.get(sn.len()-1).cloned().unwrap();
+                                let tail = sn.get(sn.len() - 1).cloned().unwrap();
 
                                 match direction {
                                     Dir::Left => {
@@ -163,7 +162,6 @@ fn main() {
             }
         }
 
-
         for i in &sn {
             can.set_draw_color(Color::RGB(0, 255, 0));
             can.fill_rect(Some(Rect::new(i.x * 8, i.y * 8, 8, 8)))
@@ -177,12 +175,11 @@ fn main() {
         prev_tick = tick;
         tick_count += ptick;
 
-        let tail = sn.get(sn.len()-1).cloned().unwrap();
+        let tail = sn.get(sn.len() - 1).cloned().unwrap();
 
         if tick_count > 50 {
             tick_count = 0;
 
-            
             match direction {
                 Dir::Left => {
                     if check_out(&pos, &sn) {
@@ -241,6 +238,7 @@ fn main() {
     }
 }
 
+/// check for duplicate parts of the snake
 fn duplicates(pos: &VecDeque<Point>) -> bool {
     let top = pos.get(0).cloned().unwrap();
     for i in pos.iter().skip(1) {
@@ -256,7 +254,7 @@ fn check_out(_cur_point: &Point, pos: &VecDeque<Point>) -> bool {
     for i in pos.iter() {
         if i.x <= 0 || i.x > WIDTH - 1 {
             return true;
-        } 
+        }
         if i.y <= 0 || i.y > HEIGHT - 1 {
             return true;
         }
