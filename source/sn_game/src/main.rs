@@ -23,7 +23,7 @@ struct Grid {
 }
 
 impl Grid {
-    fn new() -> Grid {
+    pub fn new() -> Grid {
         let g = Box::new([[0; TILE_H]; TILE_W]);
         Grid { 
             blocks: g,
@@ -34,20 +34,36 @@ impl Grid {
          }
     }
 
-    fn reset_lives(&mut self) {
+    pub fn reset_lives(&mut self) {
         self.score = 0;
         self.lives = 4;
         self.apple_count = 1;
         self.apple_num = 1;
     }
 
-    fn clear(&mut self) {
+    pub fn clear(&mut self) {
         for i in 0..TILE_W {
             for z in 0..TILE_H {
                 self.blocks[i][z] = 0;
             }
         }
         self.reset_lives();
+        let apple = self.rand_apple();
+        self.set_apple(apple);
+    }
+
+    pub fn rand_apple(&mut self) -> (usize, usize) {
+        let mut rng = rand::thread_rng();
+        let ix = rng.gen_range(2..WIDTH - 2);
+        let iy = rng.gen_range(2..HEIGHT - 2);
+        if self.blocks[ix as usize][iy as usize] == 2 {
+            return self.rand_apple();
+        }
+        return (ix as usize, iy as usize);
+    }
+
+    pub fn set_apple(&mut self, apple: (usize, usize)) {
+        self.blocks[apple.0][apple.1] = 2;
     }
 }
 /// Point on the Screen
@@ -102,10 +118,8 @@ fn main() {
     let mut prev_tick: u64 = 0;
     let mut tick_count = 0;
     let mut pos: Point = Point::new(10, 10);
-    let apple_pos = rand_apple(&grid);
-
-    grid.blocks[apple_pos.0][apple_pos.1] = 2;
-
+    let apple = grid.rand_apple();
+    grid.set_apple(apple);
     'main: loop {
         for _event in e.poll_iter() {
             match _event {
@@ -179,8 +193,8 @@ fn main() {
                                     grid.apple_count += 1;
                                     grid.apple_num = grid.apple_count;
                                     for _ in 0..grid.apple_num {
-                                        let apple = rand_apple(&grid);
-                                        grid.blocks[apple.0][apple.1] = 2;
+                                        let apple = grid.rand_apple();
+                                        grid.set_apple(apple);
                                     }
                                 }
                                 grid.score += 1;
@@ -239,8 +253,6 @@ fn main() {
                         grid.lives -= 1;
                         if grid.lives <= 0 {
                             grid.clear();
-                            let apple = rand_apple(&grid);
-                            grid.blocks[apple.0][apple.1] = 2;
                         }
                         continue;
                     }
@@ -258,10 +270,8 @@ fn main() {
                         grid.lives -= 1;
                         if grid.lives <= 0 {
                             grid.clear();
-                            let apple = rand_apple(&grid);
-                            grid.blocks[apple.0][apple.1] = 2;
-                            continue;
                         }
+                        continue;
                     }
                     sn.pop_front();
                     sn.push_back(Point::new(tail.x + 1, tail.y));
@@ -277,8 +287,6 @@ fn main() {
                         grid.lives -= 1;
                         if grid.lives <= 0 {
                             grid.clear();
-                            let apple = rand_apple(&grid);
-                            grid.blocks[apple.0][apple.1] = 2;
                         }
                         continue;
                     }
@@ -296,8 +304,6 @@ fn main() {
                         grid.lives -= 1;
                         if grid.lives <= 0 {
                             grid.clear();
-                            let apple = rand_apple(&grid);
-                            grid.blocks[apple.0][apple.1] = 2;
                         }
                         continue;
                     }
@@ -336,12 +342,4 @@ fn check_out(_cur_point: &Point, pos: &VecDeque<Point>) -> bool {
     false
 }
 
-fn rand_apple(g: &Grid) -> (usize, usize) {
-    let mut rng = rand::thread_rng();
-    let ix = rng.gen_range(2..WIDTH - 2);
-    let iy = rng.gen_range(2..HEIGHT - 2);
-    if g.blocks[ix as usize][iy as usize] == 2 {
-        return rand_apple(g);
-    }
-    return (ix as usize, iy as usize);
-}
+
