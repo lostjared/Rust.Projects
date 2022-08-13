@@ -124,6 +124,24 @@ impl Snake {
         }
         false
     }
+
+    pub fn grow(&mut self) {
+        let tail = self.sn.get(self.sn.len() - 1).cloned().unwrap();
+        match self.direction {
+            Dir::Left => {
+                self.sn.push_back(Point::new(tail.x - 1, tail.y));
+            }
+            Dir::Right => {
+                self.sn.push_back(Point::new(tail.x + 1, tail.y));
+            }
+            Dir::Up => {
+                self.sn.push_back(Point::new(tail.x, tail.y - 1));
+            }
+            Dir::Down => {
+                self.sn.push_back(Point::new(tail.x, tail.y + 1));
+            }
+        }
+    }
 }
 
 /// main function
@@ -209,24 +227,9 @@ fn main() {
                     }
                     2 => {
                         color = Color::RGB(255, 0, 0);
-
                         for a in &snake.sn {
                             if a.x as usize == i && a.y as usize == z {
-                                let tail = snake.sn.get(snake.sn.len() - 1).cloned().unwrap();
-                                match snake.direction {
-                                    Dir::Left => {
-                                        snake.sn.push_back(Point::new(tail.x - 1, tail.y));
-                                    }
-                                    Dir::Right => {
-                                        snake.sn.push_back(Point::new(tail.x + 1, tail.y));
-                                    }
-                                    Dir::Up => {
-                                        snake.sn.push_back(Point::new(tail.x, tail.y - 1));
-                                    }
-                                    Dir::Down => {
-                                        snake.sn.push_back(Point::new(tail.x, tail.y + 1));
-                                    }
-                                }
+                                snake.grow();
                                 grid.blocks[i][z] = 0;
                                 grid.apple_num -= 1;
                                 if grid.apple_num == 0 {
