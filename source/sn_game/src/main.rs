@@ -92,6 +92,7 @@ impl Grid {
         }
     }
 
+    /// draw the apples on the grid to the screen and check if the snake colides with them
     pub fn draw_grid(
         &mut self,
         snake: &mut Snake,
@@ -124,6 +125,13 @@ impl Grid {
                 )))
                 .expect("on fill");
             }
+        }
+    }
+    /// the snake died (lost a life)
+    pub fn minus_life(&mut self) {
+        self.lives -= 1;
+        if self.lives <= 0 {
+            self.clear();
         }
     }
 }
@@ -361,10 +369,7 @@ fn main() {
             let tail = snake.sn.get(snake.sn.len() - 1).cloned().unwrap();
             if snake.check_out() {
                 snake.reset_snake();
-                grid.lives -= 1;
-                if grid.lives <= 0 {
-                    grid.clear();
-                }
+                grid.minus_life();
                 continue;
             }
             snake.move_snake(&tail);
