@@ -98,6 +98,7 @@ struct Snake {
 }
 
 impl Snake {
+    /// create a new snake
     fn new() -> Self {
         Snake {
             direction: Dir::Right,
