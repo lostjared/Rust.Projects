@@ -187,6 +187,7 @@ impl Snake {
         self.direction = Dir::Right;
     }
 
+    /// draw the snake to the screen
     pub fn draw_snake(&mut self, can: &mut sdl2::render::Canvas<sdl2::video::Window>) {
         for i in &self.sn {
             can.set_draw_color(Color::RGB(0, 255, 0));
@@ -200,24 +201,28 @@ impl Snake {
         }
     }
 
+    /// move snake left
     pub fn move_left(&mut self) {
         if self.direction != Dir::Right {
             self.direction = Dir::Left;
         }
     }
 
+    /// move snake right
     pub fn move_right(&mut self) {
         if self.direction != Dir::Left {
             self.direction = Dir::Right;
         }
     }
 
+    /// move snake down
     pub fn move_down(&mut self) {
         if self.direction != Dir::Up {
             self.direction = Dir::Down;
         }
     }
 
+    /// move snake up
     pub fn move_up(&mut self) {
         if self.direction != Dir::Down {
             self.direction = Dir::Up;
