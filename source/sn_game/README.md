@@ -11,3 +11,4 @@ or to build documentation
 
 $ cargo doc --open
 
+to compile on Windows you will need to link to SDL_ttf 's lib file and set the path to its location
