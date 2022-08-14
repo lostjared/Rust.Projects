@@ -312,7 +312,7 @@ fn main() {
         let ptick = tick - prev_tick;
         prev_tick = tick;
         tick_count += ptick;
-        if tick_count > 50 {
+        if tick_count > 75 {
             tick_count = 0;
             let tail = snake.sn.get(snake.sn.len() - 1).cloned().unwrap();
             if snake.check_out() {
