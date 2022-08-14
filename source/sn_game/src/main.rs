@@ -70,6 +70,27 @@ impl Grid {
     pub fn set_apple(&mut self, apple: (usize, usize)) {
         self.blocks[apple.0][apple.1] = 2;
     }
+
+    // check if the snake colided with any apples
+    pub fn check_apples(&mut self, i: usize, z: usize, snake: &mut Snake) {
+        for a in &snake.sn {
+            if a.x as usize == i && a.y as usize == z {
+                snake.grow();
+                self.blocks[i][z] = 0;
+                self.apple_num -= 1;
+                if self.apple_num == 0 {
+                    self.apple_count += 1;
+                    self.apple_num = self.apple_count;
+                    for _ in 0..self.apple_num {
+                        let apple = self.rand_apple();
+                        self.set_apple(apple);
+                    }
+                }
+                self.score += 1;
+                break;
+            }
+        }
+    }
 }
 /// Point on the Screen
 #[derive(Clone, Debug)]
@@ -257,23 +278,7 @@ fn main() {
                     }
                     2 => {
                         color = Color::RGB(255, 0, 0);
-                        for a in &snake.sn {
-                            if a.x as usize == i && a.y as usize == z {
-                                snake.grow();
-                                grid.blocks[i][z] = 0;
-                                grid.apple_num -= 1;
-                                if grid.apple_num == 0 {
-                                    grid.apple_count += 1;
-                                    grid.apple_num = grid.apple_count;
-                                    for _ in 0..grid.apple_num {
-                                        let apple = grid.rand_apple();
-                                        grid.set_apple(apple);
-                                    }
-                                }
-                                grid.score += 1;
-                                break;
-                            }
-                        }
+                        grid.check_apples(i, z, &mut snake);
                     }
                     _ => {
                         color = Color::RGB(0, 0, 0);
