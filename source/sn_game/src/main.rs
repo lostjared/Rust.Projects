@@ -100,22 +100,15 @@ impl Grid {
     ) {
         for i in 0..TILE_W {
             for z in 0..TILE_H {
-                let color;
-                match self.blocks[i][z] {
-                    0 => {
-                        color = Color::RGB(0, 0, 0);
-                    }
-                    1 => {
-                        color = Color::RGB(255, 255, 255);
-                    }
+                let color = match self.blocks[i][z] {
+                    0 => Color::RGB(0, 0, 0),
+                    1 => Color::RGB(255, 255, 255),
                     2 => {
-                        color = Color::RGB(255, 0, 0);
                         self.check_apples(i, z, snake);
+                        Color::RGB(255, 0, 0)
                     }
-                    _ => {
-                        color = Color::RGB(0, 0, 0);
-                    }
-                }
+                    _ => Color::RGB(0, 0, 0),
+                };
                 can.set_draw_color(color);
                 can.fill_rect(Some(Rect::new(
                     i as i32 * SIZE,
