@@ -228,13 +228,17 @@ fn main() {
                     keycode: Some(Keycode::Down),
                     ..
                 } => {
-                    snake.direction = Dir::Down;
+                    if snake.direction != Dir::Up {
+                        snake.direction = Dir::Down;
+                    }
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Up),
                     ..
                 } => {
-                    snake.direction = Dir::Up;
+                    if snake.direction != Dir::Down {
+                        snake.direction = Dir::Up;
+                    }
                 }
                 _ => {}
             }
