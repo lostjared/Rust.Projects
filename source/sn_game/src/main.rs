@@ -84,6 +84,7 @@ impl Point {
     }
 }
 /// Current Snake Direction
+#[derive(PartialEq)]
 enum Dir {
     Left,
     Right,
@@ -211,13 +212,17 @@ fn main() {
                     keycode: Some(Keycode::Left),
                     ..
                 } => {
-                    snake.direction = Dir::Left;
+                    if snake.direction != Dir::Right {
+                        snake.direction = Dir::Left;
+                    }
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Right),
                     ..
                 } => {
-                    snake.direction = Dir::Right;
+                    if snake.direction != Dir::Left {
+                        snake.direction = Dir::Right;
+                    }
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Down),
