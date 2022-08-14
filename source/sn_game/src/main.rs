@@ -199,6 +199,30 @@ impl Snake {
             .expect("on fill");
         }
     }
+
+    pub fn move_left(&mut self) {
+        if self.direction != Dir::Right {
+            self.direction = Dir::Left;
+        }
+    }
+
+    pub fn move_right(&mut self) {
+        if self.direction != Dir::Left {
+            self.direction = Dir::Right;
+        }
+    }
+
+    pub fn move_down(&mut self) {
+        if self.direction != Dir::Up {
+            self.direction = Dir::Down;
+        }
+    }
+
+    pub fn move_up(&mut self) {
+        if self.direction != Dir::Down {
+            self.direction = Dir::Up;
+        }
+    }
 }
 
 /// main function
@@ -246,33 +270,25 @@ fn main() {
                     keycode: Some(Keycode::Left),
                     ..
                 } => {
-                    if snake.direction != Dir::Right {
-                        snake.direction = Dir::Left;
-                    }
+                    snake.move_left();
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Right),
                     ..
                 } => {
-                    if snake.direction != Dir::Left {
-                        snake.direction = Dir::Right;
-                    }
+                    snake.move_right();
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Down),
                     ..
                 } => {
-                    if snake.direction != Dir::Up {
-                        snake.direction = Dir::Down;
-                    }
+                    snake.move_down();
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Up),
                     ..
                 } => {
-                    if snake.direction != Dir::Down {
-                        snake.direction = Dir::Up;
-                    }
+                    snake.move_up();
                 }
                 _ => {}
             }
