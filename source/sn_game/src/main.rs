@@ -20,8 +20,8 @@ struct Grid {
     pub blocks: Box<[[u8; TILE_H]; TILE_W]>,
     pub score: i32,
     pub lives: i32,
-    pub apple_num: i32,
-    pub apple_count: i32,
+    apple_num: i32,
+    apple_count: i32,
 }
 
 impl Grid {
