@@ -71,7 +71,7 @@ impl Grid {
         self.blocks[apple.0][apple.1] = 2;
     }
 
-    // check if the snake colided with any apples
+    /// check if the snake colided with any apples
     pub fn check_apples(&mut self, i: usize, z: usize, snake: &mut Snake) {
         for a in &snake.sn {
             if a.x as usize == i && a.y as usize == z {
