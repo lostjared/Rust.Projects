@@ -186,6 +186,19 @@ impl Snake {
         self.sn.push_back(Point::new(10, 10));
         self.direction = Dir::Right;
     }
+
+    pub fn draw_snake(&mut self, can: &mut sdl2::render::Canvas<sdl2::video::Window>) {
+        for i in &self.sn {
+            can.set_draw_color(Color::RGB(0, 255, 0));
+            can.fill_rect(Some(Rect::new(
+                i.x * SIZE,
+                i.y * SIZE,
+                SIZE as u32,
+                SIZE as u32,
+            )))
+            .expect("on fill");
+        }
+    }
 }
 
 /// main function
@@ -295,16 +308,7 @@ fn main() {
             }
         }
 
-        for i in &snake.sn {
-            can.set_draw_color(Color::RGB(0, 255, 0));
-            can.fill_rect(Some(Rect::new(
-                i.x * SIZE,
-                i.y * SIZE,
-                SIZE as u32,
-                SIZE as u32,
-            )))
-            .expect("on fill");
-        }
+       snake.draw_snake(&mut can);
 
         let turn_surf = font
             .render(&format!("Score: {} Lives: {}", grid.score, grid.lives))
