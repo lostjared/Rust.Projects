@@ -127,6 +127,16 @@ impl Grid {
             self.clear();
         }
     }
+
+    pub fn update(&mut self, snake: &mut Snake) {
+        let tail = snake.sn.get(snake.sn.len() - 1).cloned().unwrap();
+        if snake.check_out() {
+            snake.reset_snake();
+            self.minus_life();
+            return;
+        }
+        snake.move_snake(&tail);
+    }
 }
 /// Point on the Screen
 #[derive(Clone, Debug)]
@@ -358,13 +368,7 @@ fn main() {
         tick_count += ptick;
         if tick_count > 75 {
             tick_count = 0;
-            let tail = snake.sn.get(snake.sn.len() - 1).cloned().unwrap();
-            if snake.check_out() {
-                snake.reset_snake();
-                grid.minus_life();
-                continue;
-            }
-            snake.move_snake(&tail);
+            grid.update(&mut snake);
         }
     }
 }
