@@ -160,7 +160,7 @@ impl Snake {
     fn new() -> Self {
         Snake {
             direction: Dir::Right,
-            sn: VecDeque::new(),
+            sn: VecDeque::from(vec![Point{ x: 10, y: 10}]),
         }
     }
     /// check for duplicate parts of the snake
@@ -294,7 +294,6 @@ fn main() {
 
     let mut grid: Grid = Grid::new();
     let mut snake: Snake = Snake::new();
-    snake.reset_snake();
     let mut prev_tick: u64 = 0;
     let mut tick_count = 0;
     let apple = grid.rand_apple();
