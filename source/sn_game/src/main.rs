@@ -119,6 +119,8 @@ impl Grid {
                 .expect("on fill");
             }
         }
+
+        snake.draw_snake(can);
     }
     /// the snake died (lost a life)
     pub fn minus_life(&mut self) {
@@ -345,7 +347,6 @@ fn main() {
         }
         can.clear();
         grid.draw_grid(&mut snake, &mut can);
-        snake.draw_snake(&mut can);
         let turn_surf = font
             .render(&format!("Score: {} Lives: {}", grid.score, grid.lives))
             .blended(Color::RGB(255, 255, 255))
