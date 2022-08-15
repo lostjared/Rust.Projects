@@ -160,7 +160,7 @@ impl Snake {
     fn new() -> Self {
         Snake {
             direction: Dir::Right,
-            sn: VecDeque::from(vec![Point{ x: 10, y: 10}]),
+            sn: VecDeque::from(vec![Point { x: 10, y: 10 }]),
         }
     }
     /// check for duplicate parts of the snake
