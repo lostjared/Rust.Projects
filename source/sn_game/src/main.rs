@@ -130,6 +130,7 @@ impl Grid {
         }
     }
 
+    /// update grid snake logic
     pub fn update(&mut self, snake: &mut Snake) {
         let tail = snake.sn.get(snake.sn.len() - 1).cloned().unwrap();
         if snake.check_out() {
