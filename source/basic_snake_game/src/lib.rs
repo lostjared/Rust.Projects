@@ -66,7 +66,7 @@ pub mod snake {
             if self.blocks[ix as usize][iy as usize] == 2 {
                 return self.rand_apple();
             }
-            return (ix as usize, iy as usize);
+            (ix as usize, iy as usize)
         }
 
         /// set apple in grid
