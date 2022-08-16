@@ -24,6 +24,12 @@ struct Grid {
     apple_count: i32,
 }
 
+impl Default for Grid {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Grid {
     /// create a new grid
     pub fn new() -> Grid {
@@ -63,7 +69,7 @@ impl Grid {
         if self.blocks[ix as usize][iy as usize] == 2 {
             return self.rand_apple();
         }
-        return (ix as usize, iy as usize);
+        (ix as usize, iy as usize)
     }
 
     /// set apple in grid
@@ -168,16 +174,22 @@ struct Snake {
     pub sn: VecDeque<Point>,
 }
 
+impl Default for Snake {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Snake {
     /// create a new snake
-    fn new() -> Self {
+    pub fn new() -> Self {
         Snake {
             direction: Dir::Right,
             sn: VecDeque::from(vec![Point { x: 10, y: 10 }]),
         }
     }
     /// check for duplicate parts of the snake
-    fn duplicates(&mut self) -> bool {
+    pub fn duplicates(&mut self) -> bool {
         let top = self.sn.get(self.sn.len() - 1).cloned().unwrap();
         for ix in 0..self.sn.len() - 1 {
             let i = self.sn.get(ix).cloned().unwrap();
@@ -188,7 +200,7 @@ impl Snake {
         false
     }
     /// check if the snake is out of bounds
-    fn check_out(&mut self) -> bool {
+    pub fn check_out(&mut self) -> bool {
         for i in self.sn.iter() {
             if i.x <= 0 || i.x > WIDTH - 1 {
                 return true;
