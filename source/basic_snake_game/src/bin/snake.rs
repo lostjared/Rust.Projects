@@ -1,4 +1,5 @@
-//! Basic Snake Game
+//! Basic Snake Game written in Rust
+//! programmed for practice by Jared Bruni (jaredbruni@protonmail.com)
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
