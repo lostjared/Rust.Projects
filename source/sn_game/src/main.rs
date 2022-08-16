@@ -202,12 +202,12 @@ impl Snake {
         }
         false
     }
-    /// grow snake
+    /// grow the snake
     pub fn grow(&mut self) {
         let tail = self.sn.get(self.sn.len() - 1).cloned().unwrap();
         self.grow_tail(&tail);
     }
-    /// grow snake by tail
+    /// grow the snake by tail
     pub fn grow_tail(&mut self, tail: &Point) {
         match self.direction {
             Dir::Left => {
@@ -224,12 +224,12 @@ impl Snake {
             }
         }
     }
-    /// move snake in direction
+    /// move the snake in direction
     pub fn move_snake(&mut self, tail: &Point) {
         self.sn.pop_front();
         self.grow_tail(tail);
     }
-    /// reset snake back to 1 block
+    /// reset the snake back to 1 block
     pub fn reset_snake(&mut self) {
         self.sn.clear();
         self.sn.push_back(Point::new(10, 10));
@@ -250,28 +250,28 @@ impl Snake {
         }
     }
 
-    /// move snake left
+    /// move the snake left
     pub fn move_left(&mut self) {
         if self.direction != Dir::Right {
             self.direction = Dir::Left;
         }
     }
 
-    /// move snake right
+    /// move the snake right
     pub fn move_right(&mut self) {
         if self.direction != Dir::Left {
             self.direction = Dir::Right;
         }
     }
 
-    /// move snake down
+    /// move the snake down
     pub fn move_down(&mut self) {
         if self.direction != Dir::Up {
             self.direction = Dir::Down;
         }
     }
 
-    /// move snake up
+    /// move the snake up
     pub fn move_up(&mut self) {
         if self.direction != Dir::Down {
             self.direction = Dir::Up;
@@ -279,7 +279,7 @@ impl Snake {
     }
 }
 
-/// main function
+/// main function - entry point
 fn main() {
     let width = 1280;
     let height = 720;
