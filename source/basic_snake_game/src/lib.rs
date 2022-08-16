@@ -21,6 +21,12 @@ pub mod snake {
         apple_count: i32,
     }
 
+    impl Default for Grid {
+        fn default() -> Self {
+            Self::new()
+        }
+    }
+
     impl Grid {
         /// create a new grid
         pub fn new() -> Grid {
@@ -163,6 +169,12 @@ pub mod snake {
     pub struct Snake {
         pub direction: Dir,
         pub sn: VecDeque<Point>,
+    }
+
+    impl Default for Snake {
+        fn default() -> Self {
+            Self::new()
+        }
     }
 
     impl Snake {
