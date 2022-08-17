@@ -5,6 +5,7 @@ use sdl2::rect::Rect;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use particle::particle_emiter::Emiter;
+use particle::particle_emiter::NUM_PARTICLES;
 
 /// main function - entry point
 fn main() {
@@ -42,9 +43,10 @@ fn main() {
         can.set_draw_color(Color::RGB(0, 0, 0));
         can.clear();
 
-        for i in &emiter.part {
-            can.set_draw_color(Color::RGB(i.depth, i.depth, i.depth));
-            can.fill_rect(Some(Rect::new(i.x, i.y, 8, 8)))
+        for i in 0..NUM_PARTICLES {
+            let p = emiter.get_particle(i);
+            can.set_draw_color(Color::RGB(p.depth, p.depth, p.depth));
+            can.fill_rect(Some(Rect::new(p.x, p.y, 4, 4)))
                 .expect("on fill");
         }
 

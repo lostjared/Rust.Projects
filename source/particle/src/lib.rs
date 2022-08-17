@@ -12,7 +12,7 @@ pub mod particle_emiter {
     }
 
     pub struct Emiter {
-        pub part: [Particle; NUM_PARTICLES],
+        part: [Particle; NUM_PARTICLES],
     }
 
     impl Default for Particle {
@@ -74,6 +74,10 @@ pub mod particle_emiter {
             for i in &mut self.part {
                 i.move_down();
             }
+        }
+
+        pub fn get_particle(&mut self, x: usize) -> Particle {
+            return self.part[x];
         }
     }
 }
