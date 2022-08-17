@@ -3,6 +3,9 @@ pub mod particle_emiter {
     use rand::Rng;
 
     pub const NUM_PARTICLES: usize = 1024;
+    pub const WIDTH : i32 = 1280;
+    pub const HEIGHT: i32 = 720;
+    pub const PSIZE: i32 = 4;
 
     #[derive(Copy, Clone)]
     pub struct Particle {
@@ -24,8 +27,8 @@ pub mod particle_emiter {
     impl Particle {
         pub fn new() -> Self {
             let mut rng = rand::thread_rng();
-            let rand_x = rng.gen_range(0..1280 - 32);
-            let rand_y = rng.gen_range(0..720 - 32);
+            let rand_x = rng.gen_range(0..WIDTH - (PSIZE+1));
+            let rand_y = rng.gen_range(0..HEIGHT - (PSIZE+1));
             let rand_depth = rng.gen_range(0..255 - 16);
             Particle {
                 x: rand_x,
@@ -40,9 +43,9 @@ pub mod particle_emiter {
             if self.depth >= 0xFE - 16 {
                 self.depth = 1;
             }
-            if self.y > 720 - 8 {
-                self.y = rng.gen_range(0..720 - 32);
-                self.x = rng.gen_range(0..1280 - 32);
+            if self.y > HEIGHT - (PSIZE+1) {
+                self.y = rng.gen_range(0..HEIGHT - (PSIZE+1));
+                self.x = rng.gen_range(0..WIDTH - (PSIZE+1));
             }
         }
     }
