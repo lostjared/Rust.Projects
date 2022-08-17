@@ -26,7 +26,7 @@ fn main() {
     let mut e = sdl.event_pump().unwrap();
     let mut prev_tick: u64 = 0;
     let mut tick_count = 0;
-    let mut emiter  = Emiter::new();
+    let mut emiter = Emiter::new();
     emiter.init();
     'main: loop {
         for _event in e.poll_iter() {
@@ -44,15 +44,9 @@ fn main() {
 
         for i in &emiter.part {
             can.set_draw_color(Color::RGB(i.depth, i.depth, i.depth));
-            can.fill_rect(Some(Rect::new(
-                i.x,
-                i.y,
-                8,
-                8,
-            )))
-            .expect("on fill");
+            can.fill_rect(Some(Rect::new(i.x, i.y, 8, 8)))
+                .expect("on fill");
         }
-
 
         can.present();
         let start = SystemTime::now();
@@ -63,7 +57,7 @@ fn main() {
         tick_count += ptick;
         if tick_count > 75 {
             tick_count = 0;
-            emiter.update();            
+            emiter.update();
         }
     }
 }
