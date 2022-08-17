@@ -15,6 +15,12 @@ pub mod particle_emiter {
         pub part: [Particle; NUM_PARTICLES],
     }
 
+    impl Default for Particle {
+        fn default() -> Self {
+            Self::new()
+        }
+    }
+
     impl Particle {
         pub fn new() -> Self {
             let mut rng = rand::thread_rng();
@@ -38,6 +44,12 @@ pub mod particle_emiter {
                 self.y = rng.gen_range(0..720 - 32);
                 self.x = rng.gen_range(0..1280 - 32);
             }
+        }
+    }
+
+    impl Default for Emiter {
+        fn default() -> Self {
+            Self::new()
         }
     }
 
