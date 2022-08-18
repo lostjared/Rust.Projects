@@ -1,8 +1,14 @@
 // polymorphism with traits
 
-struct Monkey { name: String }
-struct Cat { name: String }
-struct Human { name: String }
+struct Monkey {
+    name: String,
+}
+struct Cat {
+    name: String,
+}
+struct Human {
+    name: String,
+}
 
 trait Animal {
     fn eat(&self);
@@ -45,9 +51,15 @@ fn eat_and_die(o: &dyn Animal) {
 }
 
 fn main() {
-    let human = Human { name: "Jared".to_string() };
-    let monkey = Monkey { name: "Bobo".to_string()  };
-    let cat = Cat { name: "Coder".to_string()  };
+    let human = Human {
+        name: "Jared".to_string(),
+    };
+    let monkey = Monkey {
+        name: "Bobo".to_string(),
+    };
+    let cat = Cat {
+        name: "Coder".to_string(),
+    };
     eat_and_die(&human);
     eat_and_die(&monkey);
     eat_and_die(&cat);
