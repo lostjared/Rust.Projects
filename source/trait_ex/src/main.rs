@@ -51,8 +51,8 @@ fn main() {
     eat_and_die(&human);
     eat_and_die(&monkey);
     eat_and_die(&cat);
-    
-    let vec : Vec<&dyn Animal> = vec![&human, &monkey, &cat];
+
+    let vec: Vec<&dyn Animal> = vec![&human, &monkey, &cat];
     for i in vec {
         eat_and_die(i);
     }
