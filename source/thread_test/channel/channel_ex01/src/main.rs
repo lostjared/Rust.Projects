@@ -1,39 +1,31 @@
-
 #[macro_use]
 extern crate crossbeam;
 
-use crossbeam::channel::unbounded;
-use std::thread;
-
-use crate::ConnectivityCheck::*;
-
 #[derive(Debug)]
-enum ConnectivityCheck {
+enum ConnCheck {
     Ping,
     Pong,
     End,
 }
 
 fn main() {
-    let n_messages = 5;
+    let num_messages = 5;
     let (re_tx, re_rx) = crossbeam::channel::unbounded();
     let (res_tx, res_rx) = crossbeam::channel::unbounded();
-    thread::spawn(move || loop {
+    std::thread::spawn(move || loop {
         match re_rx.recv().unwrap() {
-            Pong => println!("Pong!"),
-            Ping => res_tx.send(Pong).unwrap(),
-            End => return,
+            ConnCheck::Pong => println!("Pong!"),
+            ConnCheck::Ping => res_tx.send(ConnCheck::Pong).unwrap(),
+            ConnCheck::End => return,
         }
     });
-    for _ in 0..n_messages {
-        re_tx.send(Ping).unwrap();
+    for _ in 0..num_messages {
+        re_tx.send(ConnCheck::Ping).unwrap();
     }
-    re_tx.send(End).unwrap();
-    for _ in 0..n_messages {
+    re_tx.send(ConnCheck::End).unwrap();
+    for _ in 0..num_messages {
         select! {
             recv(res_rx) -> msg => println!("{:?}", msg),
         }
     }
 }
-
-
