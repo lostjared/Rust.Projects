@@ -1,3 +1,15 @@
+#[macro_use]
+extern crate crossbeam;
+
+use crossbeam::channel::{unbounded};
+use std::thread;
+
 fn main() {
-    println!("Hello, world!");
+    let (x, y) = unbounded();
+    thread::spawn(move || {
+        x.send(100).unwrap();
+    });
+    select! {
+        recv(y) -> msg => println!("message {:?}", msg),
+    }
 }
