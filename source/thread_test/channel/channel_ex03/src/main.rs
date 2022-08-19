@@ -4,7 +4,7 @@ extern crate crossbeam;
 use crossbeam::channel::unbounded;
 use std::thread;
 
-#[derive(Debug,PartialEq)]
+#[derive(Debug, PartialEq)]
 enum Message {
     Message1,
     Message2,
@@ -20,14 +20,14 @@ fn main() {
     });
     loop {
         select! {
-            recv(channel_recv) -> msg => { 
-            println!("{:?}", msg);
-            let val = msg.unwrap();
-            if val == Message::Message2 {
-                println!("Quit Message sent exiting... ");
-                std::process::exit(0);
-            }
-        },
+            recv(channel_recv) -> msg => {
+                println!("{:?}", msg);
+                let val = msg.unwrap();
+                if val == Message::Message2 {
+                    println!("Quit Message sent exiting... ");
+                    std::process::exit(0);
+                }
+           },
         }
     }
 }
