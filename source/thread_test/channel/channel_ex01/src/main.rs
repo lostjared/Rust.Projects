@@ -9,7 +9,6 @@ enum ConnCheck {
 }
 
 fn main() {
-    let num_messages = 5;
     let (re_tx, re_rx) = crossbeam::channel::unbounded();
     let (res_tx, res_rx) = crossbeam::channel::unbounded();
     std::thread::spawn(move || loop {
@@ -19,6 +18,7 @@ fn main() {
             ConnCheck::End => return,
         }
     });
+    let num_messages = 5;
     for _ in 0..num_messages {
         re_tx.send(ConnCheck::Ping).unwrap();
     }
