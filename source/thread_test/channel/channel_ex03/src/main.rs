@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate crossbeam;
 
-use crossbeam::channel::{unbounded};
+use crossbeam::channel::unbounded;
 use std::thread;
 
 #[derive(Debug)]
@@ -18,9 +18,8 @@ fn main() {
         }
         channel_send.send(Message::Message2).unwrap()
     });
-
     for _ in 0..6 {
-        select! { 
+        select! {
             recv(channel_recv) -> msg => println!("{:?}", msg),
         }
     }
