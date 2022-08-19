@@ -1,6 +1,4 @@
-#[macro_use]
-extern crate crossbeam;
-
+use crossbeam::select;
 use crossbeam::channel::{unbounded};
 use std::thread;
 

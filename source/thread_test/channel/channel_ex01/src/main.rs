@@ -1,5 +1,4 @@
-#[macro_use]
-extern crate crossbeam;
+use crossbeam::select;
 
 #[derive(Debug)]
 enum ConnCheck {
