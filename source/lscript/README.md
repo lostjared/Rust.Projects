@@ -8,8 +8,11 @@ L stands for move Left
 R stands for move Right
 D stands for move Down
 U stands for move Up
+S stands for Set
 
-the format is Direction:Steps
+	the format for Directions Direction:Steps
+	teh format for setting the position is S:X,Y
+
 
 so
 
@@ -18,5 +21,16 @@ so
 	L:1
 	U:1
 
-is to move in a square by 1 movement each iteration
+moves the pixel in a square
+
+or
+
+	S:10,10
+	L:1
+	L:1
+	R:1
+	R:1
+
+sets the position to 10,10
+moves left by 1, left by 1, right by 1, right by 1
 
