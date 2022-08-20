@@ -5,6 +5,7 @@ use sdl2::rect::Rect;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use lscript::scr::MovementObject;
+use lscript::scr::Direction;
 
 /// main function - entry point
 fn main() {
@@ -28,8 +29,10 @@ fn main() {
     let mut prev_tick: u64 = 0;
     let mut tick_count = 0;
 
-    let movement = MovementObject::load_from_file(args.get(1).unwrap());
+    let mut movement = MovementObject::load_from_file(args.get(1).unwrap());
     movement.print_movement();
+
+    let mut cur_pos = ((1280/32)/2, (720/32)/2);
 
     'main: loop {
         for _event in e.poll_iter() {
@@ -44,7 +47,8 @@ fn main() {
         }
         can.set_draw_color(Color::RGB(0, 0, 0));
         can.clear();
-
+        can.set_draw_color(Color::RGB(255, 255, 255));
+        can.fill_rect(Some(Rect::new(cur_pos.0 * 32, cur_pos.1 * 32, 32, 32))).expect("on rect");
         can.present();
         let start = SystemTime::now();
         let se = start.duration_since(UNIX_EPOCH).expect("error on time");
@@ -52,9 +56,15 @@ fn main() {
         let ptick = tick - prev_tick;
         prev_tick = tick;
         tick_count += ptick;
-        if tick_count > 75 {
+        if tick_count > 150 {
             tick_count = 0;
-
+            let m = movement.get_pos();
+            match m.direction {
+                Direction::Left => cur_pos.0 -= m.steps,
+                Direction::Right => cur_pos.0 += m.steps,
+                Direction::Up =>  cur_pos.1 -= m.steps,
+                Direction::Down =>cur_pos.1 += m.steps,
+            }
         }
     }
 }

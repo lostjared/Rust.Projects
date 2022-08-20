@@ -4,7 +4,7 @@ pub mod scr {
 
  
     #[derive(PartialEq,Copy,Clone,Debug)]
-    enum Direction {
+    pub enum Direction {
         Left,
         Right,
         Up,
@@ -12,13 +12,14 @@ pub mod scr {
     }
 
     #[derive(Copy, Clone)]
-    struct Movement {
-        direction: Direction,
-        steps: i32
+    pub struct Movement {
+        pub direction: Direction,
+        pub steps: i32
     }
 
     pub struct MovementObject {
         lst: Vec<Movement>,
+        index: usize,
     }
 
     impl MovementObject {
@@ -34,7 +35,6 @@ pub mod scr {
                 let pos = pos.unwrap();
                 let left = &i[0..pos];
                 let right = &i[pos+1..];
-                println!("{} right: {} ", left, right);
                 let ch = left.chars().nth(0).unwrap();
                 let dir : Direction = match ch {
                     'L' => Direction::Left,
@@ -47,7 +47,8 @@ pub mod scr {
                 lst.push(l);
             }
             MovementObject {
-                lst: lst
+                lst: lst,
+                index: 0
             }
         }
 
@@ -55,6 +56,15 @@ pub mod scr {
             for i in &self.lst {
                 println!("Move: {:?}, Steps: {}", i.direction, i.steps);
             }
+        }
+
+        pub fn get_pos(&mut self) -> Movement {
+            let m = self.lst.get(self.index).cloned();
+            self.index += 1;
+            if self.index >= self.lst.len() {
+                self.index = 0;
+            }
+            m.unwrap()
         }
     }
 
