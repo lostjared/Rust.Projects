@@ -13,10 +13,10 @@ the formst is Direction:Steps
 
 so
 
-R:1
-D:1
-L:1
-U: 
+	R:1
+	D:1
+	L:1
+	U:1
 
 is to move in a square by 1 movement each iteration
 
