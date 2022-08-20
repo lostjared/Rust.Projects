@@ -5,7 +5,7 @@ use std::thread;
 #[derive(Debug)]
 enum Message {
     Message1,
-    Message2,
+    Quit,
 }
 
 fn main() {
@@ -14,14 +14,14 @@ fn main() {
         for _ in 0..5 {
             channel_send.send(Message::Message1).unwrap();
         }
-        channel_send.send(Message::Message2).unwrap()
+        channel_send.send(Message::Quit).unwrap()
     });
     loop {
         select! {
             recv(channel_recv) -> msg => {
                 println!("{:?}", msg);
                 match msg.unwrap() {
-                    Message::Message2 => {
+                    Message::Quit => {
                         println!("Quit Message sent exiting... ");
                         std::process::exit(0);
                     }
