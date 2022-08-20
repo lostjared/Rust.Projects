@@ -1,6 +1,6 @@
 Another project to practice
 
-Write down in a text file the movemnts you want the pixel to take
+Write down in a text file the movements you want the pixel to take
 the program will interpret the file and move the pixel in the direction
 specified in the text file. A few example scripts are in the scripts/ directory.
 
