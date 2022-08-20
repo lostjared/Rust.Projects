@@ -30,13 +30,14 @@ pub mod scr {
             let mut lst : Vec<Movement> = vec![];
             let contents = std::fs::read_to_string(filename).expect("Error reading the file");
             for i in contents.lines() {
-                let pos = i.find(':');
+                let trimmed = i.trim();
+                let pos = trimmed.find(':');
                 if pos == None {
                     continue;
                 }
                 let pos = pos.unwrap();
-                let left = &i[0..pos];
-                let right = &i[pos+1..];
+                let left = &trimmed[0..pos];
+                let right = &trimmed[pos+1..];
                 let ch = left.chars().nth(0).unwrap();
                 let dir : Direction = match ch {
                     'L' => Direction::Left,
