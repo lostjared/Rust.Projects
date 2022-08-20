@@ -1,5 +1,5 @@
-use crossbeam::select;
 use crossbeam::channel::unbounded;
+use crossbeam::select;
 use std::thread;
 
 #[derive(Debug)]
