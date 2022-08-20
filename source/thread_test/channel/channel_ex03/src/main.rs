@@ -25,7 +25,9 @@ fn main() {
                         println!("Quit Message sent exiting... ");
                         std::process::exit(0);
                     }
-                    _ => {}
+                    Message::Message1 => {
+                        println!("Message 1 sent");
+                    }
                 }
            },
         }
