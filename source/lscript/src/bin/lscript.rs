@@ -56,7 +56,7 @@ fn main() {
         let ptick = tick - prev_tick;
         prev_tick = tick;
         tick_count += ptick;
-        if tick_count > 150 {
+        if tick_count > 75 {
             tick_count = 0;
             let m = movement.get_pos();
             match m.direction {
