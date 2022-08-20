@@ -8,6 +8,7 @@ pub mod scr {
         Right,
         Up,
         Down,
+        Set,
     }
 
     /// Movement structure
@@ -15,6 +16,7 @@ pub mod scr {
     pub struct Movement {
         pub direction: Direction,
         pub steps: i32,
+        pub pos: (i32, i32),
     }
 
     /// Container for Movement(s)
@@ -38,18 +40,35 @@ pub mod scr {
                 let left = &trimmed[0..pos];
                 let right = &trimmed[pos + 1..];
                 let ch = left.chars().nth(0).unwrap();
+                let mut p = (0, 0);
+                let mut steps = 0;
                 let dir: Direction = match ch {
                     'L' => Direction::Left,
                     'R' => Direction::Right,
                     'U' => Direction::Up,
                     'D' => Direction::Down,
+                    'S' => Direction::Set,
                     _ => {
                         panic!("invalid type");
                     }
                 };
+                if dir == Direction::Set {
+                    let cpos = right.find(",");
+                    if cpos == None {
+                        continue;
+                    }
+                    let le = &right[0..cpos.unwrap()];
+                    let ri = &right[cpos.unwrap()+1..];
+                    p.0 = le.parse().unwrap();
+                    p.1 = ri.parse().unwrap();
+                } else {
+                    steps = right.parse().unwrap();
+                }
+
                 let l: Movement = Movement {
                     direction: dir,
-                    steps: right.parse().unwrap(),
+                    steps: steps,
+                    pos: p,
                 };
                 lst.push(l);
             }
@@ -59,7 +78,11 @@ pub mod scr {
         /// print the current movements
         pub fn print_movement(&self) {
             for i in &self.lst {
-                println!("Move: {:?}, Steps: {}", i.direction, i.steps);
+                if i.direction != Direction::Set {
+                    println!("Move: {:?}, Steps: {}", i.direction, i.steps);
+                } else {
+                    println!("Move: {:?} Set Pos: {}, {}", i.direction, i.pos.0, i.pos.1);
+                }
             }
         }
 

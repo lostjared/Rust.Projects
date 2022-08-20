@@ -65,6 +65,7 @@ fn main() {
                 Direction::Right => cur_pos.0 += m.steps,
                 Direction::Up => cur_pos.1 -= m.steps,
                 Direction::Down => cur_pos.1 += m.steps,
+                Direction::Set => cur_pos = m.pos,
             }
             // bounds check
             if cur_pos.0 < 0 {
