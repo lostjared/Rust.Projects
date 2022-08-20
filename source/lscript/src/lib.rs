@@ -1,8 +1,7 @@
-
-
+//! LScript - Movement of Pixel by instructions in text file (Script).
 pub mod scr {
 
- 
+    /// Movement Direction
     #[derive(PartialEq,Copy,Clone,Debug)]
     pub enum Direction {
         Left,
@@ -11,12 +10,14 @@ pub mod scr {
         Down
     }
 
+    /// Movement structure
     #[derive(Copy, Clone)]
     pub struct Movement {
         pub direction: Direction,
         pub steps: i32
     }
 
+    /// Container for Movement(s)
     pub struct MovementObject {
         lst: Vec<Movement>,
         index: usize,
@@ -24,6 +25,7 @@ pub mod scr {
 
     impl MovementObject {
 
+        /// static load from file function returns initalized MovementObject
         pub fn load_from_file(filename: &str) -> Self {
             let mut lst : Vec<Movement> = vec![];
             let contents = std::fs::read_to_string(filename).expect("Error reading the file");
@@ -52,12 +54,14 @@ pub mod scr {
             }
         }
 
+        /// print the current movements
         pub fn print_movement(&self) {
             for i in &self.lst {
                 println!("Move: {:?}, Steps: {}", i.direction, i.steps);
             }
         }
 
+        /// get next position
         pub fn get_pos(&mut self) -> Movement {
             let m = self.lst.get(self.index).cloned();
             self.index += 1;
