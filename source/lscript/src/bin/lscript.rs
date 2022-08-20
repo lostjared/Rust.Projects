@@ -4,12 +4,12 @@ use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use lscript::scr::MovementObject;
 use lscript::scr::Direction;
+use lscript::scr::MovementObject;
 
 /// main function - entry point
 fn main() {
-    let args : Vec<String> = std::env::args().collect();
+    let args: Vec<String> = std::env::args().collect();
     let width = 1280;
     let height = 720;
     let sdl = sdl2::init().unwrap();
@@ -32,7 +32,7 @@ fn main() {
     let mut movement = MovementObject::load_from_file(args.get(1).unwrap());
     movement.print_movement();
 
-    let mut cur_pos = ((1280/32)/2, (720/32)/2);
+    let mut cur_pos = ((1280 / 32) / 2, (720 / 32) / 2);
 
     'main: loop {
         for _event in e.poll_iter() {
@@ -48,7 +48,8 @@ fn main() {
         can.set_draw_color(Color::RGB(0, 0, 0));
         can.clear();
         can.set_draw_color(Color::RGB(255, 255, 255));
-        can.fill_rect(Some(Rect::new(cur_pos.0 * 32, cur_pos.1 * 32, 32, 32))).expect("on rect");
+        can.fill_rect(Some(Rect::new(cur_pos.0 * 32, cur_pos.1 * 32, 32, 32)))
+            .expect("on rect");
         can.present();
         let start = SystemTime::now();
         let se = start.duration_since(UNIX_EPOCH).expect("error on time");
@@ -62,8 +63,8 @@ fn main() {
             match m.direction {
                 Direction::Left => cur_pos.0 -= m.steps,
                 Direction::Right => cur_pos.0 += m.steps,
-                Direction::Up =>  cur_pos.1 -= m.steps,
-                Direction::Down =>cur_pos.1 += m.steps,
+                Direction::Up => cur_pos.1 -= m.steps,
+                Direction::Down => cur_pos.1 += m.steps,
             }
         }
     }

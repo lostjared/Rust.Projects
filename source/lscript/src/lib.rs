@@ -2,19 +2,19 @@
 pub mod scr {
 
     /// Movement Direction
-    #[derive(PartialEq,Copy,Clone,Debug)]
+    #[derive(PartialEq, Copy, Clone, Debug)]
     pub enum Direction {
         Left,
         Right,
         Up,
-        Down
+        Down,
     }
 
     /// Movement structure
     #[derive(Copy, Clone)]
     pub struct Movement {
         pub direction: Direction,
-        pub steps: i32
+        pub steps: i32,
     }
 
     /// Container for Movement(s)
@@ -24,10 +24,9 @@ pub mod scr {
     }
 
     impl MovementObject {
-
         /// static load from file function returns initalized MovementObject
         pub fn load_from_file(filename: &str) -> Self {
-            let mut lst : Vec<Movement> = vec![];
+            let mut lst: Vec<Movement> = vec![];
             let contents = std::fs::read_to_string(filename).expect("Error reading the file");
             for i in contents.lines() {
                 let trimmed = i.trim();
@@ -37,22 +36,24 @@ pub mod scr {
                 }
                 let pos = pos.unwrap();
                 let left = &trimmed[0..pos];
-                let right = &trimmed[pos+1..];
+                let right = &trimmed[pos + 1..];
                 let ch = left.chars().nth(0).unwrap();
-                let dir : Direction = match ch {
+                let dir: Direction = match ch {
                     'L' => Direction::Left,
                     'R' => Direction::Right,
                     'U' => Direction::Up,
                     'D' => Direction::Down,
-                    _ => { panic!("invalid type"); }
+                    _ => {
+                        panic!("invalid type");
+                    }
                 };
-                let l : Movement = Movement { direction: dir, steps: right.parse().unwrap() };
+                let l: Movement = Movement {
+                    direction: dir,
+                    steps: right.parse().unwrap(),
+                };
                 lst.push(l);
             }
-            MovementObject {
-                lst: lst,
-                index: 0
-            }
+            MovementObject { lst: lst, index: 0 }
         }
 
         /// print the current movements
@@ -72,5 +73,4 @@ pub mod scr {
             m.unwrap()
         }
     }
-
 }
