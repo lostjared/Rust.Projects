@@ -66,6 +66,19 @@ fn main() {
                 Direction::Up => cur_pos.1 -= m.steps,
                 Direction::Down => cur_pos.1 += m.steps,
             }
+            // bounds check
+            if cur_pos.0 < 0 {
+                cur_pos.0 = 0;
+            }
+            if cur_pos.1 < 0 {
+                cur_pos.1 = 0;
+            }
+            if cur_pos.0 > (1280/32)-1 {
+                cur_pos.0 = (1280/32)-1;
+            }
+            if cur_pos.1 > (720/32)-1 {
+                cur_pos.1 = (720/32)-1;
+            }
         }
     }
 }
