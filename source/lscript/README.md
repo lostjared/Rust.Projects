@@ -9,7 +9,7 @@ R stands for move Right
 D stands for move Down
 U stands for move Up
 
-the formst is Direction:Steps
+the format is Direction:Steps
 
 so
 
