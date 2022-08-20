@@ -74,11 +74,11 @@ fn main() {
             if cur_pos.1 < 0 {
                 cur_pos.1 = 0;
             }
-            if cur_pos.0 > (1280/32)-1 {
-                cur_pos.0 = (1280/32)-1;
+            if cur_pos.0 > (1280 / 32) - 1 {
+                cur_pos.0 = (1280 / 32) - 1;
             }
-            if cur_pos.1 > (720/32)-1 {
-                cur_pos.1 = (720/32)-1;
+            if cur_pos.1 > (720 / 32) - 1 {
+                cur_pos.1 = (720 / 32) - 1;
             }
         }
     }

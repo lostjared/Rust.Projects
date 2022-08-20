@@ -58,7 +58,7 @@ pub mod scr {
                         continue;
                     }
                     let le = &right[0..cpos.unwrap()];
-                    let ri = &right[cpos.unwrap()+1..];
+                    let ri = &right[cpos.unwrap() + 1..];
                     p.0 = le.parse().unwrap();
                     p.1 = ri.parse().unwrap();
                 } else {
