@@ -50,6 +50,13 @@ fn eat_and_die(o: &dyn Animal) {
     o.die();
 }
 
+fn generic_eat<T>(animal: &T)
+where
+    T: Animal,
+{
+    animal.eat();
+}
+
 fn main() {
     let human = Human {
         name: "Jared".to_string(),
@@ -68,4 +75,5 @@ fn main() {
     for i in vec {
         eat_and_die(i);
     }
+    generic_eat(&human);
 }
