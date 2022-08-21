@@ -32,7 +32,6 @@ pub mod scr {
             write!(f, "direction: {:?} steps: {}", self.direction, self.steps)
         }
     }
-
     /// Container for Movement(s)
     pub struct MovementObject {
         lst: Vec<Movement>,

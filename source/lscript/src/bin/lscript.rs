@@ -7,9 +7,56 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use lscript::scr::Direction;
 use lscript::scr::MovementObject;
 
+const TILE_W: usize = 1280 / 32;
+const TILE_H: usize = 720 / 32;
+
+/// screen pixels structure
+#[derive(Copy, Clone)]
+pub struct Pixel {
+    on: bool,
+    color: (u8, u8, u8),
+}
+
+/// pixel grid
+pub struct PixelGrid {
+    pub pixels: Box<[[Pixel; TILE_H]; TILE_W]>,
+}
+
+impl PixelGrid {
+    pub fn new() -> Self {
+        PixelGrid {
+            pixels: Box::new(
+                [[Pixel {
+                    on: false,
+                    color: (0, 0, 0),
+                }; TILE_H]; TILE_W],
+            ),
+        }
+    }
+
+    pub fn clear(&mut self) {
+        for i in 0..TILE_W {
+            for z in 0..TILE_H {
+                self.pixels[i][z].on = false;
+                self.pixels[i][z].color = (0, 0, 0);
+            }
+        }
+    }
+
+    pub fn set_pixel(&mut self, x: usize, y: usize, col: (u8, u8, u8)) {
+        self.pixels[x][y].on = true;
+        self.pixels[x][y].color = col;
+    }
+}
+
 /// main function - entry point
 fn main() {
     let args: Vec<String> = std::env::args().collect();
+    let mut movement = MovementObject::load_from_file(args.get(1).unwrap());
+    movement.print_movement();
+
+    let grid : PixelGrid = PixelGrid::new();
+    
     let width = 1280;
     let height = 720;
     let sdl = sdl2::init().unwrap();
@@ -29,9 +76,9 @@ fn main() {
     let mut prev_tick: u64 = 0;
     let mut tick_count = 0;
 
-    let mut movement = MovementObject::load_from_file(args.get(1).unwrap());
-    movement.print_movement();
 
+
+    
     let mut cur_pos = ((1280 / 32) / 2, (720 / 32) / 2);
 
     'main: loop {
@@ -45,12 +92,20 @@ fn main() {
                 _ => {}
             }
         }
+        for i in 0..TILE_W {
+            for z in 0..TILE_H {
+                let pix = grid.pixels[i][z];
+                can.set_draw_color(Color::RGB(pix.color.0, pix.color.1, pix.color.2));
+                can.fill_rect(Some(Rect::new(i as i32 * 32, z as i32 * 32, 32, 32))).expect("on rect");
+            }
+        }
         can.set_draw_color(Color::RGB(0, 0, 0));
         can.clear();
         can.set_draw_color(Color::RGB(255, 255, 255));
         can.fill_rect(Some(Rect::new(cur_pos.0 * 32, cur_pos.1 * 32, 32, 32)))
             .expect("on rect");
-        can.present();
+    
+            can.present();
         let start = SystemTime::now();
         let se = start.duration_since(UNIX_EPOCH).expect("error on time");
         let tick = se.as_secs() * 1000 + se.subsec_nanos() as u64 / 1_000_000;
