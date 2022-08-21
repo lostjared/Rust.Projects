@@ -100,7 +100,7 @@ fn main() {
             for z in 0..TILE_H {
                 let pix = grid.pixels[i][z];
                 if pix.on  {
-                    can.set_draw_color(Color::RGB(pix.color.0, pix.color.1, pix.color.2));
+                can.set_draw_color(Color::RGB(pix.color.0, pix.color.1, pix.color.2));
                     can.fill_rect(Some(Rect::new(i as i32 * 32, z as i32 * 32, 32, 32))).expect("on rect");
                 }
             }
@@ -140,8 +140,12 @@ fn main() {
             if cur_pos.1 > (720 / 32) - 1 {
                 cur_pos.1 = (720 / 32) - 1;
             }
-            
+
             grid.set_pixel(cur_pos.0 as usize, cur_pos.1 as usize,cur_color);
+
+            if movement.index == 0 {
+                grid.clear();
+            }
         }
     }
 }
