@@ -55,7 +55,7 @@ fn main() {
     let mut movement = MovementObject::load_from_file(args.get(1).unwrap());
     movement.print_movement();
 
-    let grid : PixelGrid = PixelGrid::new();
+    let mut grid : PixelGrid = PixelGrid::new();
     
     let width = 1280;
     let height = 720;
@@ -80,6 +80,7 @@ fn main() {
 
     
     let mut cur_pos = ((1280 / 32) / 2, (720 / 32) / 2);
+    let mut cur_color = (255,255,255);
 
     'main: loop {
         for _event in e.poll_iter() {
@@ -92,15 +93,18 @@ fn main() {
                 _ => {}
             }
         }
+        
+        can.set_draw_color(Color::RGB(0, 0, 0));
+        can.clear();
         for i in 0..TILE_W {
             for z in 0..TILE_H {
                 let pix = grid.pixels[i][z];
-                can.set_draw_color(Color::RGB(pix.color.0, pix.color.1, pix.color.2));
-                can.fill_rect(Some(Rect::new(i as i32 * 32, z as i32 * 32, 32, 32))).expect("on rect");
+                if pix.on  {
+                    can.set_draw_color(Color::RGB(pix.color.0, pix.color.1, pix.color.2));
+                    can.fill_rect(Some(Rect::new(i as i32 * 32, z as i32 * 32, 32, 32))).expect("on rect");
+                }
             }
         }
-        can.set_draw_color(Color::RGB(0, 0, 0));
-        can.clear();
         can.set_draw_color(Color::RGB(255, 255, 255));
         can.fill_rect(Some(Rect::new(cur_pos.0 * 32, cur_pos.1 * 32, 32, 32)))
             .expect("on rect");
@@ -136,6 +140,8 @@ fn main() {
             if cur_pos.1 > (720 / 32) - 1 {
                 cur_pos.1 = (720 / 32) - 1;
             }
+            
+            grid.set_pixel(cur_pos.0 as usize, cur_pos.1 as usize,cur_color);
         }
     }
 }
