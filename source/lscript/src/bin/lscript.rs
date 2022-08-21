@@ -105,7 +105,7 @@ fn main() {
                 }
             }
         }
-        can.set_draw_color(Color::RGB(255, 255, 255));
+        can.set_draw_color(Color::RGB(cur_color.0, cur_color.1, cur_color.2));
         can.fill_rect(Some(Rect::new(cur_pos.0 * 32, cur_pos.1 * 32, 32, 32)))
             .expect("on rect");
     
