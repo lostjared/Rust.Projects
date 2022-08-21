@@ -9,6 +9,7 @@ pub mod scr {
         Up,
         Down,
         Set,
+        Color,
     }
 
     /// Movement structure
@@ -62,6 +63,7 @@ pub mod scr {
                     'U' => Direction::Up,
                     'D' => Direction::Down,
                     'S' => Direction::Set,
+                    'C' => Direction::Color,
                     _ => {
                         panic!("invalid type");
                     }

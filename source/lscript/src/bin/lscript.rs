@@ -126,6 +126,14 @@ fn main() {
                 Direction::Up => cur_pos.1 -= m.steps,
                 Direction::Down => cur_pos.1 += m.steps,
                 Direction::Set => cur_pos = m.pos,
+                Direction::Color => {
+                    match m.steps {
+                        0 => cur_color = (255, 0, 0),
+                        1 => cur_color = (0, 255, 0),
+                        2 => cur_color = (0, 0, 255),
+                        _ => cur_color = (255,255,255),
+                    }
+                }
             }
             // bounds check
             if cur_pos.0 < 0 {
