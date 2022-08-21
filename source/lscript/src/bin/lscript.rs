@@ -21,6 +21,11 @@ pub struct Pixel {
 pub struct PixelGrid {
     pub pixels: Box<[[Pixel; TILE_H]; TILE_W]>,
 }
+impl Default for PixelGrid {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl PixelGrid {
     pub fn new() -> Self {

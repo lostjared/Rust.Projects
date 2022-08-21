@@ -43,7 +43,7 @@ pub mod scr {
     impl MovementObject {
         /// static load from file function returns initalized MovementObject
         pub fn load_from_file(filename: &str) -> Self {
-            let mut lst: Vec<Movement> = vec![];
+            let mut lst1: Vec<Movement> = vec![];
             let contents = std::fs::read_to_string(filename).expect("Error reading the file");
             for i in contents.lines() {
                 let trimmed = i.trim();
@@ -54,9 +54,9 @@ pub mod scr {
                 let pos = pos.unwrap();
                 let left = &trimmed[0..pos];
                 let right = &trimmed[pos + 1..];
-                let ch = left.chars().nth(0).unwrap();
+                let ch = left.chars().next().unwrap();
                 let mut p = (0, 0);
-                let mut steps = 0;
+                let mut steps1 = 0;
                 let dir: Direction = match ch {
                     'L' => Direction::Left,
                     'R' => Direction::Right,
@@ -69,7 +69,7 @@ pub mod scr {
                     }
                 };
                 if dir == Direction::Set {
-                    let cpos = right.find(",");
+                    let cpos = right.find(',');
                     if cpos == None {
                         continue;
                     }
@@ -78,16 +78,16 @@ pub mod scr {
                     p.0 = le.parse().unwrap();
                     p.1 = ri.parse().unwrap();
                 } else {
-                    steps = right.parse().unwrap();
+                    steps1 = right.parse().unwrap();
                 }
                 let l: Movement = Movement {
                     direction: dir,
-                    steps: steps,
+                    steps: steps1,
                     pos: p,
                 };
-                lst.push(l);
+                lst1.push(l);
             }
-            MovementObject { lst: lst, index: 0 }
+            MovementObject { lst: lst1, index: 0 }
         }
 
         /// print the current movements
