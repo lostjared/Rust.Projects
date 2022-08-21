@@ -19,6 +19,15 @@ pub mod scr {
         pub pos: (i32, i32),
     }
 
+    impl std::fmt::Display for Movement {
+        fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+            if self.direction == Direction::Set {
+                return write!(f, "direction: {:?} pos: {},{}", self.direction, self.pos.0, self.pos.1)
+            }
+            write!(f, "direction: {:?} steps: {}", self.direction, self.steps)
+        }
+    }
+
     /// Container for Movement(s)
     pub struct MovementObject {
         lst: Vec<Movement>,
@@ -64,7 +73,6 @@ pub mod scr {
                 } else {
                     steps = right.parse().unwrap();
                 }
-
                 let l: Movement = Movement {
                     direction: dir,
                     steps: steps,
@@ -78,11 +86,7 @@ pub mod scr {
         /// print the current movements
         pub fn print_movement(&self) {
             for i in &self.lst {
-                if i.direction != Direction::Set {
-                    println!("Move: {:?}, Steps: {}", i.direction, i.steps);
-                } else {
-                    println!("Move: {:?} Set Pos: {}, {}", i.direction, i.pos.0, i.pos.1);
-                }
+                println!("{}", i);
             }
         }
 
