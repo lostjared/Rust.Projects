@@ -20,9 +20,14 @@ pub mod scr {
     }
 
     impl std::fmt::Display for Movement {
+        /// format output
         fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
             if self.direction == Direction::Set {
-                return write!(f, "direction: {:?} pos: {},{}", self.direction, self.pos.0, self.pos.1)
+                return write!(
+                    f,
+                    "direction: {:?} pos: {},{}",
+                    self.direction, self.pos.0, self.pos.1
+                );
             }
             write!(f, "direction: {:?} steps: {}", self.direction, self.steps)
         }
