@@ -55,8 +55,8 @@ fn main() {
     let mut movement = MovementObject::load_from_file(args.get(1).unwrap());
     movement.print_movement();
 
-    let mut grid : PixelGrid = PixelGrid::new();
-    
+    let mut grid: PixelGrid = PixelGrid::new();
+
     let width = 1280;
     let height = 720;
     let sdl = sdl2::init().unwrap();
@@ -76,11 +76,8 @@ fn main() {
     let mut prev_tick: u64 = 0;
     let mut tick_count = 0;
 
-
-
-    
     let mut cur_pos = ((1280 / 32) / 2, (720 / 32) / 2);
-    let mut cur_color = (255,255,255);
+    let mut cur_color = (255, 255, 255);
 
     'main: loop {
         for _event in e.poll_iter() {
@@ -93,23 +90,24 @@ fn main() {
                 _ => {}
             }
         }
-        
+
         can.set_draw_color(Color::RGB(0, 0, 0));
         can.clear();
         for i in 0..TILE_W {
             for z in 0..TILE_H {
                 let pix = grid.pixels[i][z];
-                if pix.on  {
-                can.set_draw_color(Color::RGB(pix.color.0, pix.color.1, pix.color.2));
-                    can.fill_rect(Some(Rect::new(i as i32 * 32, z as i32 * 32, 32, 32))).expect("on rect");
+                if pix.on {
+                    can.set_draw_color(Color::RGB(pix.color.0, pix.color.1, pix.color.2));
+                    can.fill_rect(Some(Rect::new(i as i32 * 32, z as i32 * 32, 32, 32)))
+                        .expect("on rect");
                 }
             }
         }
         can.set_draw_color(Color::RGB(cur_color.0, cur_color.1, cur_color.2));
         can.fill_rect(Some(Rect::new(cur_pos.0 * 32, cur_pos.1 * 32, 32, 32)))
             .expect("on rect");
-    
-            can.present();
+
+        can.present();
         let start = SystemTime::now();
         let se = start.duration_since(UNIX_EPOCH).expect("error on time");
         let tick = se.as_secs() * 1000 + se.subsec_nanos() as u64 / 1_000_000;
@@ -126,14 +124,12 @@ fn main() {
                 Direction::Up => cur_pos.1 -= m.steps,
                 Direction::Down => cur_pos.1 += m.steps,
                 Direction::Set => cur_pos = m.pos,
-                Direction::Color => {
-                    match m.steps {
-                        0 => cur_color = (255, 0, 0),
-                        1 => cur_color = (0, 255, 0),
-                        2 => cur_color = (0, 0, 255),
-                        _ => cur_color = (255,255,255),
-                    }
-                }
+                Direction::Color => match m.steps {
+                    0 => cur_color = (255, 0, 0),
+                    1 => cur_color = (0, 255, 0),
+                    2 => cur_color = (0, 0, 255),
+                    _ => cur_color = (255, 255, 255),
+                },
             }
             // bounds check
             if cur_pos.0 < 0 {
@@ -149,7 +145,7 @@ fn main() {
                 cur_pos.1 = (720 / 32) - 1;
             }
 
-            grid.set_pixel(cur_pos.0 as usize, cur_pos.1 as usize,cur_color);
+            grid.set_pixel(cur_pos.0 as usize, cur_pos.1 as usize, cur_color);
 
             if movement.index == 0 {
                 grid.clear();
