@@ -34,3 +34,5 @@ or
 sets the position to 10,10
 moves left by 1, left by 1, right by 1, right by 1
 
+When the program reachs the end of the script it goes back up to the top and starts over
+in a loop.
