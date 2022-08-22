@@ -19,10 +19,15 @@ pub mod indexer {
         for i in &files {
             let in_file = std::path::Path::new(i);
             let fname = in_file.file_stem().unwrap();
+            if in_file.extension() == None {
+                // skip files without extension
+                continue;
+            }
             let ext = in_file.extension().unwrap();
+            
             let final_name;
             if new_name.is_empty() {
-                final_name = format!("{}/{}.{:0width$}.{}", output_dir, fname.to_string_lossy(), num, ext.to_string_lossy(),width=count);
+                final_name = format!("{}/{:0width$}.{}.{}", output_dir, num, fname.to_string_lossy(), ext.to_string_lossy(),width=count);
             } else {
                 final_name = format!("{}/{}.{:0width$}.{}", output_dir, new_name, num, ext.to_string_lossy(),width=count);
             }
