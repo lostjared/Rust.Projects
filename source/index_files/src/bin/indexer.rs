@@ -7,7 +7,6 @@ fn main() {
     let mut input_file = String::new();
     let mut output_file= String::new();
     let mut name_file = String::new();
-
     let _rt_val = argz::getopt(&args, "i:o:n:", |i: char, param: String| match i {
         'i' => {
             input_file = param.to_owned();

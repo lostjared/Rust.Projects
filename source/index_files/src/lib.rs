@@ -28,7 +28,7 @@ pub mod indexer {
             }
             let final_path = std::path::Path::new(&final_name);
             let final_s = final_path.to_string_lossy();
-            std::fs::copy(i.to_string(), final_s.to_string()).expect("failed to rename");
+            std::fs::copy(i.to_string(), final_s.to_string()).expect("failed to copy");
             println!("{} -> {}", i, final_s);
             num += 1;
         }
