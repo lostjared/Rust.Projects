@@ -3,19 +3,29 @@ where
     T: std::io::BufRead + Sized,
 {
     let mut value: String = String::new();
-    value.push_str("let v = vec![");
+    value.push_str("let v : Vec<u8> = vec![");
     let mut bytes = [0; 1024];
+    let mut first_byte = true;
+
     loop {
         let val = reader.read(&mut bytes).expect("on read");
         if val == 0 {
             break;
+        } else {
+            if first_byte == true {
+                first_byte = false;
+            } else {
+                value.push(',');
+            }
         }
-        for i in 0..val {
+        for i in 0..val-1 {
             let s = format!("{:#04x},", bytes[i]);
             value.push_str(&s);
         }
+        let fc = format!("{:#04x}", bytes[val-1]);
+        value.push_str(&fc);
     }
-    value.push_str("0x0];\n");
+    value.push_str("];\n");
     value
 }
 
