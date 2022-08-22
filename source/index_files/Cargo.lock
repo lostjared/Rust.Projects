@@ -5,3 +5,10 @@ version = 3
 [[package]]
 name = "index_files"
 version = "0.1.0"
+dependencies = [
+ "opt",
+]
+
+[[package]]
+name = "opt"
+version = "0.1.0"
