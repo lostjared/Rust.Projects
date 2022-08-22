@@ -33,7 +33,6 @@ fn echo_vec(output : &Vec<u8>) {
     for i in output {
         print!("{}", *i as char);
     }
-    println!("");
 }
 
 fn main() {
