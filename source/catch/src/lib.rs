@@ -1,10 +1,8 @@
-
-
 pub mod game {
 
+    use rand::Rng;
     use sdl2::pixels::Color;
     use sdl2::rect::Rect;
-    use rand::Rng;
 
     #[derive(Copy, Clone, Debug)]
     pub enum Movement {
@@ -41,29 +39,20 @@ pub mod game {
     }
 
     impl Ball {
-        pub fn new() -> Self {
-            Ball {
-                x: 0,
-                y: 0,
-                col: (0,0,0),
-                speed: 0,
-            }
-        }
-
         pub fn gen_release() -> Self {
             let ball_y = 0;
             let mut r = rand::thread_rng();
-            let ball_x = r.gen_range(0..1280-32);
-            let s = r.gen_range(10..25);
+            let ball_x = r.gen_range(0..1280 - 32);
+            let s = r.gen_range(10..20);
             Ball {
                 x: ball_x,
                 y: ball_y,
                 col: (255, 255, 255),
-                speed: s
+                speed: s,
             }
         }
     }
-    
+
     impl Emiter {
         pub fn new() -> Self {
             Emiter {
@@ -90,7 +79,7 @@ pub mod game {
         pub fn new(widthx: i32, heightx: i32) -> Self {
             Game {
                 emiter: Emiter::new(),
-                glove: Glove::new((widthx/2)-50, heightx-100),
+                glove: Glove::new((widthx / 2) - 50, heightx - 100),
                 width: widthx,
                 height: heightx,
                 score: 0,
@@ -99,31 +88,46 @@ pub mod game {
             }
         }
 
+        pub fn menu_string(&self) -> String {
+            format!(
+                "Score: {} Catches: {} Misses: {}",
+                self.score, self.catches, self.misses
+            )
+        }
+
         pub fn new_game(&mut self) {
             self.emiter.release();
         }
 
         pub fn draw(&mut self, can: &mut sdl2::render::Canvas<sdl2::video::Window>) {
             can.set_draw_color(Color::RGB(255, 255, 255));
-            can.fill_rect(Some(Rect::new(self.glove.x, self.glove.y, 100, 100))).expect("on fill");
+            can.fill_rect(Some(Rect::new(self.glove.x, self.glove.y, 100, 100)))
+                .expect("on fill");
             for i in &self.emiter.particles {
                 can.set_draw_color(Color::RGB(i.col.0, i.col.1, i.col.2));
-                can.fill_rect(Some(Rect::new(i.x, i.y, 32, 32))).expect("on fill");
+                can.fill_rect(Some(Rect::new(i.x, i.y, 32, 32)))
+                    .expect("on fill");
             }
         }
 
         pub fn logic(&mut self) {
             for i in 0..self.emiter.particles.len() {
-                if self.emiter.particles[i].y < self.height-32 {
+                if self.emiter.particles[i].y < self.height - 32 {
                     self.emiter.particles[i].y += self.emiter.particles[i].speed;
                 } else {
                     self.misses += 1;
-                    self.emiter.particles[i] = Ball::gen_release();
+                    if self.misses > 10 {
+                        self.emiter.particles.clear();
+                        self.score = 0;
+                        self.catches = 0;
+                        self.misses = 0;
+                    } else {
+                        self.emiter.particles[i] = Ball::gen_release();
+                    }
                 }
-                let p = self.emiter.particles[i];
-
-                let r = sdl2::rect::Rect::new(self.glove.x-50, self.glove.y, 150, 100);
-                let po = sdl2::rect::Point::new(self.emiter.particles[i].x, self.emiter.particles[i].y);
+                let r = sdl2::rect::Rect::new(self.glove.x - 50, self.glove.y, 150, 100);
+                let po =
+                    sdl2::rect::Point::new(self.emiter.particles[i].x, self.emiter.particles[i].y);
                 if r.contains_point(po) {
                     self.emiter.particles[i] = Ball::gen_release();
                     self.score += 100;
@@ -137,18 +141,16 @@ pub mod game {
         pub fn keypress(&mut self, movement: Movement) {
             match movement {
                 Movement::Left => {
-                    if self.glove.x > 20 {
-                        self.glove.x -= 20;
+                    if self.glove.x > 50 {
+                        self.glove.x -= 50;
                     }
                 }
                 Movement::Right => {
-                    if self.glove.x < self.width - 120 {
-                        self.glove.x += 20;
+                    if self.glove.x < self.width - 150 {
+                        self.glove.x += 50;
                     }
                 }
             }
         }
     }
-
 }
-
