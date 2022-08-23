@@ -37,6 +37,7 @@ pub mod game {
         score: i32,
         misses: i32,
         catches: i32,
+        num_part : i32,
     }
 
     impl Ball {
@@ -87,6 +88,7 @@ pub mod game {
                 score: 0,
                 misses: 0,
                 catches: 0,
+                num_part: 1,
             }
         }
 
@@ -128,6 +130,7 @@ pub mod game {
                         self.score = 0;
                         self.catches = 0;
                         self.misses = 0;
+                        self.num_part = 1;
                         self.emiter.release();
                         break;
                     } else {
@@ -142,15 +145,19 @@ pub mod game {
                 let r = sdl2::rect::Rect::new(self.glove.x - 50, self.glove.y, 150, 100);
                 let po =
                     sdl2::rect::Point::new(self.emiter.particles[i].x, self.emiter.particles[i].y);
-
                 if r.contains_point(po) {
                     self.score += 100;
                     self.catches += 1;
-                    self.emiter.particles[i] = Ball::gen_release();
+                    self.emiter.particles.remove(i);
                     self.glove.flash = 30;
-                    if (self.catches % 5) == 0 {
-                        self.emiter.release();
+                    if self.catches >= self.num_part {
+                        self.num_part += 1;
+                        self.catches = 0;
+                        for _i in 0..self.num_part {
+                            self.emiter.release();
+                        }
                     }
+                    break;
                 }
             }
         }
