@@ -85,6 +85,7 @@ fn main() {
             .expect("on copy");
 
         can.present();
+        game.clip_logic();
 
         let start = SystemTime::now();
         let se = start.duration_since(UNIX_EPOCH).expect("error on time");

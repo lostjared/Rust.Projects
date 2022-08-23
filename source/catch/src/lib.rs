@@ -36,6 +36,8 @@ pub mod game {
         score: i32,
         misses: i32,
         catches: i32,
+        num_part: i32,
+        num_catch: i32,
     }
 
     impl Ball {
@@ -85,6 +87,8 @@ pub mod game {
                 score: 0,
                 misses: 0,
                 catches: 0,
+                num_part: 1,
+                num_catch: 0,
             }
         }
 
@@ -121,25 +125,33 @@ pub mod game {
                         self.score = 0;
                         self.catches = 0;
                         self.misses = 0;
+                        self.num_part = 1;
                         self.emiter.release();
                         break;
                     } else {
                         self.emiter.particles[i] = Ball::gen_release();
                     }
                 }
+            }
+        }
+
+        pub fn clip_logic(&mut self) {
+            for i in 0..self.emiter.particles.len() {
                 let r = sdl2::rect::Rect::new(self.glove.x - 50, self.glove.y, 150, 100);
                 let po =
                     sdl2::rect::Point::new(self.emiter.particles[i].x, self.emiter.particles[i].y);
-                if r.contains_point(po) {
-                    self.emiter.particles[i] = Ball::gen_release();
+
+                if r.contains_point(po) {;
                     self.score += 100;
                     self.catches += 1;
+                    self.emiter.particles[i] = Ball::gen_release();
                     if (self.catches % 5) == 0 {
                         self.emiter.release();
                     }
                 }
             }
         }
+
         pub fn keypress(&mut self, movement: Movement) {
             match movement {
                 Movement::Left => {
