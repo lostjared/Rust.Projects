@@ -115,7 +115,6 @@ pub mod game {
                 let p = self.emiter.particles[i];
 
                 let r = sdl2::rect::Rect::new(self.glove.x-50, self.glove.y, 150, 100);
-                let pr = sdl2::rect::Rect::new(self.emiter.particles[i].x, self.emiter.particles[i].y, 50, 50);
                 let po = sdl2::rect::Point::new(self.emiter.particles[i].x, self.emiter.particles[i].y);
                 if r.contains_point(po) {
                     self.emiter.particles[i] = Ball::gen_release();
