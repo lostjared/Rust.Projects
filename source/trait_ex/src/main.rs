@@ -45,6 +45,18 @@ impl Animal for Human {
     }
 }
 
+trait Hello {
+    type Item; // type Item for trait
+    fn return_item(&self) -> Self::Item;
+}
+
+impl Hello for Monkey {
+    type Item = String; // implement item
+    fn return_item(&self) -> Self::Item {
+        "Hello world".to_string()
+    }
+}
+
 fn eat_and_die(o: &dyn Animal) {
     o.eat();
     o.die();
@@ -57,6 +69,11 @@ where
     animal.eat();
 }
 
+fn generic_hello<T>(animal: T) 
+where T: Hello<Item=String> {
+    println!("says: {}", animal.return_item());
+}
+
 fn main() {
     let human = Human {
         name: "Jared".to_string(),
@@ -64,6 +81,11 @@ fn main() {
     let monkey = Monkey {
         name: "Bobo".to_string(),
     };
+
+    let value = monkey.return_item();
+    println!("{}", value);
+  
+
     let cat = Cat {
         name: "Coder".to_string(),
     };
@@ -76,4 +98,5 @@ fn main() {
         eat_and_die(i);
     }
     generic_eat(&human);
+    generic_hello(monkey);
 }
