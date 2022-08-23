@@ -43,7 +43,7 @@ pub mod game {
             let ball_y = 0;
             let mut r = rand::thread_rng();
             let ball_x = r.gen_range(0..1280 - 32);
-            let s = r.gen_range(10..20);
+            let s = r.gen_range(10..16);
             Ball {
                 x: ball_x,
                 y: ball_y,
@@ -121,6 +121,8 @@ pub mod game {
                         self.score = 0;
                         self.catches = 0;
                         self.misses = 0;
+                        self.emiter.release();
+                        break;
                     } else {
                         self.emiter.particles[i] = Ball::gen_release();
                     }
