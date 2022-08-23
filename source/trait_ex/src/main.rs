@@ -1,4 +1,4 @@
-// polymorphism with traits
+// polymorphism with traits and generics
 
 struct Monkey {
     name: String,
@@ -69,8 +69,10 @@ where
     animal.eat();
 }
 
-fn generic_hello<T>(animal: T) 
-where T: Hello<Item=String> {
+fn generic_hello<T>(animal: T)
+where
+    T: Hello<Item = String>,
+{
     println!("says: {}", animal.return_item());
 }
 
@@ -81,18 +83,14 @@ fn main() {
     let monkey = Monkey {
         name: "Bobo".to_string(),
     };
-
     let value = monkey.return_item();
     println!("{}", value);
-  
-
     let cat = Cat {
         name: "Coder".to_string(),
     };
     eat_and_die(&human);
     eat_and_die(&monkey);
     eat_and_die(&cat);
-
     let vec: Vec<&dyn Animal> = vec![&human, &monkey, &cat];
     for i in vec {
         eat_and_die(i);
