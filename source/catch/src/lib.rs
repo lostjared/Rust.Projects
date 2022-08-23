@@ -38,7 +38,7 @@ pub mod game {
         score: i32,
         misses: i32,
         catches: i32,
-        num_part : i32,
+        num_part: i32,
     }
 
     impl Ball {
@@ -124,7 +124,6 @@ pub mod game {
 
         pub fn logic(&mut self) {
             for i in 0..self.emiter.particles.len() {
-
                 if self.emiter.particles[i].timeout > 0 {
                     self.emiter.particles[i].timeout -= 1;
                     continue;
