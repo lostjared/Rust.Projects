@@ -90,7 +90,7 @@ pub mod game {
 
         pub fn menu_string(&self) -> String {
             format!(
-                "Score: {} Catches: {} Misses: {}",
+                "Score: {} Catches: {} Misses: {}/10",
                 self.score, self.catches, self.misses
             )
         }
@@ -141,13 +141,13 @@ pub mod game {
         pub fn keypress(&mut self, movement: Movement) {
             match movement {
                 Movement::Left => {
-                    if self.glove.x > 50 {
-                        self.glove.x -= 50;
+                    if self.glove.x > 0 {
+                        self.glove.x -= 100;
                     }
                 }
                 Movement::Right => {
-                    if self.glove.x < self.width - 150 {
-                        self.glove.x += 50;
+                    if self.glove.x < self.width - 100 {
+                        self.glove.x += 100;
                     }
                 }
             }
