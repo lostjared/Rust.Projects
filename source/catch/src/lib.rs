@@ -26,6 +26,7 @@ pub mod game {
     struct Glove {
         pub x: i32,
         pub y: i32,
+        pub flash: i32,
     }
 
     pub struct Game {
@@ -36,8 +37,6 @@ pub mod game {
         score: i32,
         misses: i32,
         catches: i32,
-        num_part: i32,
-        num_catch: i32,
     }
 
     impl Ball {
@@ -73,6 +72,7 @@ pub mod game {
             Glove {
                 x: glove_x,
                 y: glove_y,
+                flash: 0,
             }
         }
     }
@@ -87,8 +87,6 @@ pub mod game {
                 score: 0,
                 misses: 0,
                 catches: 0,
-                num_part: 1,
-                num_catch: 0,
             }
         }
 
@@ -104,7 +102,12 @@ pub mod game {
         }
 
         pub fn draw(&mut self, can: &mut sdl2::render::Canvas<sdl2::video::Window>) {
-            can.set_draw_color(Color::RGB(255, 255, 255));
+            if self.glove.flash == 0 {
+                can.set_draw_color(Color::RGB(255, 255, 255));
+            } else {
+                can.set_draw_color(Color::RGB(255, 0, 0));
+                self.glove.flash -= 1;
+            }
             can.fill_rect(Some(Rect::new(self.glove.x, self.glove.y, 100, 100)))
                 .expect("on fill");
             for i in &self.emiter.particles {
@@ -125,7 +128,6 @@ pub mod game {
                         self.score = 0;
                         self.catches = 0;
                         self.misses = 0;
-                        self.num_part = 1;
                         self.emiter.release();
                         break;
                     } else {
@@ -141,10 +143,11 @@ pub mod game {
                 let po =
                     sdl2::rect::Point::new(self.emiter.particles[i].x, self.emiter.particles[i].y);
 
-                if r.contains_point(po) {;
+                if r.contains_point(po) {
                     self.score += 100;
                     self.catches += 1;
                     self.emiter.particles[i] = Ball::gen_release();
+                    self.glove.flash = 30;
                     if (self.catches % 5) == 0 {
                         self.emiter.release();
                     }
