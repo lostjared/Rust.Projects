@@ -16,6 +16,7 @@ pub mod game {
         pub y: i32,
         pub col: (u8, u8, u8),
         pub speed: i32,
+        pub timeout: i32,
     }
 
     struct Emiter {
@@ -46,11 +47,13 @@ pub mod game {
             let mut r = rand::thread_rng();
             let ball_x = r.gen_range(0..1280 - 32);
             let s = r.gen_range(10..16);
+            let t = r.gen_range(0..30);
             Ball {
                 x: ball_x,
                 y: ball_y,
                 col: (255, 255, 255),
                 speed: s,
+                timeout: t,
             }
         }
     }
@@ -121,6 +124,12 @@ pub mod game {
 
         pub fn logic(&mut self) {
             for i in 0..self.emiter.particles.len() {
+
+                if self.emiter.particles[i].timeout > 0 {
+                    self.emiter.particles[i].timeout -= 1;
+                    continue;
+                }
+
                 if self.emiter.particles[i].y < self.height - 32 {
                     self.emiter.particles[i].y += self.emiter.particles[i].speed;
                 } else {
