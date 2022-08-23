@@ -1,15 +1,19 @@
+//! Game of Catch
+//! written in Rust for practice
 pub mod game {
 
     use rand::Rng;
     use sdl2::pixels::Color;
     use sdl2::rect::Rect;
 
+    /// movement type Left or Right
     #[derive(Copy, Clone, Debug)]
     pub enum Movement {
         Left,
         Right,
     }
 
+    /// ball type to be thrown from the top of the screen
     #[derive(Copy, Clone, Debug)]
     struct Ball {
         pub x: i32,
@@ -19,10 +23,12 @@ pub mod game {
         pub timeout: i32,
     }
 
+    /// particle emiter
     struct Emiter {
         pub particles: Vec<Ball>,
     }
 
+    /// glove to catch the falling objects
     #[derive(Copy, Clone, Debug)]
     struct Glove {
         pub x: i32,
@@ -30,6 +36,7 @@ pub mod game {
         pub flash: i32,
     }
 
+    /// game structure
     pub struct Game {
         emiter: Emiter,
         glove: Glove,
@@ -42,6 +49,7 @@ pub mod game {
     }
 
     impl Ball {
+        /// generate a new ball
         pub fn gen_release() -> Self {
             let ball_y = 0;
             let mut r = rand::thread_rng();
@@ -59,12 +67,13 @@ pub mod game {
     }
 
     impl Emiter {
+        /// create a new particle emiter
         pub fn new() -> Self {
             Emiter {
                 particles: Vec::new(),
             }
         }
-
+        /// release a new particle
         pub fn release(&mut self) {
             let b = Ball::gen_release();
             self.particles.push(b);
@@ -72,6 +81,7 @@ pub mod game {
     }
 
     impl Glove {
+        /// create a new glove struct
         pub fn new(glove_x: i32, glove_y: i32) -> Self {
             Glove {
                 x: glove_x,
@@ -82,6 +92,7 @@ pub mod game {
     }
 
     impl Game {
+        /// create a new game struct
         pub fn new(widthx: i32, heightx: i32) -> Self {
             Game {
                 emiter: Emiter::new(),
@@ -95,6 +106,7 @@ pub mod game {
             }
         }
 
+        /// return menu string to print at top of the screen
         pub fn menu_string(&self) -> String {
             format!(
                 "Score: {} Catches: {} Misses: {}/10",
@@ -102,10 +114,12 @@ pub mod game {
             )
         }
 
+        /// create a new game
         pub fn new_game(&mut self) {
             self.emiter.release();
         }
 
+        /// draw to the screen
         pub fn draw(&mut self, can: &mut sdl2::render::Canvas<sdl2::video::Window>) {
             if self.glove.flash == 0 {
                 can.set_draw_color(Color::RGB(255, 255, 255));
@@ -122,6 +136,7 @@ pub mod game {
             }
         }
 
+        /// game's logic
         pub fn logic(&mut self) {
             for i in 0..self.emiter.particles.len() {
                 if self.emiter.particles[i].timeout > 0 {
@@ -133,7 +148,7 @@ pub mod game {
                     self.emiter.particles[i].y += self.emiter.particles[i].speed;
                 } else {
                     self.misses += 1;
-                    if self.misses > 10 {
+                    if self.misses >= 10 {
                         self.emiter.particles.clear();
                         self.score = 0;
                         self.catches = 0;
@@ -148,6 +163,7 @@ pub mod game {
             }
         }
 
+        /// games clipping logic 
         pub fn clip_logic(&mut self) {
             for i in 0..self.emiter.particles.len() {
                 let r = sdl2::rect::Rect::new(self.glove.x - 50, self.glove.y, 150, 100);
@@ -170,6 +186,7 @@ pub mod game {
             }
         }
 
+        /// move the glove by movement (Left or Right)
         pub fn keypress(&mut self, movement: Movement) {
             match movement {
                 Movement::Left => {
