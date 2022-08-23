@@ -35,6 +35,9 @@ pub mod game {
         glove: Glove,
         width: i32,
         height: i32,
+        score: i32,
+        misses: i32,
+        catches: i32,
     }
 
     impl Ball {
@@ -51,11 +54,12 @@ pub mod game {
             let ball_y = 0;
             let mut r = rand::thread_rng();
             let ball_x = r.gen_range(0..1280-32);
+            let s = r.gen_range(10..25);
             Ball {
                 x: ball_x,
                 y: ball_y,
                 col: (255, 255, 255),
-                speed: 10
+                speed: s
             }
         }
     }
@@ -89,6 +93,9 @@ pub mod game {
                 glove: Glove::new((widthx/2)-50, heightx-100),
                 width: widthx,
                 height: heightx,
+                score: 0,
+                misses: 0,
+                catches: 0,
             }
         }
 
@@ -108,8 +115,9 @@ pub mod game {
         pub fn logic(&mut self) {
             for i in 0..self.emiter.particles.len() {
                 if self.emiter.particles[i].y < self.height-32 {
-                    self.emiter.particles[i].y += 16;
+                    self.emiter.particles[i].y += self.emiter.particles[i].speed;
                 } else {
+                    self.misses += 1;
                     self.emiter.particles[i] = Ball::gen_release();
                 }
                 let p = self.emiter.particles[i];
@@ -118,9 +126,11 @@ pub mod game {
                 let po = sdl2::rect::Point::new(self.emiter.particles[i].x, self.emiter.particles[i].y);
                 if r.contains_point(po) {
                     self.emiter.particles[i] = Ball::gen_release();
-                    // score += 1;
-                    //self.emiter.release();
-                    println!("HERE!");
+                    self.score += 100;
+                    self.catches += 1;
+                    if (self.catches % 5) == 0 {
+                        self.emiter.release();
+                    }
                 }
             }
         }
