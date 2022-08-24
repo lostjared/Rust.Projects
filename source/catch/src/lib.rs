@@ -83,12 +83,14 @@ pub mod game {
 
     impl Index<usize> for Emiter {
         type Output = Ball;
+        /// overoad [] operator for Emiter
         fn index(&self, index: usize) -> &Self::Output {
             &self.particles[index]
         }
     }
     
     impl IndexMut<usize> for Emiter {
+        /// overload [] operator for Emiter
         fn index_mut(&mut self, index: usize) -> &mut Self::Output {
             &mut self.particles[index]
         }
