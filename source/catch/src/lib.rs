@@ -5,6 +5,7 @@ pub mod game {
     use rand::Rng;
     use sdl2::pixels::Color;
     use sdl2::rect::Rect;
+    use std::ops::{Index, IndexMut};
 
     /// movement type Left or Right
     #[derive(Copy, Clone, Debug)]
@@ -80,6 +81,19 @@ pub mod game {
         }
     }
 
+    impl Index<usize> for Emiter {
+        type Output = Ball;
+        fn index(&self, index: usize) -> &Self::Output {
+            &self.particles[index]
+        }
+    }
+    
+    impl IndexMut<usize> for Emiter {
+        fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+            &mut self.particles[index]
+        }
+    }
+
     impl Glove {
         /// create a new glove struct
         pub fn new(glove_x: i32, glove_y: i32) -> Self {
@@ -139,13 +153,13 @@ pub mod game {
         /// game's logic
         pub fn logic(&mut self) {
             for i in 0..self.emiter.particles.len() {
-                if self.emiter.particles[i].timeout > 0 {
-                    self.emiter.particles[i].timeout -= 1;
+                if self.emiter[i].timeout > 0 {
+                    self.emiter[i].timeout -= 1;
                     continue;
                 }
 
-                if self.emiter.particles[i].y < self.height - 32 {
-                    self.emiter.particles[i].y += self.emiter.particles[i].speed;
+                if self.emiter[i].y < self.height - 32 {
+                    self.emiter[i].y += self.emiter[i].speed;
                 } else {
                     self.misses += 1;
                     if self.misses >= 10 {
@@ -157,7 +171,7 @@ pub mod game {
                         self.emiter.release();
                         break;
                     } else {
-                        self.emiter.particles[i] = Ball::gen_release();
+                        self.emiter[i] = Ball::gen_release();
                     }
                 }
             }
@@ -168,7 +182,7 @@ pub mod game {
             for i in 0..self.emiter.particles.len() {
                 let r = sdl2::rect::Rect::new(self.glove.x - 50, self.glove.y, 150, 100);
                 let po =
-                    sdl2::rect::Point::new(self.emiter.particles[i].x, self.emiter.particles[i].y);
+                    sdl2::rect::Point::new(self.emiter[i].x, self.emiter[i].y);
                 if r.contains_point(po) {
                     self.score += 100;
                     self.catches += 1;
