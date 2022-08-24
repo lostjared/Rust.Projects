@@ -12,3 +12,5 @@ or to build documentation
 $ cargo doc --open
 
 to compile on Windows you will need to link to SDL_ttf 's lib file and set the path to its location
+download SDL2_ttf from https://github.com/libsdl-org/SDL_ttf/releases
+and set the proper path before compiling with cargo. Then copy SDL2_ttf.dll into the target directory.
