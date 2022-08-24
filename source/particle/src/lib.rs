@@ -1,6 +1,7 @@
 pub mod particle_emiter {
 
     use rand::Rng;
+    use std::ops::{Index, IndexMut};
 
     pub const NUM_PARTICLES: usize = 1024;
     pub const WIDTH: i32 = 1280;
@@ -21,6 +22,19 @@ pub mod particle_emiter {
     impl Default for Particle {
         fn default() -> Self {
             Self::new()
+        }
+    }
+
+    impl Index<usize> for Emiter {
+        type Output = Particle;
+        fn index(&self, index: usize) -> &Self::Output {
+            &self.part[index]
+        }
+    }
+    
+    impl IndexMut<usize> for Emiter {
+        fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+            &mut self.part[index]
         }
     }
 

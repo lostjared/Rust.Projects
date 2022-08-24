@@ -44,7 +44,7 @@ fn main() {
         can.clear();
 
         for i in 0..NUM_PARTICLES {
-            let p = emiter.get_particle(i);
+            let p = emiter[i];
             can.set_draw_color(Color::RGB(p.depth, p.depth, p.depth));
             can.fill_rect(Some(Rect::new(p.x, p.y, 4, 4)))
                 .expect("on fill");
