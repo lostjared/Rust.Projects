@@ -87,7 +87,7 @@ fn count_text(args: &Arguments) -> std::io::Result<()> {
             val = count_data(r);
         }
         if args.lines {
-            println!("\tlines: {}", val.0+1);
+            println!("\tlines: {}", val.0);
         }
         if args.ch {
             println!("\tbytes: {}", val.1);
