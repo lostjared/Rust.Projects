@@ -34,8 +34,9 @@ fn parse_args() -> Arguments {
             Arg::with_name("files")
                 .value_name("FILE")
                 .help("input file")
+                .default_value(".")
                 .multiple(true)
-                .required(true)
+                .required(false)
                 .allow_invalid_utf8(true),
         )
         .get_matches();
