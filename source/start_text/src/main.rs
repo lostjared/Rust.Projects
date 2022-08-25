@@ -1,5 +1,5 @@
 use clap::{App, Arg};
-use std::io::BufRead;
+use std::io::{BufRead,Read};
 
 #[derive(Debug)]
 struct Arguments {
@@ -50,10 +50,8 @@ fn parse_args() -> Arguments {
 
 fn main() -> std::io::Result<()> {
     let args = parse_args();
-
     let f = std::fs::File::open(args.filename)?;
-    let r = std::io::BufReader::new(f);
-
+    let mut r = std::io::BufReader::new(f);
     if args.bytes == 0 {
         for (index, line) in r.lines().enumerate() {
             match line {
@@ -68,7 +66,16 @@ fn main() -> std::io::Result<()> {
                 break;
             }
         }
+    } else {
+        let mut s: String = String::new();
+        r.read_to_string(&mut s).expect("on read");
+        for (index, ch) in s.chars().enumerate() {
+            print!("{}", ch);
+            if index >= args.bytes {
+                break;
+            }
+        }
+        println!("");
     }
-
     Ok(())
 }
