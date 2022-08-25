@@ -6,6 +6,7 @@ struct Arguments {
     filename: String,
     lines: usize,
     bytes: usize,
+    line_number: bool
 }
 
 fn parse_args() -> Arguments {
@@ -16,6 +17,7 @@ fn parse_args() -> Arguments {
         .arg(
             Arg::with_name("lines")
                 .short('l')
+                .long("lines")
                 .default_value("10")
                 .help("print number of lines")
                 .allow_invalid_utf8(true),
@@ -23,9 +25,17 @@ fn parse_args() -> Arguments {
         .arg(
             Arg::with_name("bytes")
                 .short('b')
+                .long("bytes")
                 .default_value("0")
                 .help("output number of bytes")
                 .allow_invalid_utf8(true),
+        )
+        .arg(
+            Arg::with_name("number")
+            .short('n')
+            .long("number-of-lines")
+            .help("output line numbers")
+            .takes_value(false)
         )
         .arg(
             Arg::with_name("files")
@@ -40,11 +50,13 @@ fn parse_args() -> Arguments {
     let f = matches.value_of_lossy("files").unwrap();
     let l = matches.value_of_lossy("lines").unwrap().parse().unwrap();
     let b = matches.value_of_lossy("bytes").unwrap().parse().unwrap();
+    let ln = matches.is_present("number");
 
     Arguments {
         filename: f.to_string(),
         lines: l,
         bytes: b,
+        line_number: ln,
     }
 }
 
@@ -56,7 +68,11 @@ fn main() -> std::io::Result<()> {
         for (index, line) in r.lines().enumerate() {
             match line {
                 Ok(l) => {
-                    println!("{}", l);
+                    if args.line_number == true {
+                        println!("{}\t{}",index+1,l);
+                    } else {
+                        println!("{}", l);
+                    }
                 }
                 Err(e) => {
                     println!("{}", e);
