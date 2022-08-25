@@ -6,10 +6,10 @@ Arguments
 USAGE:
     start_text [OPTIONS] <FILE>
 
-OPTIONS:
+	OPTIONS:
 
--l,--lines line_number [number of lines to print]
--b,--bytes byte num [number of bytes to print]
--n, --number-of-lines [print line numbers]
+	-l,--lines line_number [number of lines to print]
+	-b,--bytes byte num [number of bytes to print]
+	-n, --number-of-lines [print line numbers]
 
 
