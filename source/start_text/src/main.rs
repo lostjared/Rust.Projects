@@ -83,13 +83,10 @@ fn main() -> std::io::Result<()> {
             }
         }
     } else {
-        let mut s: String = String::new();
-        r.read_to_string(&mut s).expect("on read");
-        for (index, ch) in s.chars().enumerate() {
-            print!("{}", ch);
-            if index >= args.bytes {
-                break;
-            }
+        let mut v = vec![0; args.bytes];
+        r.read(&mut v)?;
+        for i in &v {
+            print!("{}", *i as char);
         }
         println!("");
     }
