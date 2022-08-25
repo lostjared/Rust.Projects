@@ -39,7 +39,7 @@ fn echo_vec(output: &Vec<u8>) {
 
 #[derive(Debug)]
 struct Arguments {
-    pub files: Vec<String>
+    pub files: Vec<String>,
 }
 
 fn parse_args() -> Arguments {
@@ -47,16 +47,20 @@ fn parse_args() -> Arguments {
         .version("0.1.0")
         .author("Jared Bruni")
         .about("convert binary to Rust Vector")
-        .arg(Arg::with_name("files").value_name("FILE").help("input file(s)").multiple(true).default_value("<STDIN>").allow_invalid_utf8(true))
+        .arg(
+            Arg::with_name("files")
+                .value_name("FILE")
+                .help("input file(s)")
+                .multiple(true)
+                .default_value("<STDIN>")
+                .allow_invalid_utf8(true),
+        )
         .get_matches();
 
     let v = matches.values_of_lossy("files").unwrap();
 
-    Arguments {
-        files: v
-    }
+    Arguments { files: v }
 }
-
 
 fn main() {
     let v: Vec<u8> = vec![
