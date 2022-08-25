@@ -1,12 +1,12 @@
 use clap::{App, Arg};
-use std::io::{BufRead,Read};
+use std::io::{BufRead, Read};
 
 #[derive(Debug)]
 struct Arguments {
     filename: String,
     lines: usize,
     bytes: usize,
-    line_number: bool
+    line_number: bool,
 }
 
 fn parse_args() -> Arguments {
@@ -32,10 +32,10 @@ fn parse_args() -> Arguments {
         )
         .arg(
             Arg::with_name("number")
-            .short('n')
-            .long("number-of-lines")
-            .help("output line numbers")
-            .takes_value(false)
+                .short('n')
+                .long("number-of-lines")
+                .help("output line numbers")
+                .takes_value(false),
         )
         .arg(
             Arg::with_name("files")
@@ -69,7 +69,7 @@ fn main() -> std::io::Result<()> {
             match line {
                 Ok(l) => {
                     if args.line_number == true {
-                        println!("{}\t{}",index+1,l);
+                        println!("{}\t{}", index + 1, l);
                     } else {
                         println!("{}", l);
                     }
