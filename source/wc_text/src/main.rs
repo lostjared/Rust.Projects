@@ -52,23 +52,6 @@ fn parse_args() -> Arguments {
     }
 }
 
-fn count_lines<T>(r: T) -> usize
-where
-    T: std::io::BufRead + Sized,
-{
-    let count = r.lines().count();
-    count
-}
-
-fn count_chars<T>(mut r: T) -> usize
-where
-    T: std::io::BufRead + Sized,
-{
-    let mut s = String::new();
-    r.read_to_string(&mut s).expect("on read");
-    s.len()
-}
-
 fn remove_chars(input: &str) -> String {
     let mut output = String::new();
     for i in input.chars() {
@@ -82,7 +65,7 @@ fn remove_chars(input: &str) -> String {
     output
 }
 
-fn count_words<T>(mut r: T) -> usize
+fn count_data<T>(mut r: T) -> (usize, usize, usize)
 where
     T: std::io::BufRead + Sized,
 {
@@ -90,43 +73,27 @@ where
     let _len = r.read_to_string(&mut input).expect("on read");
     let val = remove_chars(&input);
     let values = val.split(" ");
-    values.count()
+    (input.lines().count(), input.len(), values.count())
 }
 
 fn count_text(args: &Arguments) -> std::io::Result<()> {
     for i in &args.filenames {
+        let val;
+        if i == "." {
+            val = count_data(std::io::stdin().lock());
+        } else {
+            let f = std::fs::File::open(i)?;
+            let r = std::io::BufReader::new(f);
+            val = count_data(r);
+        }
         if args.lines {
-            let c;
-            if i == "." {
-                let r = std::io::stdin().lock();
-                c = count_lines(r);
-            } else {
-                let f = std::fs::File::open(i)?;
-                c = count_lines(std::io::BufReader::new(f));
-            }
-            println!("\tlines: {}", c);
+            println!("\tlines: {}", val.0+1);
         }
         if args.ch {
-            let c;
-            if i == "." {
-                let r = std::io::stdin().lock();
-                c = count_chars(r);
-            } else {
-                let f = std::fs::File::open(i)?;
-                c = count_chars(std::io::BufReader::new(f));
-            }
-            println!("\tbytes: {}", c);
+            println!("\tbytes: {}", val.1);
         }
         if args.words {
-            let c;
-            if i == "." {
-                let r = std::io::stdin().lock();
-                c = count_words(r);
-            } else {
-                let f = std::fs::File::open(i)?;
-                c = count_words(std::io::BufReader::new(f));
-            }
-            println!("\twords; {}", c);
+            println!("\twords; {}", val.2);
         }
     }
     Ok(())
