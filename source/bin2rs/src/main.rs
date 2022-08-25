@@ -56,9 +56,7 @@ fn parse_args() -> Arguments {
                 .allow_invalid_utf8(true),
         )
         .get_matches();
-
     let v = matches.values_of_lossy("files").unwrap();
-
     Arguments { files: v }
 }
 
