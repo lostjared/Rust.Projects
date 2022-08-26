@@ -115,14 +115,16 @@ impl Filter for CosSinMultiply {
                 let s1 = fdepth.sin() * z as f32;
                 let s2 = fdepth.sin() * i as f32;
                 buf[pos] = buf[pos].wrapping_add(s1 as u8);
-                buf[pos+1] = buf[pos+1].wrapping_add(s2 as u8);
-                buf[pos+2] = (buf[pos].wrapping_add(buf[pos+1]).wrapping_add(buf[pos+2]))/3;
+                buf[pos + 1] = buf[pos + 1].wrapping_add(s2 as u8);
+                buf[pos + 2] = (buf[pos]
+                    .wrapping_add(buf[pos + 1])
+                    .wrapping_add(buf[pos + 2]))
+                    / 3;
                 buf[pos + 3] = 255;
             }
         }
     }
 }
-
 
 fn proc_image(im: &mut FilterImage, filter: &mut dyn Filter, depth: f32) {
     filter.proc_filter(im, depth);
@@ -133,14 +135,21 @@ fn main() -> std::io::Result<()> {
     let mut selfalpha = SelfAlphaBlend {};
     let mut selfscale = SelfScale {};
     let mut cossin = CosSinMultiply {};
-    let mut f_v: Vec<&mut dyn Filter> = vec![&mut selfalpha, &mut selfscale, &mut cossin];
+    let mut f_v: Vec<(&str, &mut dyn Filter)> = vec![
+        ("SelfAlphaBlend", &mut selfalpha),
+        ("SelfScale", &mut selfscale),
+        ("CosSinMultiply", &mut cossin),
+    ];
     if args.index >= f_v.len() {
         println!("filter: Index out of range!");
         return Ok(());
     }
     let mut image_file = FilterImage::load_from_png(&args.filename);
-    println!("filter: Filtering image: {}", args.filename);
-    proc_image(&mut image_file, f_v[args.index], args.depth);
+    println!(
+        "filter: Filtering with {} image: {}",
+        f_v[args.index].0, args.filename
+    );
+    proc_image(&mut image_file, f_v[args.index].1, args.depth);
     image_file.save_to_file(&args.output);
     println!("filter: Wrote file: {}", args.output);
     Ok(())
