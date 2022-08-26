@@ -51,10 +51,10 @@ fn parse_args() -> Arguments {
         )
         .arg(
             Arg::with_name("list")
-            .help("list files")
-            .short('l')
-            .long("list")
-            .takes_value(false)
+                .help("list files")
+                .short('l')
+                .long("list")
+                .takes_value(false),
         )
         .get_matches();
 
