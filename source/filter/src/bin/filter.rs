@@ -110,9 +110,9 @@ fn proc_image(im: &mut FilterImage, filter: &mut dyn Filter, depth: usize) {
 
 fn main() -> std::io::Result<()> {
     let args = parse_args();
-    let mut selfalpha = SelfAlphaBlend{};
-    let mut selfscale = SelfScale{};
-    let mut f_v  : Vec<&mut dyn Filter> = vec![&mut selfalpha, &mut selfscale];
+    let mut selfalpha = SelfAlphaBlend {};
+    let mut selfscale = SelfScale {};
+    let mut f_v: Vec<&mut dyn Filter> = vec![&mut selfalpha, &mut selfscale];
     if args.index >= f_v.len() {
         println!("filter: Index out of range!");
         return Ok(());
