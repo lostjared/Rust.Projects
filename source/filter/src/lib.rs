@@ -8,7 +8,7 @@ pub mod filter {
     }
 
     impl FilterImage {
-        fn load_from_png(filename: &str) -> Self {
+        pub fn load_from_png(filename: &str) -> Self {
             let decoder = png::Decoder::new(std::fs::File::open(filename).unwrap());
             let mut reader = decoder.read_info().unwrap();
             let mut buf = vec![0; reader.output_buffer_size()];
@@ -22,7 +22,7 @@ pub mod filter {
             }
         }
 
-        fn save_to_file(&self, filename: &str) {
+        pub fn save_to_file(&self, filename: &str) {
             let path = std::path::Path::new(filename);
             let file = std::fs::File::create(path).unwrap();
             let ref mut w = std::io::BufWriter::new(file);
@@ -34,4 +34,9 @@ pub mod filter {
             writer.write_image_data(&self.bytes[0..len]).unwrap();
         }
     }
+
+    pub trait Filter {
+        fn proc_filter(&mut self, im: &mut FilterImage, depth: usize);
+    }
+
 }
