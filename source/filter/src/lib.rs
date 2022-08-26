@@ -1,5 +1,3 @@
-
-
 pub mod filter {
 
     pub struct FilterImage {
@@ -9,9 +7,7 @@ pub mod filter {
         bpp: usize,
     }
 
-
     impl FilterImage {
-
         fn load_from_png(filename: &str) -> Self {
             let decoder = png::Decoder::new(std::fs::File::open(filename).unwrap());
             let mut reader = decoder.read_info().unwrap();
@@ -22,7 +18,7 @@ pub mod filter {
                 bytes: buf,
                 width: info.width as usize,
                 height: info.height as usize,
-                bpp: 4
+                bpp: 4,
             }
         }
 
@@ -30,13 +26,12 @@ pub mod filter {
             let path = std::path::Path::new(filename);
             let file = std::fs::File::create(path).unwrap();
             let ref mut w = std::io::BufWriter::new(file);
-            let mut encoder = png::Encoder::new(w, self.width as u32, self.height as u32); 
+            let mut encoder = png::Encoder::new(w, self.width as u32, self.height as u32);
             encoder.set_color(png::ColorType::Rgba);
             encoder.set_depth(png::BitDepth::Eight);
             let mut writer = encoder.write_header().unwrap();
             let len = self.bytes.len();
-            writer.write_image_data(&self.bytes[0..len]).unwrap(); 
+            writer.write_image_data(&self.bytes[0..len]).unwrap();
         }
     }
-
 }
