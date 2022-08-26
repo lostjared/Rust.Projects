@@ -7,6 +7,7 @@ struct Arguments {
     output: String,
     index: usize,
     depth: f32,
+    list: bool,
 }
 
 fn parse_args() -> Arguments {
@@ -48,18 +49,26 @@ fn parse_args() -> Arguments {
                 .required(true)
                 .allow_invalid_utf8(true),
         )
+        .arg(
+            Arg::with_name("list")
+            .help("list files")
+            .short('l')
+            .long("list")
+            .takes_value(false)
+        )
         .get_matches();
 
     let f = matches.value_of_lossy("file").unwrap();
     let o = matches.value_of_lossy("output").unwrap();
     let ind = matches.value_of_lossy("index").unwrap().parse().unwrap();
     let dept = matches.value_of_lossy("depth").unwrap().parse().unwrap();
-
+    let lst = matches.is_present("list");
     Arguments {
         filename: f.to_string(),
         output: o.to_string(),
         index: ind,
         depth: dept,
+        list: lst,
     }
 }
 
@@ -140,6 +149,14 @@ fn main() -> std::io::Result<()> {
         ("SelfScale", &mut selfscale),
         ("CosSinMultiply", &mut cossin),
     ];
+
+    if args.list {
+        for (i, name) in f_v.iter().enumerate() {
+            println!("{}:\t{}", i, name.0);
+        }
+        return Ok(());
+    }
+
     if args.index >= f_v.len() {
         println!("filter: Index out of range!");
         return Ok(());
