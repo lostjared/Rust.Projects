@@ -69,7 +69,7 @@ struct SelfScale {}
 impl Filter for SelfAlphaBlend {
     fn proc_filter(&mut self, im: &mut FilterImage, depth: usize) {
         let len = im.bytes.len();
-        let fdepth: f32 = 0.1 * depth as f32;
+        let fdepth: f32 = 0.3 * depth as f32;
         let dep: u8 = fdepth as u8;
         let buf = &mut im.bytes[0..len];
         let pitch = im.width * im.bpp;
@@ -88,7 +88,7 @@ impl Filter for SelfAlphaBlend {
 impl Filter for SelfScale {
     fn proc_filter(&mut self, im: &mut FilterImage, depth: usize) {
         let len = im.bytes.len();
-        let fdepth: f32 = 0.1 * depth as f32;
+        let fdepth: f32 = 0.3 * depth as f32;
         let dep: u8 = fdepth as u8;
         let buf = &mut im.bytes[0..len];
         let pitch = im.width * im.bpp;
