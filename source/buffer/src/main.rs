@@ -32,7 +32,7 @@ fn main() -> std::io::Result<()> {
     let mut buffer = vec![0u8; w*h*bpp];
     let len = buffer.len();
     fill_buffer(&mut buffer[0..len], w*bpp, bpp, 640, 480);
-    write_buffer("output.png", &mut buffer[0..len], 640, 480);
+    write_buffer("output.png", &buffer[0..len], 640, 480);
     println!("Wrote: output.png");
     Ok(())
 }
