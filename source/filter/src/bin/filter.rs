@@ -67,9 +67,20 @@ struct SelfAlphaBlend {}
 
 
 impl Filter for SelfAlphaBlend {
-
     fn proc_filter(&mut self, im: &mut FilterImage, depth: usize) {
-        println!("here");
+        let len = im.bytes.len();
+        let fdepth : f32 = 0.1 * depth as f32;
+        let buf = &mut im.bytes[0..len];
+        let pitch = im.width * im.bpp;
+        for z in 0..im.height {
+            for i in 0..im.width {
+                let pos = z * pitch + (i*im.bpp);
+                buf[pos] = buf[pos].wrapping_add(fdepth as u8 * buf[pos]);
+                buf[pos+1] = buf[pos+1].wrapping_add(fdepth as u8 * buf[pos+1]);
+                buf[pos+2] = buf[pos+2].wrapping_add(fdepth as u8 * buf[pos+2]);
+                buf[pos+3] = 255;
+            }
+        }
     }
 }
 
@@ -79,10 +90,14 @@ fn proc_image(im: &mut FilterImage, filter: &mut dyn Filter, depth: usize) {
 
 fn main() -> std::io::Result<()> {
     let args = parse_args();
-    let mut image_file = FilterImage::load_from_png(&args.filename);
     let mut f_v = vec![SelfAlphaBlend{}];
+    if args.index >= f_v.len() {
+        println!("filter: Index out of range!");
+        return Ok(());
+    }
+    let mut image_file = FilterImage::load_from_png(&args.filename);
     println!("filter: Filtering image: {}", args.filename);
-    proc_image(&mut image_file, &mut f_v[0], args.depth);
+    proc_image(&mut image_file, &mut f_v[args.index], args.depth);
     image_file.save_to_file(&args.output);
     println!("filter: Wrote file: {}", args.output);
     Ok(())

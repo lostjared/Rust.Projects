@@ -1,10 +1,10 @@
 pub mod filter {
 
     pub struct FilterImage {
-        bytes: Vec<u8>,
-        width: usize,
-        height: usize,
-        bpp: usize,
+        pub bytes: Vec<u8>,
+        pub width: usize,
+        pub height: usize,
+        pub bpp: usize,
     }
 
     impl FilterImage {
