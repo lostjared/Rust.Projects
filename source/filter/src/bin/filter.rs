@@ -69,19 +69,21 @@ struct SelfAlphaBlend {}
 impl Filter for SelfAlphaBlend {
 
     fn proc_filter(&mut self, im: &mut FilterImage, depth: usize) {
-
+        println!("here");
     }
 }
 
-fn proc_image(im: &mut FilterImage, filter: usize, depth: usize) {
-
-
+fn proc_image(im: &mut FilterImage, filter: &mut dyn Filter, depth: usize) {
+    filter.proc_filter(im, depth);
 }
 
 fn main() -> std::io::Result<()> {
     let args = parse_args();
     let mut image_file = FilterImage::load_from_png(&args.filename);
-    proc_image(&mut image_file, args.index, args.depth);
+    let mut f_v = vec![SelfAlphaBlend{}];
+    println!("filter: Filtering image: {}", args.filename);
+    proc_image(&mut image_file, &mut f_v[0], args.depth);
     image_file.save_to_file(&args.output);
+    println!("filter: Wrote file: {}", args.output);
     Ok(())
 }
