@@ -28,7 +28,7 @@ fn parse_args() -> Arguments {
                 .long("index")
                 .takes_value(true)
                 .required(true)
-                .allow_invalid_utf8(true)
+                .allow_invalid_utf8(true),
         )
         .arg(
             Arg::with_name("depth")
@@ -37,7 +37,7 @@ fn parse_args() -> Arguments {
                 .long("depth")
                 .takes_value(true)
                 .required(true)
-                .allow_invalid_utf8(true)
+                .allow_invalid_utf8(true),
         )
         .arg(
             Arg::with_name("output")
@@ -46,7 +46,7 @@ fn parse_args() -> Arguments {
                 .long("output")
                 .takes_value(true)
                 .required(true)
-                .allow_invalid_utf8(true)
+                .allow_invalid_utf8(true),
         )
         .get_matches();
 
@@ -64,21 +64,41 @@ fn parse_args() -> Arguments {
 }
 
 struct SelfAlphaBlend {}
-
+struct SelfScale {}
 
 impl Filter for SelfAlphaBlend {
     fn proc_filter(&mut self, im: &mut FilterImage, depth: usize) {
         let len = im.bytes.len();
-        let fdepth : f32 = 0.1 * depth as f32;
+        let fdepth: f32 = 0.1 * depth as f32;
+        let dep: u8 = fdepth as u8;
         let buf = &mut im.bytes[0..len];
         let pitch = im.width * im.bpp;
         for z in 0..im.height {
             for i in 0..im.width {
-                let pos = z * pitch + (i*im.bpp);
-                buf[pos] = buf[pos].wrapping_add(fdepth as u8 * buf[pos]);
-                buf[pos+1] = buf[pos+1].wrapping_add(fdepth as u8 * buf[pos+1]);
-                buf[pos+2] = buf[pos+2].wrapping_add(fdepth as u8 * buf[pos+2]);
-                buf[pos+3] = 255;
+                let pos = z * pitch + (i * im.bpp);
+                buf[pos] = buf[pos].wrapping_add(dep.wrapping_mul(buf[pos]));
+                buf[pos + 1] = buf[pos + 1].wrapping_add(dep.wrapping_mul(buf[pos + 1]));
+                buf[pos + 2] = buf[pos + 2].wrapping_add(dep.wrapping_mul(buf[pos + 2]));
+                buf[pos + 3] = 255;
+            }
+        }
+    }
+}
+
+impl Filter for SelfScale {
+    fn proc_filter(&mut self, im: &mut FilterImage, depth: usize) {
+        let len = im.bytes.len();
+        let fdepth: f32 = 0.1 * depth as f32;
+        let dep: u8 = fdepth as u8;
+        let buf = &mut im.bytes[0..len];
+        let pitch = im.width * im.bpp;
+        for z in 0..im.height {
+            for i in 0..im.width {
+                let pos = z * pitch + (i * im.bpp);
+                buf[pos] = dep.wrapping_mul(buf[pos]);
+                buf[pos + 1] = dep.wrapping_mul(buf[pos + 1]);
+                buf[pos + 2] = dep.wrapping_mul(buf[pos + 2]);
+                buf[pos + 3] = 255;
             }
         }
     }
@@ -90,14 +110,16 @@ fn proc_image(im: &mut FilterImage, filter: &mut dyn Filter, depth: usize) {
 
 fn main() -> std::io::Result<()> {
     let args = parse_args();
-    let mut f_v = vec![SelfAlphaBlend{}];
+    let mut selfalpha = SelfAlphaBlend{};
+    let mut selfscale = SelfScale{};
+    let mut f_v  : Vec<&mut dyn Filter> = vec![&mut selfalpha, &mut selfscale];
     if args.index >= f_v.len() {
         println!("filter: Index out of range!");
         return Ok(());
     }
     let mut image_file = FilterImage::load_from_png(&args.filename);
     println!("filter: Filtering image: {}", args.filename);
-    proc_image(&mut image_file, &mut f_v[args.index], args.depth);
+    proc_image(&mut image_file, f_v[args.index], args.depth);
     image_file.save_to_file(&args.output);
     println!("filter: Wrote file: {}", args.output);
     Ok(())

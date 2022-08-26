@@ -38,5 +38,4 @@ pub mod filter {
     pub trait Filter {
         fn proc_filter(&mut self, im: &mut FilterImage, depth: usize);
     }
-
 }
