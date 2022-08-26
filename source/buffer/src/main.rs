@@ -2,12 +2,15 @@
 
 
 fn fill_buffer(buf: &mut [u8], pitch: usize, bpp: usize, w: usize, h: usize) {
+
+    let mut num : f32 = 0.5;
+
     for z in 0..h {
         for i in 0..w {
             let pos = z * pitch + (i*bpp);
-            buf[pos] = 255;
-            buf[pos+1] = 255;
-            buf[pos+2] = 255;
+            buf[pos] = (i as f32 *num) as u8;
+            buf[pos+1] = (z as f32 *num) as u8;
+            buf[pos+2] = (z as f32 *num) as u8;
             buf[pos+3] = 255;
         }
     }
