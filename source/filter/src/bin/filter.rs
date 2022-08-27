@@ -147,15 +147,14 @@ impl Filter for Gradient {
         for z in 0..im.height {
             for i in 0..im.width {
                 let pos = z * pitch + (i * im.bpp);
-                buf[pos] = buf[pos].wrapping_add((z as f32 * depth) as u8);
-                buf[pos+1] = buf[pos].wrapping_add((z as f32 * depth) as u8);
-                buf[pos+2] = buf[pos].wrapping_add(((z+i) as f32 * depth) as u8);
+                buf[pos] = buf[pos].wrapping_add((i as f32 * depth) as u8);
+                buf[pos + 1] = buf[pos].wrapping_add((z as f32 * depth) as u8);
+                buf[pos + 2] = buf[pos].wrapping_add(((z + i) as f32 * depth) as u8);
                 buf[pos + 3] = 255;
             }
         }
     }
 }
-
 
 /// proccess image
 fn proc_image(im: &mut FilterImage, filter: &mut dyn Filter, depth: f32) {
