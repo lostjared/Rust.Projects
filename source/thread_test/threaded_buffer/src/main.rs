@@ -1,19 +1,16 @@
 use ::filter::filter::FilterImage;
 use rand::Rng;
-use std::sync::{Arc, Mutex};
-use std::thread;
+use rayon::prelude::*;
 
-fn process_chunk(buf: &mut [u8], y: usize, width: usize, chunk: usize, bpp: usize) {
+fn process_chunk(buf: &mut [u8]) {
     let mut rng = rand::thread_rng();
-    let pitch = width * bpp;
-    for z in y..y + chunk {
-        for i in 0..width {
-            let pos = z * pitch + (i * bpp);
-            buf[pos] = rng.gen_range(0..255);
-            buf[pos + 1] = rng.gen_range(0..255);
-            buf[pos + 2] = rng.gen_range(0..255);
-            buf[pos + 3] = 255;
-        }
+    let mut i = 0;
+    while i < buf.len() {
+        buf[i] = rng.gen_range(0..255);
+        buf[i+1] = rng.gen_range(0..255);
+        buf[i+2] = rng.gen_range(0..255);
+        buf[i+3] = 255;
+        i += 4;
     }
 }
 
@@ -32,30 +29,19 @@ pub fn save_to_file(filename: &str, bytes: &[u8], width: usize, height: usize) {
 fn main() {
     let arguments: Vec<String> = std::env::args().collect();
     let filename = arguments.get(1).unwrap();
-    let im = FilterImage::load_from_png(filename);
-    let mut pos = 0;
-    let num_threads = 8;
-    let len = im.bytes.len();
-    let height = im.height;
-    let chunk = height / num_threads;
-    let width = im.width;
-    let bpp = im.bpp;
-    let mut handles = vec![];
-    let bytes = im.bytes;
-    let values = Arc::new(Mutex::new(bytes));
-    for _i in 0..num_threads {
-        let p = pos;
-        let v = values.clone();
-        handles.push(thread::spawn(move || {
-            let mut val = v.lock().unwrap();
-            process_chunk(&mut val[..len], p, width, chunk, bpp);
-        }));
-        pos += chunk;
+    let mut im = FilterImage::load_from_png(filename);
+    let mut file_chunk : Vec<&mut [u8]> = im.bytes.chunks_mut(8).collect();
+    file_chunk.par_iter_mut().for_each(|v| {
+        process_chunk(v);
+    });
+    let mut final_bytes : Vec<u8> = Vec::new();
+    for i in 0..file_chunk.len() {
+        for z in 0..file_chunk[i].len() {
+            let v = file_chunk[i][z];
+            final_bytes.push(v);
+        }
     }
-    for j in handles {
-        j.join().unwrap();
-    }
-    let bytes = values.lock().unwrap();
-    save_to_file("output.png", &bytes, width, height);
+    let flen = final_bytes.len();
+    save_to_file("output.png", &final_bytes[0..flen], im.width, im.height);
     println!("wrote to file: output.png");
 }
