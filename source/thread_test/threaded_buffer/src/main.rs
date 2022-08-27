@@ -20,7 +20,7 @@ fn process_chunk(buf: &mut [u8], y: usize, width: usize, chunk: usize, bpp: usiz
 pub fn save_to_file(filename: &str, bytes: &[u8], width: usize, height: usize) {
     let path = std::path::Path::new(filename);
     let file = std::fs::File::create(path).unwrap();
-    let ref mut w = std::io::BufWriter::new(file);
+    let w = &mut std::io::BufWriter::new(file);
     let mut encoder = png::Encoder::new(w, width as u32, height as u32);
     encoder.set_color(png::ColorType::Rgba);
     encoder.set_depth(png::BitDepth::Eight);
@@ -44,7 +44,7 @@ fn main() {
     let bytes = im.bytes;
     let values = Arc::new(Mutex::new(bytes));
     for _i in 0..num_threads {
-        let p = pos.clone();
+        let p = pos;
         let v = values.clone();
         handles.push(thread::spawn(move || {
             let mut val = v.lock().unwrap();
