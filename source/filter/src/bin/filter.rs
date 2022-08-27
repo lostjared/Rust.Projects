@@ -76,6 +76,7 @@ fn parse_args() -> Arguments {
 struct SelfAlphaBlend {}
 struct SelfScale {}
 struct CosSinMultiply {}
+struct Gradient {}
 
 /// implement Filter trait for SelfAlphaBlend
 impl Filter for SelfAlphaBlend {
@@ -138,6 +139,24 @@ impl Filter for CosSinMultiply {
     }
 }
 
+impl Filter for Gradient {
+    fn proc_filter(&mut self, im: &mut FilterImage, depth: f32) {
+        let len = im.bytes.len();
+        let buf = &mut im.bytes[0..len];
+        let pitch = im.width * im.bpp;
+        for z in 0..im.height {
+            for i in 0..im.width {
+                let pos = z * pitch + (i * im.bpp);
+                buf[pos] = buf[pos].wrapping_add((z as f32 * depth) as u8);
+                buf[pos+1] = buf[pos].wrapping_add((z as f32 * depth) as u8);
+                buf[pos+2] = buf[pos].wrapping_add(((z+i) as f32 * depth) as u8);
+                buf[pos + 3] = 255;
+            }
+        }
+    }
+}
+
+
 /// proccess image
 fn proc_image(im: &mut FilterImage, filter: &mut dyn Filter, depth: f32) {
     filter.proc_filter(im, depth);
@@ -149,10 +168,12 @@ fn main() -> std::io::Result<()> {
     let mut selfalpha = SelfAlphaBlend {};
     let mut selfscale = SelfScale {};
     let mut cossin = CosSinMultiply {};
+    let mut gradient = Gradient {};
     let mut f_v: Vec<(&str, &mut dyn Filter)> = vec![
         ("SelfAlphaBlend", &mut selfalpha),
         ("SelfScale", &mut selfscale),
         ("CosSinMultiply", &mut cossin),
+        ("Gradient", &mut gradient),
     ];
 
     if args.list {
