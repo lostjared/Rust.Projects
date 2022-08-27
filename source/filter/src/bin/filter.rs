@@ -1,7 +1,7 @@
 use clap::{App, Arg};
-
 use filter::filter::{Filter, FilterImage};
 
+/// Arguments structure for command line arguments
 struct Arguments {
     filename: String,
     output: String,
@@ -10,6 +10,7 @@ struct Arguments {
     list: bool,
 }
 
+/// parse command line arguments with clap
 fn parse_args() -> Arguments {
     let matches = App::new("filter")
         .about("Filter image example")
@@ -76,6 +77,7 @@ struct SelfAlphaBlend {}
 struct SelfScale {}
 struct CosSinMultiply {}
 
+/// implement Filter trait for SelfAlphaBlend
 impl Filter for SelfAlphaBlend {
     fn proc_filter(&mut self, im: &mut FilterImage, depth: f32) {
         let len = im.bytes.len();
@@ -94,6 +96,7 @@ impl Filter for SelfAlphaBlend {
     }
 }
 
+/// implement Filter trait for SelfScale
 impl Filter for SelfScale {
     fn proc_filter(&mut self, im: &mut FilterImage, depth: f32) {
         let len = im.bytes.len();
@@ -111,7 +114,7 @@ impl Filter for SelfScale {
         }
     }
 }
-
+/// implement Filter trait for CosSinMultiply
 impl Filter for CosSinMultiply {
     fn proc_filter(&mut self, im: &mut FilterImage, depth: f32) {
         let len = im.bytes.len();
@@ -135,10 +138,12 @@ impl Filter for CosSinMultiply {
     }
 }
 
+/// proccess image
 fn proc_image(im: &mut FilterImage, filter: &mut dyn Filter, depth: f32) {
     filter.proc_filter(im, depth);
 }
 
+/// main function - entry point
 fn main() -> std::io::Result<()> {
     let args = parse_args();
     let mut selfalpha = SelfAlphaBlend {};

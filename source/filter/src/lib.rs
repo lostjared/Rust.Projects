@@ -1,13 +1,14 @@
+//! Filter Image module
 pub mod filter {
-
+    /// FilterImage structure contains data from 8 bit RGBA PNG image
     pub struct FilterImage {
         pub bytes: Vec<u8>,
         pub width: usize,
         pub height: usize,
         pub bpp: usize,
     }
-
     impl FilterImage {
+        /// load from PNG file
         pub fn load_from_png(filename: &str) -> Self {
             let decoder = png::Decoder::new(std::fs::File::open(filename).unwrap());
             let mut reader = decoder.read_info().unwrap();
@@ -21,7 +22,7 @@ pub mod filter {
                 bpp: 4,
             }
         }
-
+        /// save to PNG file
         pub fn save_to_file(&self, filename: &str) {
             let path = std::path::Path::new(filename);
             let file = std::fs::File::create(path).unwrap();
@@ -34,7 +35,7 @@ pub mod filter {
             writer.write_image_data(&self.bytes[0..len]).unwrap();
         }
     }
-
+    /// Filter trait for processing a FilterImage
     pub trait Filter {
         fn proc_filter(&mut self, im: &mut FilterImage, depth: f32);
     }
