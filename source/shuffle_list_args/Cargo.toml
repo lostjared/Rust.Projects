@@ -8,3 +8,4 @@ edition = "2018"
 [dependencies]
 rand = "0.8.4"
 shuffle = "0.1.0"
+clap = "3.2.17"
