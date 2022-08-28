@@ -68,11 +68,11 @@ fn main() {
     let args = parse_args();
     if args.files.len() == 1 && args.files[0] == "<STDIN>" {
         shuffle_input();
-    } else if args.files.len() > 0 {
+    } else if !args.files.is_empty() {
         if !args.split {
             let mut v: Vec<String> = Vec::new();
             for i in &args.files {
-                fill_vec(&i, &mut v);
+                fill_vec(i, &mut v);
             }
             let mut rng = thread_rng();
             let mut irs = Irs::default();
@@ -83,7 +83,7 @@ fn main() {
         } else {
             for i in &args.files {
                 let mut v: Vec<String> = Vec::new();
-                fill_vec(&i, &mut v);
+                fill_vec(i, &mut v);
                 let mut rng = thread_rng();
                 let mut irs = Irs::default();
                 irs.shuffle(&mut v, &mut rng).expect("on shuffle");
