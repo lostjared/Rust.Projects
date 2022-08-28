@@ -14,16 +14,6 @@ fn process_chunk(buf: &mut [u8]) {
     }
 }
 
-pub fn chain_vector(v: Vec<&mut [u8]>) -> Vec<u8> {
-    let mut final_bytes: Vec<u8> = Vec::new();
-    for i in 0..v.len() {
-        for z in 0..v[i].len() {
-            final_bytes.push(v[i][z]);
-        }
-    }
-    final_bytes
-}
-
 pub fn save_to_file(filename: &str, bytes: &[u8], width: usize, height: usize) {
     let path = std::path::Path::new(filename);
     let file = std::fs::File::create(path).unwrap();
@@ -36,7 +26,7 @@ pub fn save_to_file(filename: &str, bytes: &[u8], width: usize, height: usize) {
     writer.write_image_data(&bytes[0..len]).unwrap();
 }
 
-fn main() {
+fn main() -> std::io::Result<()> {
     let matches = App::new("threaded_buffer")
         .help("gen pixels concurrently")
         .arg(
@@ -56,8 +46,8 @@ fn main() {
     file_chunk.par_iter_mut().for_each(|v| {
         process_chunk(v);
     });
-    let final_bytes = chain_vector(file_chunk);
-    let flen = final_bytes.len();
-    save_to_file("output.png", &final_bytes[0..flen], width, height);
+    let flen = bytes.len();
+    save_to_file("output.png", &bytes[0..flen], width, height);
     println!("wrote to file: output.png");
+    Ok(())
 }
