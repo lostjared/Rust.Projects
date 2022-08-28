@@ -36,6 +36,7 @@ fn shuffle_input() {
 
 struct Arguments {
     files: Vec<String>,
+    split: bool,
 }
 
 fn parse_args() -> Arguments {
@@ -49,9 +50,18 @@ fn parse_args() -> Arguments {
                 .default_value("<STDIN>")
                 .allow_invalid_utf8(true),
         )
+        .arg(
+            Arg::with_name("split")
+                .long("split")
+                .short('s')
+                .help("split seperate files")
+                .required(false)
+                .takes_value(false),
+        )
         .get_matches();
     let f = matches.values_of_lossy("files").unwrap();
-    Arguments { files: f }
+    let b = matches.is_present("split");
+    Arguments { files: f, split: b }
 }
 
 fn main() {
@@ -59,15 +69,28 @@ fn main() {
     if args.files.len() == 1 && args.files[0] == "<STDIN>" {
         shuffle_input();
     } else if args.files.len() > 0 {
-        let mut v: Vec<String> = Vec::new();
-        for i in &args.files {
-            fill_vec(i, &mut v);
-        }
-        let mut rng = thread_rng();
-        let mut irs = Irs::default();
-        irs.shuffle(&mut v, &mut rng).expect("on shuffle");
-        for i in &v {
-            println!("{}", i);
+        if !args.split {
+            let mut v: Vec<String> = Vec::new();
+            for i in &args.files {
+                fill_vec(i, &mut v);
+            }
+            let mut rng = thread_rng();
+            let mut irs = Irs::default();
+            irs.shuffle(&mut v, &mut rng).expect("on shuffle");
+            for i in &v {
+                println!("{}", i);
+            }
+        } else {
+            for i in &args.files {
+                let mut v: Vec<String> = Vec::new();
+                fill_vec(i, &mut v);
+                let mut rng = thread_rng();
+                let mut irs = Irs::default();
+                irs.shuffle(&mut v, &mut rng).expect("on shuffle");
+                for i in &v {
+                    println!("{}", i);
+                }
+            }
         }
     }
 }
