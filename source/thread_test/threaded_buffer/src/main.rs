@@ -1,5 +1,6 @@
 use rand::Rng;
 use rayon::prelude::*;
+use clap::{App, Arg};
 
 fn process_chunk(buf: &mut [u8]) {
     let mut rng = rand::thread_rng();
@@ -36,15 +37,17 @@ pub fn save_to_file(filename: &str, bytes: &[u8], width: usize, height: usize) {
 }
 
 fn main() {
+
+    let matches = App::new("threaded_buffer").help("gen pixels concurrently").arg( Arg::with_name("num").short('n').required(true).long("number").takes_value(true)).get_matches();
     let width = 1920;
     let height = 1080;
     let bpp = 4;
+    let num_iterators : usize = matches.value_of("num").unwrap().parse().unwrap();
     let mut bytes : Vec<u8> = vec![0u8; width*height*bpp];
-    let mut file_chunk : Vec<&mut [u8]> = bytes.chunks_mut(8).collect();
+    let mut file_chunk : Vec<&mut [u8]> = bytes.chunks_mut(num_iterators).collect();
     file_chunk.par_iter_mut().for_each(|v| {
         process_chunk(v);
     });
-
     let final_bytes = chain_vector(file_chunk);
     let flen = final_bytes.len();
     save_to_file("output.png", &final_bytes[0..flen], width, height);
