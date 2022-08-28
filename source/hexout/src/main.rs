@@ -1,22 +1,5 @@
-/*
-fn output_hex<T: std::io::BufRead + Sized>(mut reader: T) {
-    let mut counter = 0;
-    loop {
-        let mut buf: [u8; 256] = [0; 256];
-        let val = reader.read(&mut buf).expect("on read");
-        for i in 0..val {
-            print!("{:#04x} ", buf[i]);
-            counter += 1;
-            if counter % 6 == 0 {
-                print!("\n");
-            }
-        }
-        if val == 0 {
-            break;
-        }
-    }
-}*/
 
+/// output hex data to stdout
 fn output_hex_line<T: std::io::BufRead + Sized>(mut reader: T) {
     let mut buffer = Vec::new();
     reader.read_to_end(&mut buffer).expect("on read");
@@ -54,6 +37,7 @@ fn output_hex_line<T: std::io::BufRead + Sized>(mut reader: T) {
     }
 }
 
+/// main function - entry point
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     if args.len() <= 1 {
