@@ -55,11 +55,11 @@ fn parse_args() -> Arguments {
 }
 
 fn main() {
-    let mut v: Vec<String> = Vec::new();
     let args = parse_args();
     if args.files.len() == 1 && args.files[0] == "<STDIN>" {
         shuffle_input();
     } else if args.files.len() > 0 {
+        let mut v: Vec<String> = Vec::new();
         for i in &args.files {
             fill_vec(i, &mut v);
         }
