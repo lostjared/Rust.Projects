@@ -1,21 +1,21 @@
+use clap::{App, Arg};
 use rand::Rng;
 use rayon::prelude::*;
-use clap::{App, Arg};
 
 fn process_chunk(buf: &mut [u8]) {
     let mut rng = rand::thread_rng();
     let mut i = 0;
     while i < buf.len() {
         buf[i] = rng.gen_range(0..255);
-        buf[i+1] = rng.gen_range(0..255);
-        buf[i+2] = rng.gen_range(0..255);
-        buf[i+3] = 255;
+        buf[i + 1] = rng.gen_range(0..255);
+        buf[i + 2] = rng.gen_range(0..255);
+        buf[i + 3] = 255;
         i += 4;
     }
 }
 
 pub fn chain_vector(v: Vec<&mut [u8]>) -> Vec<u8> {
-    let mut final_bytes : Vec<u8> = Vec::new();
+    let mut final_bytes: Vec<u8> = Vec::new();
     for i in 0..v.len() {
         for z in 0..v[i].len() {
             final_bytes.push(v[i][z]);
@@ -37,14 +37,22 @@ pub fn save_to_file(filename: &str, bytes: &[u8], width: usize, height: usize) {
 }
 
 fn main() {
-
-    let matches = App::new("threaded_buffer").help("gen pixels concurrently").arg( Arg::with_name("num").short('n').required(true).long("number").takes_value(true)).get_matches();
+    let matches = App::new("threaded_buffer")
+        .help("gen pixels concurrently")
+        .arg(
+            Arg::with_name("num")
+                .short('n')
+                .required(true)
+                .long("number")
+                .takes_value(true),
+        )
+        .get_matches();
     let width = 1920;
     let height = 1080;
     let bpp = 4;
-    let num_iterators : usize = matches.value_of("num").unwrap().parse().unwrap();
-    let mut bytes : Vec<u8> = vec![0u8; width*height*bpp];
-    let mut file_chunk : Vec<&mut [u8]> = bytes.chunks_mut(num_iterators).collect();
+    let num_iterators: usize = matches.value_of("num").unwrap().parse().unwrap();
+    let mut bytes: Vec<u8> = vec![0u8; width * height * bpp];
+    let mut file_chunk: Vec<&mut [u8]> = bytes.chunks_mut(num_iterators).collect();
     file_chunk.par_iter_mut().for_each(|v| {
         process_chunk(v);
     });
