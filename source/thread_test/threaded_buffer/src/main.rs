@@ -40,9 +40,9 @@ fn main() -> std::io::Result<()> {
     let width = 1920;
     let height = 1080;
     let bpp = 4;
-    let num_iterators: usize = matches.value_of("num").unwrap().parse().unwrap();
+    let num_chunks: usize = matches.value_of("num").unwrap().parse().unwrap();
     let mut bytes: Vec<u8> = vec![0u8; width * height * bpp];
-    let mut file_chunk: Vec<&mut [u8]> = bytes.chunks_mut(num_iterators).collect();
+    let mut file_chunk: Vec<&mut [u8]> = bytes.chunks_mut(num_chunks).collect();
     file_chunk.par_iter_mut().for_each(|v| {
         process_chunk(v);
     });
