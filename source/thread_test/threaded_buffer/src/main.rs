@@ -1,4 +1,3 @@
-use ::filter::filter::FilterImage;
 use rand::Rng;
 use rayon::prelude::*;
 
@@ -27,10 +26,11 @@ pub fn save_to_file(filename: &str, bytes: &[u8], width: usize, height: usize) {
 }
 
 fn main() {
-    let arguments: Vec<String> = std::env::args().collect();
-    let filename = arguments.get(1).unwrap();
-    let mut im = FilterImage::load_from_png(filename);
-    let mut file_chunk : Vec<&mut [u8]> = im.bytes.chunks_mut(8).collect();
+    let width = 1920;
+    let height = 1080;
+    let bpp = 4;
+    let mut bytes : Vec<u8> = vec![0u8; width*height*bpp];
+    let mut file_chunk : Vec<&mut [u8]> = bytes.chunks_mut(8).collect();
     file_chunk.par_iter_mut().for_each(|v| {
         process_chunk(v);
     });
@@ -42,6 +42,6 @@ fn main() {
         }
     }
     let flen = final_bytes.len();
-    save_to_file("output.png", &final_bytes[0..flen], im.width, im.height);
+    save_to_file("output.png", &final_bytes[0..flen], width, height);
     println!("wrote to file: output.png");
 }
