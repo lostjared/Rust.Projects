@@ -1,9 +1,8 @@
-
-use std::env;
-use std::fs;
+use clap::{App, Arg};
 use rand::thread_rng;
 use shuffle::irs::Irs;
 use shuffle::shuffler::Shuffler;
+use std::fs;
 use std::io;
 use std::io::prelude::*;
 
@@ -35,15 +34,33 @@ fn shuffle_input() {
     }
 }
 
+struct Arguments {
+    files: Vec<String>,
+}
+
+fn parse_args() -> Arguments {
+    let matches = App::new("shuffle_args")
+        .help("shuffle text")
+        .arg(
+            Arg::with_name("files")
+                .value_name("FILE")
+                .help("input file(s)")
+                .multiple(true)
+                .default_value("<STDIN>")
+                .allow_invalid_utf8(true),
+        )
+        .get_matches();
+    let f = matches.values_of_lossy("files").unwrap();
+    Arguments { files: f }
+}
 
 fn main() {
-
-    let mut v : Vec<String> = Vec::new();
-    let args: Vec<String> = env::args().collect();
-    if args.len() <= 1 {
+    let mut v: Vec<String> = Vec::new();
+    let args = parse_args();
+    if args.files.len() == 1 && args.files[0] == "<STDIN>" {
         shuffle_input();
-    } else {
-        for i in args.iter().skip(1) {
+    } else if args.files.len() > 0 {
+        for i in &args.files {
             fill_vec(i, &mut v);
         }
         let mut rng = thread_rng();
@@ -53,5 +70,4 @@ fn main() {
             println!("{}", i);
         }
     }
-
 }
