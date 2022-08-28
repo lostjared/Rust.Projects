@@ -6,7 +6,7 @@ use std::fs;
 use std::io;
 use std::io::prelude::*;
 
-fn fill_vec(input: &String, v: &mut Vec<String>) {
+fn fill_vec(input: &str, v: &mut Vec<String>) {
     let contents = fs::read_to_string(input).expect("Error reading the file");
     for i in contents.lines() {
         v.push(i.to_string());
@@ -72,7 +72,7 @@ fn main() {
         if !args.split {
             let mut v: Vec<String> = Vec::new();
             for i in &args.files {
-                fill_vec(i, &mut v);
+                fill_vec(&i, &mut v);
             }
             let mut rng = thread_rng();
             let mut irs = Irs::default();
@@ -83,7 +83,7 @@ fn main() {
         } else {
             for i in &args.files {
                 let mut v: Vec<String> = Vec::new();
-                fill_vec(i, &mut v);
+                fill_vec(&i, &mut v);
                 let mut rng = thread_rng();
                 let mut irs = Irs::default();
                 irs.shuffle(&mut v, &mut rng).expect("on shuffle");
