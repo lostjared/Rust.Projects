@@ -1,5 +1,10 @@
 
 
+fn set_value(y: *mut i32) {
+    unsafe {
+        *y += 10;
+    }
+}
 
 
 fn main() -> std::io::Result<()> {
@@ -8,6 +13,8 @@ fn main() -> std::io::Result<()> {
     unsafe {
         *z += 10;
     }
+    println!("value of y: {}", y);
+    set_value(z);
     println!("value of y: {}", y);
     Ok(())
 }
