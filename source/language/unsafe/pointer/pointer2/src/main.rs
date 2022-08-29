@@ -16,5 +16,11 @@ fn main() -> std::io::Result<()> {
     println!("value of y: {}", y);
     set_value(z);
     println!("value of y: {}", y);
+    let q : i32 = 10;
+    let ptr_q =  &q as *const i32;
+    unsafe {
+        println!("value of ptr_q: {}", *ptr_q);
+    }
+
     Ok(())
 }
