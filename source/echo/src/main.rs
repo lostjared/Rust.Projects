@@ -1,6 +1,5 @@
-
 fn echo_all() {
-    let args : Vec<String> = std::env::args().collect();
+    let args: Vec<String> = std::env::args().collect();
     for i in args.iter().skip(1) {
         print!("{} ", i);
     }
