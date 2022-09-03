@@ -1,4 +1,3 @@
-extern crate rand;
 use rand::thread_rng;
 use shuffle::irs::Irs;
 use shuffle::shuffler::Shuffler;

@@ -1,6 +1,5 @@
 // cargo run --release
 
-extern crate sdl2;
 mod puzzle;
 mod scores;
 

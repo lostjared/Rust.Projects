@@ -1,4 +1,3 @@
-extern crate image;
 
 fn main() {
   let mut img = image::ImageBuffer::new(256, 256);

@@ -1,4 +1,3 @@
-extern crate image;
 
 use std::env;
 use image::io::Reader as ImageReader;

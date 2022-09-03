@@ -1,4 +1,3 @@
-extern crate image;
 use rand::Rng;
 
 fn main() {

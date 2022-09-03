@@ -1,4 +1,3 @@
-extern crate rmx;
 use rmx::rmx_system;
 
 static SCREEN1: usize = 0;

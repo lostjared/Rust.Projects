@@ -1,5 +1,4 @@
 // manipulate pixels
-extern crate image;
 use image::io::Reader as ImageReader;
 use image::*;
 use rayon::prelude::*;
