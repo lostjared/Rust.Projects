@@ -1,4 +1,3 @@
-extern crate config_file;
 
 use config_file::config::Config;
 

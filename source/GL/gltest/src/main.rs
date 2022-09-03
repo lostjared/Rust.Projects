@@ -1,6 +1,3 @@
-extern crate gl;
-extern crate sdl2;
-
 use std::ffi::CStr;
 
 fn main() {
