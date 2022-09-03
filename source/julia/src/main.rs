@@ -1,7 +1,6 @@
 use cmd_switch::cmd_sw;
 use std::collections::HashMap;
 use std::env;
-extern crate image;
 
 pub fn parse_split_int(t: &str) -> (i32, i32) {
     let text = String::from(t.trim());
