@@ -3,7 +3,7 @@ fn echo_all() {
     for i in args.iter().skip(1) {
         print!("{} ", i);
     }
-    println!("");
+    println!();
 }
 
 fn main() -> std::io::Result<()> {
