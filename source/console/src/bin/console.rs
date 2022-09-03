@@ -1,4 +1,3 @@
-extern crate console;
 
 use console::console_system::Console;
 use sdl2::event::Event;
