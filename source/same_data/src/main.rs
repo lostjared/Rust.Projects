@@ -28,12 +28,12 @@ fn fill_map<T: std::io::BufRead + Sized>(r: T, m: &mut HashMap<String, i32>) {
         match i {
             Ok(line) => {
                 if line.trim().len() == 0 {
-                   continue;
+                    continue;
                 }
 
                 if m.contains_key(&line) {
                     let val = m.get(&line).unwrap();
-                    m.insert(line, val+1);
+                    m.insert(line, val + 1);
                 } else {
                     m.insert(line, 1);
                 }
@@ -47,11 +47,11 @@ fn fill_map<T: std::io::BufRead + Sized>(r: T, m: &mut HashMap<String, i32>) {
 
 fn main() -> std::io::Result<()> {
     let args = parse_args();
-    let mut map : HashMap<String, i32> = HashMap::new();
+    let mut map: HashMap<String, i32> = HashMap::new();
     for i in &args.files {
         if i == "<STDIN>" {
             fill_map(std::io::stdin().lock(), &mut map);
-        } else { 
+        } else {
             let f = std::fs::File::open(i)?;
             let r = std::io::BufReader::new(f);
             fill_map(r, &mut map);
