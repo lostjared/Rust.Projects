@@ -58,7 +58,9 @@ fn main() -> std::io::Result<()> {
         }
     }
     for (key, value) in map {
-        println!("{}:\t{}", key, value);
+        if value > 1 {
+            println!("{}:\t{}", key, value);
+        }
     }
     Ok(())
 }
