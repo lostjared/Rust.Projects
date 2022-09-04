@@ -28,6 +28,10 @@ fn fill_map<T: std::io::BufRead + Sized>(r: T, m: &mut HashMap<String, i32>) {
     for i in r.lines() {
         match i {
             Ok(line) => {
+                if line.trim().len() == 0 {
+                   continue;
+                }
+                
                 if m.contains_key(&line) {
                     let val = m.get(&line).unwrap();
                     m.insert(line, val+1);
