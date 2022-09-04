@@ -1,6 +1,5 @@
 use clap::{App, Arg};
 use std::collections::HashMap;
-use std::io::BufRead;
 
 struct Arguments {
     files: Vec<String>,
@@ -31,7 +30,7 @@ fn fill_map<T: std::io::BufRead + Sized>(r: T, m: &mut HashMap<String, i32>) {
                 if line.trim().len() == 0 {
                    continue;
                 }
-                
+
                 if m.contains_key(&line) {
                     let val = m.get(&line).unwrap();
                     m.insert(line, val+1);
