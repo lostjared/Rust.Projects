@@ -1,4 +1,5 @@
 use clap::{App, Arg};
+use walkdir::WalkDir;
 
 struct Arguments {
     paths: Vec<String>,
@@ -23,5 +24,18 @@ fn parse_args() -> Arguments {
 }
 
 fn main() -> std::io::Result<()> {
+    let args = parse_args();
+    for i in &args.paths {
+        for entry in WalkDir::new(i) {
+            match entry {
+                Ok(entry) => {
+                    println!("{}", entry.path().display());
+                }
+                Err(e) => {
+                    eprintln!("Error: {}", e);
+                }
+            }
+        }
+    }
     Ok(())
 }
