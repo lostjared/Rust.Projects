@@ -4,6 +4,7 @@ use walkdir::WalkDir;
 struct Arguments {
     paths: Vec<String>,
     dir: bool,
+    files: bool,
 }
 
 fn parse_args() -> Arguments {
@@ -17,6 +18,7 @@ fn parse_args() -> Arguments {
                 .help("input path(s)")
                 .multiple(true)
                 .takes_value(true)
+                .default_value(".")
                 .allow_invalid_utf8(true),
         )
         .arg(
@@ -27,10 +29,23 @@ fn parse_args() -> Arguments {
                 .long("dir")
                 .short('d'),
         )
+        .arg(
+            Arg::with_name("files")
+                .value_name("FILES")
+                .help("print files")
+                .takes_value(false)
+                .long("file")
+                .short('f'),
+        )
         .get_matches();
     let p: Vec<String> = m.values_of_lossy("paths").unwrap();
     let b = m.is_present("dir");
-    Arguments { paths: p, dir: b }
+    let f = m.is_present("files");
+    Arguments {
+        paths: p,
+        dir: b,
+        files: f,
+    }
 }
 
 fn main() -> std::io::Result<()> {
@@ -39,12 +54,15 @@ fn main() -> std::io::Result<()> {
         for entry in WalkDir::new(i) {
             match entry {
                 Ok(entry) => {
-                    if args.dir && entry.file_type().is_dir() {
+                    if !args.dir && !args.files {
                         println!("{}", entry.path().display());
-                    } 
-                   
-                    if !args.dir {
-                        println!("{}", entry.path().display());
+                    } else {
+                        if args.dir && entry.file_type().is_dir() {
+                            println!("{}", entry.path().display());
+                        }
+                        if args.files && entry.file_type().is_file() {
+                            println!("{}", entry.path().display());
+                        }
                     }
                 }
                 Err(e) => {
