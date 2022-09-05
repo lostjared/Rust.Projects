@@ -3,6 +3,7 @@ use walkdir::WalkDir;
 
 struct Arguments {
     paths: Vec<String>,
+    dir: bool,
 }
 
 fn parse_args() -> Arguments {
@@ -18,9 +19,18 @@ fn parse_args() -> Arguments {
                 .takes_value(true)
                 .allow_invalid_utf8(true),
         )
+        .arg(
+            Arg::with_name("dir")
+                .value_name("DIR")
+                .help("print dirs")
+                .takes_value(false)
+                .long("dir")
+                .short('d'),
+        )
         .get_matches();
     let p: Vec<String> = m.values_of_lossy("paths").unwrap();
-    Arguments { paths: p }
+    let b = m.is_present("dir");
+    Arguments { paths: p, dir: b }
 }
 
 fn main() -> std::io::Result<()> {
@@ -29,7 +39,13 @@ fn main() -> std::io::Result<()> {
         for entry in WalkDir::new(i) {
             match entry {
                 Ok(entry) => {
-                    println!("{}", entry.path().display());
+                    if args.dir && entry.file_type().is_dir() {
+                        println!("{}", entry.path().display());
+                    } 
+                   
+                    if !args.dir {
+                        println!("{}", entry.path().display());
+                    }
                 }
                 Err(e) => {
                     eprintln!("Error: {}", e);
