@@ -36,7 +36,7 @@ fn parse_args() -> Arguments {
     let pos = s.find(',').unwrap();
     let left = &s[..pos];
     let st: usize = left.parse().unwrap();
-    let right = &s[pos+1..];
+    let right = &s[pos + 1..];
     let n: usize = right.parse().unwrap();
     Arguments {
         file: f.to_string(),
@@ -49,11 +49,9 @@ fn cut_value<T>(mut reader: T, start: usize, num: usize) -> String
 where
     T: std::io::BufRead + Sized,
 {
-
     let mut s = String::new();
     let _v = reader.read_to_string(&mut s).expect("on read");
     cut_text(&s, start, num)
-
 }
 
 fn cut_text(input: &str, start: usize, num: usize) -> String {
@@ -64,7 +62,10 @@ fn cut_text(input: &str, start: usize, num: usize) -> String {
 fn main() -> std::io::Result<()> {
     let args = parse_args();
     if args.file == "<STDIN>" {
-        println!("{}", cut_value(std::io::stdin().lock(), args.start, args.number));
+        println!(
+            "{}",
+            cut_value(std::io::stdin().lock(), args.start, args.number)
+        );
     } else {
         let f = std::fs::File::open(args.file)?;
         let r = std::io::BufReader::new(f);
