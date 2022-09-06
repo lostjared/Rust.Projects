@@ -80,12 +80,11 @@ where
 }
 
 fn cut_text(input: &str, start: usize, num: usize, mode: usize) -> String {
-    let d;
-    if mode == 1 {
-        d = &input[start..start + num];
+    let d = if mode == 1 {
+        &input[start..start + num]
     } else {
-        d = &input[start..num];
-    }
+        &input[start..num]
+    };
     String::from(d)
 }
 
