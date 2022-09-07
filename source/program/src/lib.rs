@@ -5,8 +5,7 @@ pub mod program {
     pub trait Run {
         fn run(args: Vec<String>) -> std::io::Result<()>;
         fn init() -> std::io::Result<()> {
-            let r = Self::run(std::env::args().collect());
-            r
+            Self::run(std::env::args().collect())
         }
     }
     pub struct Program {}
