@@ -24,9 +24,9 @@ fn parse_args() -> Arguments {
     Arguments { files: v }
 }
 
-fn fill_map(input: &str, map: &mut BTreeMap<String, u32>) {
-    let mut cur_map : BTreeMap<String, u32> = BTreeMap::new();
-    let f = std::fs::File::open(input).expect("on open file");
+fn fill_map(input: &str, map: &mut BTreeMap<String, u32>) -> std::io::Result<()> {
+    let mut cur_map: BTreeMap<String, u32> = BTreeMap::new();
+    let f = std::fs::File::open(input)?;
     let r = std::io::BufReader::new(f);
     for i in r.lines() {
         match i {
@@ -40,16 +40,15 @@ fn fill_map(input: &str, map: &mut BTreeMap<String, u32>) {
             }
         }
     }
-
-    for (key,_value) in &cur_map {
+    for (key, _value) in &cur_map {
         if map.contains_key(key) {
             let v = map[key];
-            map.insert(key.to_string(), v+1); 
+            map.insert(key.to_string(), v + 1);
         } else {
             map.insert(key.to_string(), 0);
         }
     }
-
+    Ok(())
 }
 
 fn main() -> std::io::Result<()> {
@@ -58,9 +57,9 @@ fn main() -> std::io::Result<()> {
         eprintln!("Error requires at least two files...\n");
         return Ok(());
     }
-    let mut map : BTreeMap<String, u32> = BTreeMap::new();
+    let mut map: BTreeMap<String, u32> = BTreeMap::new();
     for i in &args.files {
-        fill_map(i, &mut map);
+        fill_map(i, &mut map)?;
     }
     for (key, value) in &map {
         if *value >= 1 {
