@@ -16,7 +16,7 @@ fn parse_args() -> Arguments {
             Arg::with_name("files")
                 .value_name("FILE")
                 .help("input file(s)")
-                .multiple(true)
+                .multiple(false)
                 .default_value("<STDIN>")
                 .allow_invalid_utf8(true),
         )
