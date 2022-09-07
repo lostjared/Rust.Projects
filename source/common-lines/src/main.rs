@@ -1,5 +1,5 @@
 use clap::{App, Arg};
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::io::BufRead;
 
 struct Arguments {
@@ -24,8 +24,8 @@ fn parse_args() -> Arguments {
     Arguments { files: v }
 }
 
-fn fill_map(input: &str, map: &mut HashMap<String, u32>) {
-    let mut cur_map : HashMap<String, u32> = HashMap::new();
+fn fill_map(input: &str, map: &mut BTreeMap<String, u32>) {
+    let mut cur_map : BTreeMap<String, u32> = BTreeMap::new();
     let f = std::fs::File::open(input).expect("on open file");
     let r = std::io::BufReader::new(f);
     for i in r.lines() {
@@ -58,11 +58,10 @@ fn main() -> std::io::Result<()> {
         eprintln!("Error requires at least two files...\n");
         return Ok(());
     }
-    let mut map : HashMap<String, u32> = HashMap::new();
+    let mut map : BTreeMap<String, u32> = BTreeMap::new();
     for i in &args.files {
         fill_map(i, &mut map);
     }
-
     for (key, value) in &map {
         if *value >= 1 {
             println!("{}", key);
