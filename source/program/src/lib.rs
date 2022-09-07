@@ -1,5 +1,3 @@
-
-
 pub mod program {
 
     pub trait Run {
@@ -14,7 +12,5 @@ pub mod program {
             println!("Hello World from Program: {}!\n", args.len());
             Ok(())
         }
-
     }
-
 }
