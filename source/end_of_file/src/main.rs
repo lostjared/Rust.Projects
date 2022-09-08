@@ -1,8 +1,9 @@
 use clap::{App, Arg};
+use std::io::{Seek, SeekFrom, Read};
 
 struct Arguments {
     file: String,
-    bytes: u32,
+    bytes: i64,
 }
 
 fn parse_args() -> Arguments {
@@ -15,6 +16,7 @@ fn parse_args() -> Arguments {
                 .required(true)
                 .multiple(false)
                 .long("bytes")
+                .takes_value(true)
                 .short('b')
                 .allow_invalid_utf8(true),
         )
@@ -22,6 +24,7 @@ fn parse_args() -> Arguments {
             Arg::with_name("file")
                 .required(true)
                 .multiple(false)
+                .takes_value(true)
                 .allow_invalid_utf8(true),
         )
         .get_matches();
@@ -36,8 +39,22 @@ fn parse_args() -> Arguments {
 }
 
 fn main() -> std::io::Result<()> {
-
     let args = parse_args();
-
+    let f = std::fs::File::open(args.file)?;
+    let length = f.metadata().unwrap().len();
+    let mut r = std::io::BufReader::new(f);
+    r.seek(SeekFrom::Start(length-args.bytes as u64))?;
+    loop {
+        let mut buf = [0; 1024];
+        let l = r.read(&mut buf)?;
+        if l == 0 {
+            break;
+        } else {
+            for i in 0..l {
+                print!("{}", buf[i] as char);
+            }
+        }
+    }
+    println!();
     Ok(())
 }
