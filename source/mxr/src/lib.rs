@@ -1,16 +1,16 @@
+
 pub mod mxr {
 
+    
+
+
     pub trait Screen {
-        fn draw(
-            &mut self,
-            can: &mut sdl2::render::Canvas<sdl2::video::Window>,
-            width: u32,
-            height: u32,
-        );
-        fn event(&mut self, e: &sdl2::event::Event);
+        fn draw(&mut self, can: &mut sdl2::render::Canvas<sdl2::video::Window>, width: u32, height: u32);
+        fn event(&mut self, e: &sdl2::event::Event) -> Option<usize>;
     }
 
     pub struct ScreenObjects {
+
         scr: Vec<Box<dyn Screen>>,
         cur_screen: usize,
         width: u32,
@@ -35,11 +35,15 @@ pub mod mxr {
         }
 
         pub fn event(&mut self, e: &sdl2::event::Event) {
-            self.scr[self.cur_screen].event(e);
+            match self.scr[self.cur_screen].event(e) {
+                Some(screen_change) => self.set_screen(screen_change),
+                None => {}
+            }
         }
 
         pub fn set_screen(&mut self, screen: usize) {
             self.cur_screen = screen;
         }
     }
+
 }
