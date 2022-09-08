@@ -7,8 +7,8 @@ use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::rect::Rect;
 
-static SCREEN1: usize = 0;
-static SCREEN2: usize = 1;
+const SCREEN1: usize = 0;
+const SCREEN2: usize = 1;
 
 struct Screen1 {}
 

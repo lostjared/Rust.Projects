@@ -1,8 +1,4 @@
-
 pub mod mxr {
-
-    
-
 
     pub trait Screen {
         fn draw(&mut self, can: &mut sdl2::render::Canvas<sdl2::video::Window>, width: u32, height: u32);
@@ -10,7 +6,6 @@ pub mod mxr {
     }
 
     pub struct ScreenObjects {
-
         scr: Vec<Box<dyn Screen>>,
         cur_screen: usize,
         width: u32,
@@ -45,5 +40,4 @@ pub mod mxr {
             self.cur_screen = screen;
         }
     }
-
 }
