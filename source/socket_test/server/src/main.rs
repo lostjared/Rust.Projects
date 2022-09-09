@@ -17,8 +17,8 @@ fn handle(mut sock: TcpStream) -> std::io::Result<()> {
             }
         }
     }
-    sock.write_all(re.as_bytes())?;
-    println!("Resonded with: {}", re);
+    sock.write_all(re.as_bytes()).unwrap();
+    println!("Got: {}", re);
     Ok(())
 }
 
