@@ -1,24 +1,15 @@
 
 use std::net::TcpListener;
 use std::net::TcpStream;
-use std::io::{prelude::*, BufRead};
+use std::io::{prelude::*};
 
 fn handle(mut sock: TcpStream) -> std::io::Result<()> {
-    let r = std::io::BufReader::new(&mut sock);
-    let mut re = String::new();
-    for i in r.lines() {
-        match i {
-            Ok(line) => {
-                re.push_str(&line);
-                re.push('\n');
-            }
-            Err(e) => {
-                eprintln!("Error: {}", e);
-            }
-        }
-    }
-    sock.write_all(re.as_bytes()).unwrap();
-    println!("Got: {}", re);
+    let mut data = [0; 5];
+    sock.read(&mut data)?;
+    let sval = std::str::from_utf8(&data).unwrap();
+    sock.write_all(sval.as_bytes()).unwrap();
+    sock.flush()?;
+    println!("Got: {}", sval);
     Ok(())
 }
 
