@@ -4,7 +4,7 @@ use std::net::TcpStream;
 use std::io::{prelude::*};
 
 fn handle(mut sock: TcpStream) -> std::io::Result<()> {
-    let mut data = [0; 5];
+    let mut data = [0u8; 5];
     sock.read(&mut data)?;
     let sval = std::str::from_utf8(&data).unwrap();
     sock.write_all(sval.as_bytes()).unwrap();

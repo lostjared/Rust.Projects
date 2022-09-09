@@ -8,7 +8,7 @@ fn main() -> std::io::Result<()> {
     let value = String::from("Hello");
     s.write_all(value.as_bytes()).unwrap();
     s.flush()?;
-    let mut data = [0; 5];
+    let mut data = [0u8; 5];
     s.read(&mut data)?;
     let sval = std::str::from_utf8(&data).unwrap();
     println!("Got back: {}", sval);
