@@ -1,7 +1,7 @@
 
 use std::net::TcpListener;
 use std::net::TcpStream;
-use std::io::{prelude::*};
+use std::io::prelude::*;
 
 fn handle(mut sock: TcpStream) -> std::io::Result<()> {
     let mut data = [0u8; 5];
