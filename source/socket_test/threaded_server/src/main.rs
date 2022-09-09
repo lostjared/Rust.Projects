@@ -18,7 +18,7 @@ fn main() -> std::io::Result<()> {
     for stream in listen.incoming() {
         let s = stream.unwrap();
         std::thread::spawn(move || {
-            handle(s).unwrap();
+            handle(s).expect("on thread");
         });
     }
     Ok(())
