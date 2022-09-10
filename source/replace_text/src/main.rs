@@ -3,6 +3,9 @@
 // to find each instance of search and replace it with replace in standard input stream
 // example:
 // cat src/main.rs | cargo run "/main/value"
+// or use 
+// cat src/main.rs | cargo run "#main#value" --sep #
+// to change the character to seperate by
 
 use clap::{App, Arg};
 use std::io::BufRead;
