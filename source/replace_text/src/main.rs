@@ -46,10 +46,10 @@ fn extract_search(search: &str) -> Option<(String, String)> {
 
 }
 
-fn replace_text(input: &str, search: &str, rtext: &str) -> Option<String> {
+fn replace_text(input: &str, search: &str, rtext: &str) -> String {
     let input_text = String::from(input);
     let success = input_text.replace(search, rtext);
-    Some(success)
+    success
 }
 
 fn main() -> std::io::Result<()> {
@@ -64,11 +64,8 @@ fn main() -> std::io::Result<()> {
         match i {
             Ok(line) => {
                 let r = replace_text(&line, &search_values.0, &search_values.1);
-                if r == None {
-                    println!("{}", line);
-                } else {
-                    println!("{}", r.unwrap());
-                }
+                println!("{}", r);
+                
             }
             Err(e) => {
                 eprintln!("Error: {}", e);
