@@ -35,15 +35,14 @@ fn extract_search(search: &str) -> Option<(String, String)> {
     if pos1 == None {
         return None;
     }
-    let left_of = &search[pos1.unwrap()+1..];
+    let left_of = &search[pos1.unwrap() + 1..];
     let pos2 = left_of.find("/");
     if pos2 == None {
         return None;
     }
     let search_val = &left_of[..pos2.unwrap()];
-    let rtext = &left_of[pos2.unwrap()+1..];
-    Some ((search_val.to_string(), rtext.to_string()))
-
+    let rtext = &left_of[pos2.unwrap() + 1..];
+    Some((search_val.to_string(), rtext.to_string()))
 }
 
 fn replace_text(input: &str, search: &str, rtext: &str) -> String {
@@ -65,7 +64,6 @@ fn main() -> std::io::Result<()> {
             Ok(line) => {
                 let r = replace_text(&line, &search_values.0, &search_values.1);
                 println!("{}", r);
-                
             }
             Err(e) => {
                 eprintln!("Error: {}", e);
