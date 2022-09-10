@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 clap = "3.2.20"
+regex = "1"

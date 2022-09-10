@@ -8,11 +8,13 @@
 // to change the character to seperate by
 
 use clap::{App, Arg};
+use regex::Regex;
 use std::io::BufRead;
 
 struct Arguments {
     text: String,
     sep: char,
+    re: bool,
 }
 
 fn parse_args() -> Arguments {
@@ -38,13 +40,24 @@ fn parse_args() -> Arguments {
                 .default_value("/")
                 .allow_invalid_utf8(true),
         )
+        .arg(
+            Arg::with_name("regex")
+                .help("Use regex")
+                .required(false)
+                .takes_value(false)
+                .multiple(false)
+                .long("regex")
+                .short('r'),
+        )
         .get_matches();
     let t = m.value_of_lossy("text").unwrap();
     let sep = m.value_of_lossy("sep").unwrap().to_string();
     let ch: char = sep.chars().nth(0).unwrap();
+    let r = m.is_present("regex");
     Arguments {
         text: t.to_string(),
         sep: ch,
+        re: r,
     }
 }
 
@@ -76,8 +89,18 @@ fn main() -> std::io::Result<()> {
     for i in std::io::stdin().lock().lines() {
         match i {
             Ok(line) => {
-                let r = line.replace(&search_values.0, &search_values.1);
-                println!("{}", r);
+                if args.re {
+                    let re = Regex::new(&search_values.0).unwrap();
+                    if re.is_match(&line) {
+                        let r = re.replace_all(&line, &search_values.1);
+                        println!("{}", r);
+                    } else {
+                        println!("{}", line);
+                    }
+                } else {
+                    let r = line.replace(&search_values.0, &search_values.1);
+                    println!("{}", r);
+                }
             }
             Err(e) => {
                 eprintln!("Error: {}", e);
