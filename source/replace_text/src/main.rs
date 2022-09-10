@@ -31,12 +31,12 @@ fn parse_args() -> Arguments {
 }
 
 fn extract_search(search: &str) -> Option<(String, String)> {
-    let pos1 = search.find("/");
+    let pos1 = search.find('/');
     if pos1 == None {
         return None;
     }
     let left_of = &search[pos1.unwrap() + 1..];
-    let pos2 = left_of.find("/");
+    let pos2 = left_of.find('/');
     if pos2 == None {
         return None;
     }
@@ -47,8 +47,7 @@ fn extract_search(search: &str) -> Option<(String, String)> {
 
 fn replace_text(input: &str, search: &str, rtext: &str) -> String {
     let input_text = String::from(input);
-    let success = input_text.replace(search, rtext);
-    success
+    input_text.replace(search, rtext)
 }
 
 fn main() -> std::io::Result<()> {
