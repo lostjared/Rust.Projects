@@ -1,6 +1,6 @@
 // use format
 // /search/replace
-// to find each instance of serach and replace it with replace in standard input stream
+// to find each instance of search and replace it with replace in standard input stream
 // example:
 // cat src/main.rs | cargo run /main/value
 
