@@ -45,11 +45,6 @@ fn extract_search(search: &str) -> Option<(String, String)> {
     Some((search_val.to_string(), rtext.to_string()))
 }
 
-fn replace_text(input: &str, search: &str, rtext: &str) -> String {
-    let input_text = String::from(input);
-    input_text.replace(search, rtext)
-}
-
 fn main() -> std::io::Result<()> {
     let args = parse_args();
     let search_values = extract_search(&args.text);
@@ -61,7 +56,7 @@ fn main() -> std::io::Result<()> {
     for i in std::io::stdin().lock().lines() {
         match i {
             Ok(line) => {
-                let r = replace_text(&line, &search_values.0, &search_values.1);
+                let r = line.replace(&search_values.0, &search_values.1);
                 println!("{}", r);
             }
             Err(e) => {
