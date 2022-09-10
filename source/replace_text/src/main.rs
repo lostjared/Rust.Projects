@@ -30,7 +30,7 @@ fn parse_args() -> Arguments {
     }
 }
 
-fn replace_text(input: &str, search: &str) -> Option<String> {
+fn extract_search(search: &str) -> Option<(String, String)> {
     let pos1 = search.find("/");
     if pos1 == None {
         return None;
@@ -42,17 +42,28 @@ fn replace_text(input: &str, search: &str) -> Option<String> {
     }
     let search_val = &left_of[..pos2.unwrap()];
     let rtext = &left_of[pos2.unwrap()+1..];
+    Some ((search_val.to_string(), rtext.to_string()))
+
+}
+
+fn replace_text(input: &str, search: &str, rtext: &str) -> Option<String> {
     let input_text = String::from(input);
-    let success = input_text.replace(search_val, rtext);
+    let success = input_text.replace(search, rtext);
     Some(success)
 }
 
 fn main() -> std::io::Result<()> {
     let args = parse_args();
+    let search_values = extract_search(&args.text);
+    if search_values == None {
+        eprintln!("Error invalid search string");
+        return Ok(());
+    }
+    let search_values = search_values.unwrap();
     for i in std::io::stdin().lock().lines() {
         match i {
             Ok(line) => {
-                let r = replace_text(&line, &args.text);
+                let r = replace_text(&line, &search_values.0, &search_values.1);
                 if r == None {
                     println!("{}", line);
                 } else {
