@@ -49,8 +49,7 @@ fn main() -> std::io::Result<()> {
     let args = parse_args();
     let search_values = extract_search(&args.text);
     if search_values == None {
-        eprintln!("Error invalid search string");
-        return Ok(());
+         return Err(std::io::Error::new(std::io::ErrorKind::Other, "Invalid text string"));
     }
     let search_values = search_values.unwrap();
     for i in std::io::stdin().lock().lines() {
