@@ -9,6 +9,7 @@ use std::io::BufRead;
 
 struct Arguments {
     text: String,
+    sep: char,
 }
 
 fn parse_args() -> Arguments {
@@ -23,20 +24,25 @@ fn parse_args() -> Arguments {
                 .multiple(false)
                 .allow_invalid_utf8(true),
         )
+        .arg(Arg::with_name("sep").help("seperation character").required(false).multiple(false).long("sep").short('s').default_value("/").allow_invalid_utf8(true))
+
         .get_matches();
     let t = m.value_of_lossy("text").unwrap();
+    let sep = m.value_of_lossy("sep").unwrap().to_string();
+    let ch : char = sep.chars().nth(0).unwrap();
     Arguments {
         text: t.to_string(),
+        sep: ch,
     }
 }
 
-fn extract_search(search: &str) -> Option<(String, String)> {
-    let pos1 = search.find('/');
+fn extract_search(search: &str, sep: char) -> Option<(String, String)> {
+    let pos1 = search.find(sep);
     if pos1 == None {
         return None;
     }
     let left_of = &search[pos1.unwrap() + 1..];
-    let pos2 = left_of.find('/');
+    let pos2 = left_of.find(sep);
     if pos2 == None {
         return None;
     }
@@ -47,7 +53,7 @@ fn extract_search(search: &str) -> Option<(String, String)> {
 
 fn main() -> std::io::Result<()> {
     let args = parse_args();
-    let search_values = extract_search(&args.text);
+    let search_values = extract_search(&args.text, args.sep);
     if search_values == None {
          return Err(std::io::Error::new(std::io::ErrorKind::Other, "Invalid text string"));
     }
