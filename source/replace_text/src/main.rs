@@ -3,6 +3,7 @@
 // --input regex/serach
 // --with  replace_with
 // -r enable regex
+// -a enable regex replace_all
 
 use clap::{App, Arg};
 use regex::Regex;
@@ -75,7 +76,7 @@ fn main() -> std::io::Result<()> {
     for i in std::io::stdin().lock().lines() {
         match i {
             Ok(line) => {
-                if args.re {
+                if args.re || args.all {
                     let re = Regex::new(&args.text).unwrap();
                     if re.is_match(&line) {
                         if args.all {
