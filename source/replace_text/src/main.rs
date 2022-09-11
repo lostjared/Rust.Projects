@@ -1,11 +1,8 @@
 // use format
-// /search/replace
 // to find each instance of search and replace it with replace in standard input stream
-// example:
-// cat src/main.rs | cargo run "/main/value"
-// or use
-// cat src/main.rs | cargo run "#main#value" --sep #
-// to change the character to seperate by
+// --input regex/serach
+// --with  replace_with
+// -r enable regex
 
 use clap::{App, Arg};
 use regex::Regex;
@@ -13,7 +10,7 @@ use std::io::BufRead;
 
 struct Arguments {
     text: String,
-    sep: char,
+    replace: String,
     re: bool,
 }
 
@@ -27,18 +24,20 @@ fn parse_args() -> Arguments {
                 .help("text use /search/replace format")
                 .required(true)
                 .multiple(false)
+                .short('i')
+                .long("input")
+                .takes_value(true)
                 .allow_invalid_utf8(true),
         )
         .arg(
-            Arg::with_name("sep")
-                .help("seperation character")
-                .required(false)
-                .takes_value(true)
-                .multiple(false)
-                .long("sep")
-                .short('s')
-                .default_value("/")
-                .allow_invalid_utf8(true),
+            Arg::with_name("replace")
+            .help("replace with")
+            .required(true)
+            .multiple(false)
+            .short('w')
+            .long("with")
+            .takes_value(true)
+            .allow_invalid_utf8(true)
         )
         .arg(
             Arg::with_name("regex")
@@ -51,54 +50,30 @@ fn parse_args() -> Arguments {
         )
         .get_matches();
     let t = m.value_of_lossy("text").unwrap();
-    let sep = m.value_of_lossy("sep").unwrap().to_string();
-    let ch: char = sep.chars().nth(0).unwrap();
+    let rep = m.value_of_lossy("replace").unwrap();
     let r = m.is_present("regex");
     Arguments {
         text: t.to_string(),
-        sep: ch,
+        replace: rep.to_string(),
         re: r,
     }
 }
 
-fn extract_search(search: &str, sep: char) -> Option<(String, String)> {
-    let pos1 = search.find(sep);
-    if pos1 == None {
-        return None;
-    }
-    let left_of = &search[pos1.unwrap() + 1..];
-    let pos2 = left_of.find(sep);
-    if pos2 == None {
-        return None;
-    }
-    let search_val = &left_of[..pos2.unwrap()];
-    let rtext = &left_of[pos2.unwrap() + 1..];
-    Some((search_val.to_string(), rtext.to_string()))
-}
-
 fn main() -> std::io::Result<()> {
     let args = parse_args();
-    let search_values = extract_search(&args.text, args.sep);
-    if search_values == None {
-        return Err(std::io::Error::new(
-            std::io::ErrorKind::Other,
-            "Invalid text string",
-        ));
-    }
-    let search_values = search_values.unwrap();
     for i in std::io::stdin().lock().lines() {
         match i {
             Ok(line) => {
                 if args.re {
-                    let re = Regex::new(&search_values.0).unwrap();
+                    let re = Regex::new(&args.text).unwrap();
                     if re.is_match(&line) {
-                        let r = re.replace_all(&line, &search_values.1);
+                        let r = re.replace_all(&line, &args.replace);
                         println!("{}", r);
                     } else {
                         println!("{}", line);
                     }
                 } else {
-                    let r = line.replace(&search_values.0, &search_values.1);
+                    let r = line.replace(&args.text, &args.replace);
                     println!("{}", r);
                 }
             }
