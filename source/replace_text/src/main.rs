@@ -12,6 +12,7 @@ struct Arguments {
     text: String,
     replace: String,
     re: bool,
+    all: bool,
 }
 
 fn parse_args() -> Arguments {
@@ -48,14 +49,24 @@ fn parse_args() -> Arguments {
                 .long("regex")
                 .short('r'),
         )
+        .arg( 
+            Arg::with_name("all")
+            .help("replace all")
+            .required(false)
+            .takes_value(false)
+            .long("all")
+            .short('a')
+        )
         .get_matches();
     let t = m.value_of_lossy("text").unwrap();
     let rep = m.value_of_lossy("replace").unwrap();
     let r = m.is_present("regex");
+    let a = m.is_present("all");
     Arguments {
         text: t.to_string(),
         replace: rep.to_string(),
         re: r,
+        all: a,
     }
 }
 
@@ -67,8 +78,13 @@ fn main() -> std::io::Result<()> {
                 if args.re {
                     let re = Regex::new(&args.text).unwrap();
                     if re.is_match(&line) {
-                        let r = re.replace_all(&line, &args.replace);
-                        println!("{}", r);
+                        if args.all {
+                            let r = re.replace_all(&line, &args.replace);
+                            println!("{}", r);
+                        } else {
+                            let r = re.replace(&line, &args.replace);
+                            println!("{}", r);
+                        }
                     } else {
                         println!("{}", line);
                     }
