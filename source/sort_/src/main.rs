@@ -46,8 +46,6 @@ fn main() -> std::io::Result<()> {
         }
     }
     v.sort();
-    for i in &v {
-        println!("{}", i);
-    }
+    v.into_iter().for_each(|i| println!("{}", i));
     Ok(())
 }
