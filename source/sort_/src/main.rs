@@ -25,12 +25,12 @@ fn read_stream<T>(reader: T, v: &mut Vec<String>)
 where
     T: std::io::BufRead + Sized,
 {
-    for i in reader.lines() {
+    reader.lines().for_each(|i| {
         let i = i.unwrap();
         if !i.is_empty() {
             v.push(i);
         }
-    }
+    });
 }
 
 fn main() -> std::io::Result<()> {
