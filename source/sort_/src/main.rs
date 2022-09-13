@@ -36,15 +36,15 @@ where
 fn main() -> std::io::Result<()> {
     let args = parse_args();
     let mut v: Vec<String> = Vec::new();
-    for i in &args.files {
+    args.files.into_iter().for_each(|i| {
         if i == "<STDIN>" {
             read_stream(std::io::stdin().lock(), &mut v);
         } else {
-            let f = std::fs::File::open(i)?;
+            let f = std::fs::File::open(i).expect("on file open");
             let r = std::io::BufReader::new(f);
             read_stream(r, &mut v);
         }
-    }
+    });
     v.sort();
     v.into_iter().for_each(|i| println!("{}", i));
     Ok(())
