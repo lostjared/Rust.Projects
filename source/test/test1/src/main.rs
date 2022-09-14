@@ -1,4 +1,7 @@
 
+// run 
+// $ cargo test
+
 #[test]
 fn is_vector_sorted() {
     let mut v = vec![2, 1, 4, 5];
