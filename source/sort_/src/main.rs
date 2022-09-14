@@ -40,9 +40,7 @@ fn main() -> std::io::Result<()> {
         if i == "<STDIN>" {
             read_stream(std::io::stdin().lock(), &mut v);
         } else {
-            let f = std::fs::File::open(i).expect("on file open");
-            let r = std::io::BufReader::new(f);
-            read_stream(r, &mut v);
+            read_stream(std::io::BufReader::new(std::fs::File::open(i).unwrap()), &mut v);
         }
     });
     v.sort();
