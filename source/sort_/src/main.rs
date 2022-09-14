@@ -19,11 +19,11 @@ fn parse_args() -> Arguments {
         )
         .arg(
             Arg::with_name("reverse")
-            .multiple(false)
-            .takes_value(false)
-            .required(false)
-            .short('r')
-            .long("reverse")
+                .multiple(false)
+                .takes_value(false)
+                .required(false)
+                .short('r')
+                .long("reverse"),
         )
         .get_matches();
     let v = m.values_of_lossy("files").unwrap();
@@ -50,7 +50,10 @@ fn main() -> std::io::Result<()> {
         if i == "<STDIN>" {
             read_stream(std::io::stdin().lock(), &mut v);
         } else {
-            read_stream(std::io::BufReader::new(std::fs::File::open(i).unwrap()), &mut v);
+            read_stream(
+                std::io::BufReader::new(std::fs::File::open(i).unwrap()),
+                &mut v,
+            );
         }
     });
     if args.rev {
