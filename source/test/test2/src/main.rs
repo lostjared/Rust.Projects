@@ -20,11 +20,10 @@ fn is_lower_case() {
 #[test]
 fn is_index_greater_than_last() {
     let v = vec![1, 2, 3, 4];
-    for i in 0..v.len()-1 {
-        assert!(v[i+1] > v[i]);
+    for i in 0..v.len() - 1 {
+        assert!(v[i + 1] > v[i]);
     }
 }
-
 
 fn main() -> std::io::Result<()> {
     println!("Some tests..\n");
