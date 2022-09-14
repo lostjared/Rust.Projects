@@ -2,6 +2,7 @@ use clap::{App, Arg};
 
 struct Arguments {
     files: Vec<String>,
+    rev: bool,
 }
 
 fn parse_args() -> Arguments {
@@ -16,9 +17,18 @@ fn parse_args() -> Arguments {
                 .multiple(true)
                 .allow_invalid_utf8(true),
         )
+        .arg(
+            Arg::with_name("reverse")
+            .multiple(false)
+            .takes_value(false)
+            .required(false)
+            .short('r')
+            .long("reverse")
+        )
         .get_matches();
     let v = m.values_of_lossy("files").unwrap();
-    Arguments { files: v }
+    let b = m.is_present("reverse");
+    Arguments { files: v, rev: b }
 }
 
 fn read_stream<T>(reader: T, v: &mut Vec<String>)
@@ -43,7 +53,11 @@ fn main() -> std::io::Result<()> {
             read_stream(std::io::BufReader::new(std::fs::File::open(i).unwrap()), &mut v);
         }
     });
-    v.sort();
+    if args.rev {
+        v.sort_by(|a, b| b.cmp(a));
+    } else {
+        v.sort();
+    }
     v.into_iter().for_each(|i| println!("{}", i));
     Ok(())
 }
