@@ -1,6 +1,3 @@
-
-
-
 async fn one() {
     for i in 0..10 {
         println!("Hello World: {}", i);
