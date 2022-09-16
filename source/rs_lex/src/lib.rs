@@ -37,6 +37,9 @@ pub mod rlex {
             }
             None
         }
+        pub fn advance(&mut self) {
+            self.pos += 1;
+        }
     }
 
     #[derive(Copy, Clone, Debug)]
@@ -90,6 +93,9 @@ pub mod rlex {
     impl Scanner {
         pub fn new(input: &str) -> Self {
             let mut map : HashMap<char, TokenType> = HashMap::new();
+            for i in 0..255u8 {
+                map.insert(i as char, TokenType::NULL);
+            }
             for i in 'a'..='z' {
                 map.insert(i, TokenType::Char);
             }
@@ -140,8 +146,39 @@ pub mod rlex {
                     Some(ch) => {
                         let ch_type = self.type_from_char(ch).unwrap();
                         match ch_type {
-                            TokenType::Char => {
+                            TokenType::Char | TokenType::Digits => {
                                 token_string.push(ch);
+                            }
+                            _ => { break; }
+                        }
+                    }
+                    None => {
+                        break;
+                    }
+                }
+            }
+            TokenValue::new(&token_string, token_type)
+        }
+
+        pub fn grab_digits(&mut self) -> TokenValue {
+            let mut token_string = String::new();
+            let token_type = TokenType::Digits;
+            token_string.push(self.stream.getchar().unwrap());
+            loop {
+                let ch_t = self.stream.getchar();
+                match ch_t {
+                    Some(ch) => {
+                        let ch_type = self.type_from_char(ch).unwrap();
+                        match ch_type {
+                            TokenType::Digits => {
+                                token_string.push(ch);
+                            }
+                            TokenType::Symbol => {
+                                if ch == '.' {
+                                    token_string.push(ch);
+                                } else {
+                                    break;
+                                }
                             }
                             _ => { break; }
                         }
@@ -165,10 +202,20 @@ pub mod rlex {
                             return Some(Box::new(token));
                         }
                         TokenType::Digits => {
-
+                            let token = self.grab_digits();
+                            return Some(Box::new(token));
                         }
                         TokenType::String => {
 
+                        }
+                        TokenType::Space => {
+                            self.stream.advance();
+                            return self.scan_token();
+                        }
+                        TokenType::NULL => {
+                            self.stream.advance();
+                            println!("Unrecongized character: {}", ch);
+                            return self.scan_token();
                         }
                         _ => { println!("type: {:?}", val); }
                     }

@@ -36,7 +36,7 @@ where
         let token = rlex.scan_token();
         match token {
             Some(tok) => {
-                println!("{}", tok.get_string());
+                println!("{:?} -> {}", tok.get_type(), tok.get_string());
             }
             None => {
                 break;
