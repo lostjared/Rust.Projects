@@ -231,7 +231,7 @@ pub mod rlex {
         pub fn grab_symbol(&mut self) -> TokenValue {
             let mut token_string = String::new();
             let token_type = TokenType::Symbol;
-            let oper = vec!["++", "--", ">>", "<<", ".=", "+=", "-=", "*=", "/=", "<>", "!=", "<=", ">=", "==", "&&", "||", "^=", "%=", "&=", "?=" ];
+            let oper = vec!["++", "--", ">>", "<<", ".=", "+=", "-=", "*=", "/=", "<>", "!=", "<=", ">=", "==", "&&", "||", "^=", "%=", "&=", "?=", "->", "=>", "::" ];
             let ch = self.stream.getchar().unwrap();
             let ch2 = self.stream.curchar().unwrap();
             let mut cmp_str = String::new();
