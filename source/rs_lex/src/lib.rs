@@ -292,4 +292,13 @@ pub mod rlex {
         }
     }
 
+    impl Iterator for Scanner {
+        type Item = Box<dyn Token>;
+        /// next item for iterator
+        fn next(&mut self) -> Option<Self::Item> {
+            self.scan_token()
+        }
+    }
+
+
 }

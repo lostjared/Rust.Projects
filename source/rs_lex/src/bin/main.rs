@@ -30,18 +30,9 @@ where
 
     let mut input: String = String::new();
     reader.read_to_string(&mut input).expect("read string");
-    let mut rlex = rs_lex::rlex::Scanner::new(&input);
-
-    while rlex.valid() {
-        let token = rlex.scan_token();
-        match token {
-            Some(tok) => {
-                println!("{:?} -> {}", tok.get_type(), tok.get_string());
-            }
-            None => {
-                break;
-            }
-        }
+    let rlex = rs_lex::rlex::Scanner::new(&input);
+    for i in rlex {
+        println!("{:?} -> {}", i.get_type(), i.get_string());
     }
 
 }
