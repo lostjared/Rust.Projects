@@ -34,7 +34,14 @@ where
 
     while rlex.valid() {
         let token = rlex.scan_token();
-        println!("{}", token.getString());
+        match token {
+            Some(tok) => {
+                println!("{}", tok.get_string());
+            }
+            None => {
+                break;
+            }
+        }
     }
 
 }
