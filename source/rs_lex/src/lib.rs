@@ -49,6 +49,7 @@ pub mod rlex {
         Char,
         Identifier,
         String,
+        SingleString,
         Digits,
         Symbol,
     }
@@ -106,7 +107,7 @@ pub mod rlex {
                 map.insert(i, TokenType::Digits);
             }
             map.insert('\"', TokenType::String);
-            map.insert('\'', TokenType::String);
+            map.insert('\'', TokenType::SingleString);
             map.insert(' ', TokenType::Space);
             map.insert('\n', TokenType::Space);
             map.insert('\t', TokenType::Space);
@@ -228,6 +229,35 @@ pub mod rlex {
             TokenValue::new(&token_string, token_type)
         }
 
+
+        pub fn grab_single_string(&mut self) -> TokenValue {
+            let mut token_string = String::new();
+            let token_type = TokenType::SingleString;
+            self.stream.advance();
+            token_string.push(self.stream.getchar().unwrap());
+            loop {
+                let ch = self.stream.getchar();
+                match ch {
+                    Some(ch_v) => {
+                        if ch_v == '\\' {
+                            token_string.push(ch_v);
+                            let chx = self.stream.getchar().unwrap();
+                            token_string.push(chx);
+                            continue;
+                        } else if ch_v == '\'' {
+                            break;
+                        } else {
+                            token_string.push(ch_v);
+                        }
+                    }
+                    None => {
+                        break;
+                    }
+                }
+            }
+            TokenValue::new(&token_string, token_type)
+        }
+
         pub fn grab_symbol(&mut self) -> TokenValue {
             let mut token_string = String::new();
             let token_type = TokenType::Symbol;
@@ -266,6 +296,10 @@ pub mod rlex {
                         }
                         TokenType::String => {
                             let token = self.grab_string();
+                            return Some(Box::new(token));
+                        }
+                        TokenType::SingleString => {
+                            let token = self.grab_single_string();
                             return Some(Box::new(token));
                         }
                         TokenType::Symbol => {
