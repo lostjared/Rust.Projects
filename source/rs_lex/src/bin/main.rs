@@ -41,6 +41,10 @@ fn main() -> std::io::Result<()> {
     let args = parse_args();
     if args.in_file == "<STDIN>" {
         parse_text(std::io::stdin().lock());
+    } else {
+        let f = std::fs::File::open(args.in_file)?;
+        let r = std::io::BufReader::new(f);
+        parse_text(r);
     }
     Ok(())
 }
