@@ -141,7 +141,7 @@ pub mod rlex {
             let token_type = TokenType::Identifier;
             token_string.push(self.stream.getchar().unwrap());
             loop {
-                let ch_t = self.stream.getchar();
+                 let ch_t = self.stream.getchar();
                 match ch_t {
                     Some(ch) => {
                         let ch_type = self.type_from_char(ch).unwrap();
@@ -151,8 +151,9 @@ pub mod rlex {
                             }
                             TokenType::String | TokenType::Symbol => {
                                 self.stream.putback();
+                                break;
                             }
-                            _ => { break; }
+                            _ => {  break; }
                         }
                     }
                     None => {
@@ -214,7 +215,6 @@ pub mod rlex {
                             token_string.push(chx);
                             continue;
                         } else if ch_v == '\"' {
-                            self.stream.advance();
                             break;
                         } else {
                             token_string.push(ch_v);
@@ -224,6 +224,28 @@ pub mod rlex {
                         break;
                     }
                 }
+            }
+            TokenValue::new(&token_string, token_type)
+        }
+
+        pub fn grab_symbol(&mut self) -> TokenValue {
+            let mut token_string = String::new();
+            let token_type = TokenType::Symbol;
+            let oper = vec!["++", "--", ">>", "<<", ".=", "+=", "-=", "*=", "/=", "<>", "!=", "<=", ">=", "==", "&&", "||", "^=", "%=", "&=", "?=" ];
+            let ch = self.stream.getchar().unwrap();
+            let ch2 = self.stream.curchar().unwrap();
+            let mut cmp_str = String::new();
+            cmp_str.push(ch);
+            cmp_str.push(ch2);
+            for i in &oper {
+                if i.to_string() == cmp_str {
+                    token_string.push_str(&cmp_str);
+                    self.stream.advance();
+                }
+            }
+            if token_string.len() == 0 {
+                token_string.push(ch);
+
             }
             TokenValue::new(&token_string, token_type)
         }
@@ -244,6 +266,10 @@ pub mod rlex {
                         }
                         TokenType::String => {
                             let token = self.grab_string();
+                            return Some(Box::new(token));
+                        }
+                        TokenType::Symbol => {
+                            let token = self.grab_symbol();
                             return Some(Box::new(token));
                         }
                         TokenType::Space => {
