@@ -149,6 +149,9 @@ pub mod rlex {
                             TokenType::Char | TokenType::Digits => {
                                 token_string.push(ch);
                             }
+                            TokenType::String | TokenType::Symbol => {
+                                self.stream.putback();
+                            }
                             _ => { break; }
                         }
                     }
@@ -173,14 +176,48 @@ pub mod rlex {
                             TokenType::Digits => {
                                 token_string.push(ch);
                             }
+                            TokenType::String => {
+                                self.stream.putback();
+                                break;
+                            }
                             TokenType::Symbol => {
                                 if ch == '.' {
                                     token_string.push(ch);
                                 } else {
+                                    self.stream.putback();
                                     break;
                                 }
                             }
                             _ => { break; }
+                        }
+                    }
+                    None => {
+                        break;
+                    }
+                }
+            }
+            TokenValue::new(&token_string, token_type)
+        }
+
+        pub fn grab_string(&mut self) -> TokenValue {
+            let mut token_string = String::new();
+            let token_type = TokenType::String;
+            self.stream.advance();
+            token_string.push(self.stream.getchar().unwrap());
+            loop {
+                let ch = self.stream.getchar();
+                match ch {
+                    Some(ch_v) => {
+                        if ch_v == '\\' {
+                            token_string.push(ch_v);
+                            let chx = self.stream.getchar().unwrap();
+                            token_string.push(chx);
+                            continue;
+                        } else if ch_v == '\"' {
+                            self.stream.advance();
+                            break;
+                        } else {
+                            token_string.push(ch_v);
                         }
                     }
                     None => {
@@ -206,7 +243,8 @@ pub mod rlex {
                             return Some(Box::new(token));
                         }
                         TokenType::String => {
-
+                            let token = self.grab_string();
+                            return Some(Box::new(token));
                         }
                         TokenType::Space => {
                             self.stream.advance();
