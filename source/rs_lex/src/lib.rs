@@ -81,19 +81,19 @@ pub mod rlex {
         pub fn new(input: &str, t: TokenType) -> Self {
             Self {
                 token: input.to_string(),
-                token_type: t
+                token_type: t,
             }
         }
     }
 
     pub struct Scanner {
         stream: StringStream,
-        token_map: HashMap<char, TokenType>
+        token_map: HashMap<char, TokenType>,
     }
 
     impl Scanner {
         pub fn new(input: &str) -> Self {
-            let mut map : HashMap<char, TokenType> = HashMap::new();
+            let mut map: HashMap<char, TokenType> = HashMap::new();
             for i in 0..255u8 {
                 map.insert(i as char, TokenType::NULL);
             }
@@ -118,7 +118,7 @@ pub mod rlex {
             }
             Self {
                 stream: StringStream::new(input),
-                token_map: map
+                token_map: map,
             }
         }
 
@@ -142,7 +142,7 @@ pub mod rlex {
             let token_type = TokenType::Identifier;
             token_string.push(self.stream.getchar().unwrap());
             loop {
-                 let ch_t = self.stream.getchar();
+                let ch_t = self.stream.getchar();
                 match ch_t {
                     Some(ch) => {
                         let ch_type = self.type_from_char(ch).unwrap();
@@ -154,7 +154,9 @@ pub mod rlex {
                                 self.stream.putback();
                                 break;
                             }
-                            _ => {  break; }
+                            _ => {
+                                break;
+                            }
                         }
                     }
                     None => {
@@ -190,7 +192,9 @@ pub mod rlex {
                                     break;
                                 }
                             }
-                            _ => { break; }
+                            _ => {
+                                break;
+                            }
                         }
                     }
                     None => {
@@ -228,7 +232,6 @@ pub mod rlex {
             TokenValue::new(&token_string, token_type)
         }
 
-
         pub fn grab_single_string(&mut self) -> TokenValue {
             let mut token_string = String::new();
             let token_type = TokenType::SingleString;
@@ -259,7 +262,10 @@ pub mod rlex {
         pub fn grab_symbol(&mut self) -> TokenValue {
             let mut token_string = String::new();
             let token_type = TokenType::Symbol;
-            let oper = vec!["++", "--", ">>", "<<", ".=", "+=", "-=", "*=", "/=", "<>", "!=", "<=", ">=", "==", "&&", "||", "^=", "%=", "&=", "?=", "->", "=>", "::", "**", "***" ];
+            let oper = vec![
+                "++", "--", ">>", "<<", ".=", "+=", "-=", "*=", "/=", "<>", "!=", "<=", ">=", "==",
+                "&&", "||", "^=", "%=", "&=", "?=", "->", "=>", "::", "**", "***",
+            ];
             let ch = self.stream.getchar().unwrap();
             let ch2 = self.stream.curchar().unwrap();
             let mut cmp_str = String::new();
@@ -273,7 +279,6 @@ pub mod rlex {
             }
             if token_string.len() == 0 {
                 token_string.push(ch);
-
             }
             TokenValue::new(&token_string, token_type)
         }
@@ -313,12 +318,12 @@ pub mod rlex {
                             println!("Unrecongized character: {}", ch);
                             return self.scan_token();
                         }
-                        _ => { println!("type: {:?}", val); }
+                        _ => {
+                            println!("type: {:?}", val);
+                        }
                     }
                 }
-                None => {
-
-                }
+                None => {}
             }
             None
         }
@@ -331,6 +336,4 @@ pub mod rlex {
             self.scan_token()
         }
     }
-
-
 }
