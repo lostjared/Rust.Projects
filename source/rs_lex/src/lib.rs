@@ -205,7 +205,6 @@ pub mod rlex {
             let mut token_string = String::new();
             let token_type = TokenType::String;
             self.stream.advance();
-            token_string.push(self.stream.getchar().unwrap());
             loop {
                 let ch = self.stream.getchar();
                 match ch {
@@ -234,7 +233,6 @@ pub mod rlex {
             let mut token_string = String::new();
             let token_type = TokenType::SingleString;
             self.stream.advance();
-            token_string.push(self.stream.getchar().unwrap());
             loop {
                 let ch = self.stream.getchar();
                 match ch {
