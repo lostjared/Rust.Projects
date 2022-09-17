@@ -1,4 +1,0 @@
-map = {
-"key1" = "value1\n\t \" test"
-"key2" = "value2"
-}
