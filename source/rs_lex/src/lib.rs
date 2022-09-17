@@ -40,6 +40,11 @@ pub mod rlex {
         pub fn advance(&mut self) {
             self.pos += 1;
         }
+
+        pub fn advance_by(&mut self, index: usize) {
+            self.pos += index;
+        }
+
         pub fn rewind(&mut self) {
             self.pos = 0;
         }
