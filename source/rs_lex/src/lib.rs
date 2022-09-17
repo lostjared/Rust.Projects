@@ -45,6 +45,10 @@ pub mod rlex {
             self.pos += index;
         }
 
+        pub fn moveback_by(mut self, index: usize) {
+            self.pos -= index;
+        }
+
         pub fn rewind(&mut self) {
             self.pos = 0;
         }
