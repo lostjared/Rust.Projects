@@ -284,17 +284,36 @@ pub mod rlex {
             let token_type = TokenType::Symbol;
             let oper = vec![
                 "++", "--", ">>", "<<", ".=", "+=", "-=", "*=", "/=", "<>", "!=", "<=", ">=", "==",
-                "&&", "||", "^=", "%=", "&=", "?=", "->", "=>", "::", "**", "***", "|=",
+                "&&", "||", "^=", "%=", "&=", "?=", "->", "=>", "::", "**", "***", "|=", "===", "!==", ">>=", "<<="
             ];
             let ch = self.stream.getchar().unwrap();
             let ch2 = self.stream.curchar().unwrap();
-            let mut cmp_str = String::new();
-            cmp_str.push(ch);
-            cmp_str.push(ch2);
-            for i in &oper {
-                if i.to_string() == cmp_str {
-                    token_string.push_str(&cmp_str);
-                    self.stream.advance();
+            let ch3 = self.stream.peekchar();
+            let mut found = false;
+
+            if ch3 != None {
+                let mut cmp_str = String::new();
+                cmp_str.push(ch);
+                cmp_str.push(ch2);
+                cmp_str.push(ch3.unwrap());
+                for i in &oper {
+                    if i.to_string() == cmp_str {
+                        token_string.push_str(&cmp_str);
+                        self.stream.advance_by(2);
+                        found = true;
+                    }
+                }
+            }
+            
+            if found == false {
+                let mut cmp_str = String::new();
+                cmp_str.push(ch);
+                cmp_str.push(ch2);
+                for i in &oper {
+                    if i.to_string() == cmp_str {
+                        token_string.push_str(&cmp_str);
+                        self.stream.advance();
+                    }
                 }
             }
             if token_string.len() == 0 {
