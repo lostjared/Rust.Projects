@@ -42,7 +42,7 @@ pub fn to_html(input: String) -> String {
         match ch {
             '<' => {
                 s.push_str("&lt;");
-            } 
+            }
             '>' => {
                 s.push_str("&gt;");
             }
