@@ -126,6 +126,7 @@ pub mod rlex {
             for i in symbols.chars() {
                 map.insert(i, TokenType::Symbol);
             }
+            map.insert('_', TokenType::Char);
             Self {
                 stream: StringStream::new(input),
                 token_map: map,
