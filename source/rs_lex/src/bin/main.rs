@@ -54,7 +54,7 @@ pub fn to_html(input: String) -> String {
     s
 }
 
-fn parse_text<T>(mut reader: T)
+fn scan_text<T>(mut reader: T)
 where
     T: std::io::BufRead + Sized,
 {
@@ -66,7 +66,7 @@ where
     }
 }
 
-fn parse_text_output_html<T>(mut reader: T)
+fn scan_text_output_html<T>(mut reader: T)
 where
     T: std::io::BufRead + Sized,
 {
@@ -89,17 +89,17 @@ fn main() -> std::io::Result<()> {
     let args = parse_args();
     if args.in_file == "<STDIN>" {
         if args.html {
-            parse_text_output_html(std::io::stdin().lock());
+            scan_text_output_html(std::io::stdin().lock());
         } else {
-            parse_text(std::io::stdin().lock());
+            scan_text(std::io::stdin().lock());
         }
     } else {
         let f = std::fs::File::open(args.in_file)?;
         let r = std::io::BufReader::new(f);
         if args.html {
-            parse_text_output_html(r);
+            scan_text_output_html(r);
         } else {
-            parse_text(r);
+            scan_text(r);
         }
     }
     Ok(())
