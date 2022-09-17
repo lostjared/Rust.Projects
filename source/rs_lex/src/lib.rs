@@ -40,6 +40,16 @@ pub mod rlex {
         pub fn advance(&mut self) {
             self.pos += 1;
         }
+        pub fn rewind(&mut self) {
+            self.pos = 0;
+        }
+        pub fn reset(&mut self, input: &str) {
+            self.data = input.to_string();
+            self.pos = 0;
+        }
+        pub fn set_pos(&mut self, p: usize) {
+            self.pos = p;
+        }
     }
 
     #[derive(Copy, Clone, Debug)]
@@ -264,7 +274,7 @@ pub mod rlex {
             let token_type = TokenType::Symbol;
             let oper = vec![
                 "++", "--", ">>", "<<", ".=", "+=", "-=", "*=", "/=", "<>", "!=", "<=", ">=", "==",
-                "&&", "||", "^=", "%=", "&=", "?=", "->", "=>", "::", "**", "***",
+                "&&", "||", "^=", "%=", "&=", "?=", "->", "=>", "::", "**", "***", "|=",
             ];
             let ch = self.stream.getchar().unwrap();
             let ch2 = self.stream.curchar().unwrap();
