@@ -62,9 +62,7 @@ where
     reader.read_to_string(&mut input).expect("read string");
     let rlex = rs_lex::rlex::Scanner::new(&input);
     for i in rlex {
-
         let id = format!("{:?}", i.get_type());
-
         println!("{:15} -> {}", id, i.get_string());
     }
 }
