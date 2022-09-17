@@ -74,13 +74,16 @@ where
     reader.read_to_string(&mut input).expect("read string");
     let rlex = rs_lex::rlex::Scanner::new(&input);
     println!("<!doctype html><html lang=\"en\"><head><title>Source Code</title></head><body>");
-    println!("<table border=\"1\"><tr><th>Type</th><th>Token</th></tr>\n");
+    println!("<table border=\"1\"><tr><th>Index</th><th>Type</th><th>Token</th></tr>\n");
+    let mut index = 1;
     for i in rlex {
         println!(
-            "<tr><th>{:?}</th><th>{}</th></tr>",
+            "<tr><th>{}</th><th>{:?}</th><th>{}</th></tr>",
+            index,
             i.get_type(),
             to_html(i.get_string())
         );
+        index += 1;
     }
     println!("</table></body></html>");
 }

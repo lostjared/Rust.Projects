@@ -17,9 +17,9 @@ pub mod rlex {
         }
         pub fn getchar(&mut self) -> Option<char> {
             if self.pos < self.data.len() {
-                let c = self.data.chars().nth(self.pos).unwrap();
+                let c = self.data.chars().nth(self.pos);
                 self.pos += 1;
-                return Some(c);
+                return c;
             }
             None
         }
@@ -33,7 +33,7 @@ pub mod rlex {
         }
         pub fn peekchar(&mut self) -> Option<char> {
             if self.pos + 1 < self.data.len() {
-                return Some(self.data.chars().nth(self.pos + 1).unwrap());
+                return self.data.chars().nth(self.pos + 1);
             }
             None
         }
