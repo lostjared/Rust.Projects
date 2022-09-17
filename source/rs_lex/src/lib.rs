@@ -316,6 +316,48 @@ pub mod rlex {
                             return Some(Box::new(token));
                         }
                         TokenType::Symbol => {
+
+                            if ch == '/' {
+                                let chz = self.stream.peekchar();
+                                match chz {
+                                    Some(com) => {
+                                        match com {
+                                            '/' => {
+                                                loop {
+                                                    let ch = self.stream.getchar();
+                                                    match ch {
+                                                        Some(ch2) => {
+                                                            if ch2 == '\n' {
+                                                                return self.scan_token();
+                                                            }
+                                                        }
+                                                        None => {
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            '*' => {
+                                                self.stream.advance();
+                                                loop {
+                                                    let chx = self.stream.getchar();
+                                                    let ch_close = self.stream.curchar();
+                                                    if chx != None && ch_close != None && chx == Some('*') && ch_close == Some('/') {
+                                                        self.stream.advance();
+                                                        return self.scan_token();
+                                                    }
+                                                    if chx == None {
+                                                        self.stream.advance();
+                                                        return self.scan_token();
+                                                    }
+                                                }
+                                            }
+                                            _ => {}
+                                        }
+                                    }
+                                    None => {}
+                                }
+                            } 
                             let token = self.grab_symbol();
                             return Some(Box::new(token));
                         }
