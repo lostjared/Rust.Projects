@@ -1,3 +1,4 @@
+use clap::{App, Arg};
 use std::collections::HashMap;
 use std::io::Read;
 use std::io::Write;
@@ -75,6 +76,55 @@ fn convert_from_slash(input: &String) -> String {
         }
     }
     s
+}
+
+struct Arguments {
+    file: String,
+    key: String,
+    value: String,
+    action: u8,
+}
+
+fn parse_args() -> Arguments {
+    let m = App::new("map")
+        .author("Jared")
+        .help("map edit")
+        .about("map")
+        .version("0.1.0")
+        .arg(
+            Arg::with_name("file")
+                .required(true)
+                .multiple(false)
+                .allow_invalid_utf8(true),
+        )
+        .arg(
+            Arg::with_name("key")
+                .short('k')
+                .long("key")
+                .required(true)
+                .takes_value(true)
+                .allow_invalid_utf8(true),
+        )
+        .arg(
+            Arg::with_name("value")
+                .short('v')
+                .long("value")
+                .takes_value(true)
+                .default_value("<NO-VAL>")
+                .allow_invalid_utf8(true),
+        )
+        .get_matches();
+    let filename = m.value_of_lossy("file").unwrap();
+    let key_value = m.value_of_lossy("key").unwrap();
+    let value_value = m.value_of_lossy("value").unwrap();
+    let action_value = if value_value == "<NO-VAL>" { 0u8 } else { 1u8 };
+
+    Arguments {
+        file: filename.to_string(),
+        key: key_value.to_string(),
+        value: value_value.to_string(),
+        action: action_value,
+    }
 }
 
 fn save_map(out_file: &str, map: &HashMap<String, String>) -> std::io::Result<()> {
