@@ -38,7 +38,7 @@ fn convert_to_slash(input: &String) -> String {
     s
 }
 
-fn convert_from_slash(input: String) -> String {
+fn convert_from_slash(input: &String) -> String {
     let mut s: String = String::new();
     let mut i = 0;
     while i < input.len() {
@@ -111,7 +111,7 @@ fn read_map(in_file: &str, map: &mut HashMap<String, String>) -> std::io::Result
             if index + 1 < v.len() {
                 let s1 = v[index].get_string();
                 let s2 = v[index + 2].get_string();
-                map.insert(convert_from_slash(s1), convert_from_slash(s2));
+                map.insert(convert_from_slash(&s1), convert_from_slash(&s2));
                 if v[index + 3].get_string() == "}" {
                     break;
                 }
