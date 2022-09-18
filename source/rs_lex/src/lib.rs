@@ -139,14 +139,13 @@ pub mod rlex {
             map.insert('_', TokenType::Char);
             let o: Vec<&str> = vec![
                 "++", "--", ">>", "<<", ".=", "+=", "-=", "*=", "/=", "<>", "!=", "<=", ">=", "==",
-                "&&", "||", "^=", "%=", "&=", "?=", "->", "=>", "::", "**", "***", "|=", "===",
+                "&&", "||", "^=", "%=", "&=", "?=", "->", "=>", "::", "**",":=","***", "|=", "===",
                 "!==", ">>=", "<<=",
             ];
             let mut o_s: Vec<String> = Vec::new();
             for i in &o {
                 o_s.push(i.to_string());
             }
-
             Self {
                 stream: StringStream::new(input),
                 token_map: map,
