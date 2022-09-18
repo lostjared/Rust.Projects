@@ -132,7 +132,7 @@ pub mod rlex {
             map.insert('\n', TokenType::Space);
             map.insert('\t', TokenType::Space);
             map.insert('\r', TokenType::Space);
-            let symbols = String::from("~!@#$%^&*()_-+=[]{}<>.,|\\/?;:`");
+            let symbols = String::from("~!@#$%^&*()-+=[]{}<>.,|\\/?;:`");
             for i in symbols.chars() {
                 map.insert(i, TokenType::Symbol);
             }
