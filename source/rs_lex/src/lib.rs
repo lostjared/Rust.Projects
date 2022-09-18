@@ -108,6 +108,7 @@ pub mod rlex {
     pub struct Scanner {
         stream: StringStream,
         token_map: HashMap<char, TokenType>,
+        oper: Vec<String>,
     }
 
     impl Scanner {
@@ -136,9 +137,20 @@ pub mod rlex {
                 map.insert(i, TokenType::Symbol);
             }
             map.insert('_', TokenType::Char);
+            let o: Vec<&str> = vec![
+                "++", "--", ">>", "<<", ".=", "+=", "-=", "*=", "/=", "<>", "!=", "<=", ">=", "==",
+                "&&", "||", "^=", "%=", "&=", "?=", "->", "=>", "::", "**", "***", "|=", "===",
+                "!==", ">>=", "<<=",
+            ];
+            let mut o_s: Vec<String> = Vec::new();
+            for i in &o {
+                o_s.push(i.to_string());
+            }
+
             Self {
                 stream: StringStream::new(input),
                 token_map: map,
+                oper: o_s,
             }
         }
 
@@ -282,10 +294,7 @@ pub mod rlex {
         pub fn grab_symbol(&mut self) -> TokenValue {
             let mut token_string = String::new();
             let token_type = TokenType::Symbol;
-            let oper = vec![
-                "++", "--", ">>", "<<", ".=", "+=", "-=", "*=", "/=", "<>", "!=", "<=", ">=", "==",
-                "&&", "||", "^=", "%=", "&=", "?=", "->", "=>", "::", "**", "***", "|=", "===", "!==", ">>=", "<<="
-            ];
+
             let ch = self.stream.getchar().unwrap();
             let ch2 = self.stream.curchar().unwrap();
             let ch3 = self.stream.peekchar();
@@ -296,21 +305,20 @@ pub mod rlex {
                 cmp_str.push(ch);
                 cmp_str.push(ch2);
                 cmp_str.push(ch3.unwrap());
-                for i in &oper {
-                    if i.to_string() == cmp_str {
+                for i in &self.oper {
+                    if *i == cmp_str {
                         token_string.push_str(&cmp_str);
                         self.stream.advance_by(2);
                         found = true;
                     }
                 }
             }
-            
             if found == false {
                 let mut cmp_str = String::new();
                 cmp_str.push(ch);
                 cmp_str.push(ch2);
-                for i in &oper {
-                    if i.to_string() == cmp_str {
+                for i in &self.oper {
+                    if *i == cmp_str {
                         token_string.push_str(&cmp_str);
                         self.stream.advance();
                     }
