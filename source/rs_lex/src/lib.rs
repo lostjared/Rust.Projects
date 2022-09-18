@@ -312,7 +312,7 @@ pub mod rlex {
                     }
                 }
             }
-            if found == false {
+            if !found  {
                 let mut cmp_str = String::new();
                 cmp_str.push(ch);
                 cmp_str.push(ch2);
@@ -323,7 +323,7 @@ pub mod rlex {
                     }
                 }
             }
-            if token_string.len() == 0 {
+            if token_string.is_empty() {
                 token_string.push(ch);
             }
             TokenValue::new(&token_string, token_type)

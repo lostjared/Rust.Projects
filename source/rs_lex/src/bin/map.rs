@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use std::io::Read;
 use std::io::Write;
 
+
 fn convert_to_slash(input: &String) -> String {
     let mut s = String::new();
     let mut i = 0;
@@ -138,17 +139,13 @@ fn parse_args() -> Arguments {
 fn save_map(out_file: &str, map: &HashMap<String, String>) -> std::io::Result<()> {
     let f = std::fs::File::create(out_file)?;
     let mut w = std::io::BufWriter::new(f);
-    let mut s: String = String::new();
-    s.push_str("map = {\n");
+    writeln!(w, "map = {{")?;
     for (key, value) in map.iter() {
-        s.push_str(&format!(
-            "\"{}\" = \"{}\"\n",
-            convert_to_slash(key),
-            convert_to_slash(value)
-        ));
+         writeln!(w,"\"{}\" = \"{}\"",
+        convert_to_slash(key),
+        convert_to_slash(value))?;
     }
-    s.push_str("}\n");
-    w.write(s.as_bytes())?;
+    writeln!(w,"}}")?;
     Ok(())
 }
 
