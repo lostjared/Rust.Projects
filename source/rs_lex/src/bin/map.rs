@@ -113,12 +113,17 @@ fn parse_args() -> Arguments {
                 .default_value("<NO-VAL>")
                 .allow_invalid_utf8(true),
         )
+        .arg(
+            Arg::with_name("remove").short('r').long("remove").required(false)
+        )
         .get_matches();
     let filename = m.value_of_lossy("file").unwrap();
     let key_value = m.value_of_lossy("key").unwrap();
     let value_value = m.value_of_lossy("value").unwrap();
-    let action_value = if value_value == "<NO-VAL>" { 0u8 } else { 1u8 };
-
+    let mut action_value = if value_value == "<NO-VAL>" { 0u8 } else { 1u8 };
+    if m.is_present("remove") {
+        action_value = 2u8;
+    }
     Arguments {
         file: filename.to_string(),
         key: key_value.to_string(),
@@ -185,10 +190,21 @@ fn main() -> std::io::Result<()> {
         } else {
             println!("Does not contain key: {}", args.key);
         }
-    } else {
+    } else if args.action == 1u8 {
         let mut map: HashMap<String, String> = HashMap::new();
         read_map(&args.file, &mut map)?;
         map.insert(args.key, args.value);
+        save_map(&args.file, &map)?;
+        println!("Wrote to {}", args.file);
+    } else if args.action == 2u8 {
+        let mut map: HashMap<String, String> = HashMap::new();
+        read_map(&args.file, &mut map)?;
+        if map.contains_key(&args.key) {
+            map.remove(&args.key);
+            println!("rmeoved key: {}", args.key);
+        } else {
+            println!("could not find key: {}", args.key);
+        }
         save_map(&args.file, &map)?;
         println!("Wrote to {}", args.file);
     }
