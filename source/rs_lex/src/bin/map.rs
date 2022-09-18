@@ -176,14 +176,22 @@ fn read_map(in_file: &str, map: &mut HashMap<String, String>) -> std::io::Result
 }
 
 fn main() -> std::io::Result<()> {
-    let mut map1: HashMap<String, String> = HashMap::new();
-    let mut map2: HashMap<String, String> = HashMap::new();
-    map1.insert("key1".to_string(), "value1\n\t \" test".to_string());
-    map1.insert("key2".to_string(), "value2".to_string());
-    save_map("output.txt", &map1)?;
-    read_map("output.txt", &mut map2)?;
-    for (key, value) in &map2 {
-        println!("Key: {}, value: {}", key, value);
+    let args = parse_args();
+    if args.action == 0u8 {
+        let mut map: HashMap<String, String> = HashMap::new();
+        read_map(&args.file, &mut map)?;
+        if map.contains_key(&args.key) {
+            println!("Value: {}", map[&args.key]);
+        } else {
+            println!("Does not contain key: {}", args.key);
+        }
+    } else {
+        let mut map: HashMap<String, String> = HashMap::new();
+        read_map(&args.file, &mut map)?;
+        map.insert(args.key, args.value);
+        save_map(&args.file, &map)?;
+        println!("Wrote to {}", args.file);
     }
+
     Ok(())
 }
