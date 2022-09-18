@@ -1,9 +1,6 @@
 pub mod rs_map {
 
-    use crate::rlex::{convert_from_slash, convert_to_slash};
-    use crate::rlex::Scanner;
-    use crate::rlex::Token;
-
+    use crate::rlex::{convert_from_slash, convert_to_slash, Scanner, Token};
     use std::collections::HashMap;
     use std::io::Write;
     use std::io::Read;
