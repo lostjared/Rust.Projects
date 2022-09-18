@@ -2,6 +2,8 @@ pub mod rlex {
 
     use std::collections::HashMap;
 
+    pub mod map;
+
     #[derive(Clone, Debug)]
     pub struct StringStream {
         data: String,
