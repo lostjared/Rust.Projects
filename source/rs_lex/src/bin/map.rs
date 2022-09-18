@@ -114,7 +114,10 @@ fn parse_args() -> Arguments {
                 .allow_invalid_utf8(true),
         )
         .arg(
-            Arg::with_name("remove").short('r').long("remove").required(false)
+            Arg::with_name("remove")
+                .short('r')
+                .long("remove")
+                .required(false),
         )
         .get_matches();
     let filename = m.value_of_lossy("file").unwrap();
@@ -182,31 +185,36 @@ fn read_map(in_file: &str, map: &mut HashMap<String, String>) -> std::io::Result
 
 fn main() -> std::io::Result<()> {
     let args = parse_args();
-    if args.action == 0u8 {
-        let mut map: HashMap<String, String> = HashMap::new();
-        read_map(&args.file, &mut map)?;
-        if map.contains_key(&args.key) {
-            println!("Value: {}", map[&args.key]);
-        } else {
-            println!("Does not contain key: {}", args.key);
+    match args.action {
+        0u8 => {
+            let mut map: HashMap<String, String> = HashMap::new();
+            read_map(&args.file, &mut map)?;
+            if map.contains_key(&args.key) {
+                println!("Value: {}", map[&args.key]);
+            } else {
+                println!("Does not contain key: {}", args.key);
+            }
         }
-    } else if args.action == 1u8 {
-        let mut map: HashMap<String, String> = HashMap::new();
-        read_map(&args.file, &mut map)?;
-        map.insert(args.key, args.value);
-        save_map(&args.file, &map)?;
-        println!("Wrote to {}", args.file);
-    } else if args.action == 2u8 {
-        let mut map: HashMap<String, String> = HashMap::new();
-        read_map(&args.file, &mut map)?;
-        if map.contains_key(&args.key) {
-            map.remove(&args.key);
-            println!("rmeoved key: {}", args.key);
-        } else {
-            println!("could not find key: {}", args.key);
+        1u8 => {
+            let mut map: HashMap<String, String> = HashMap::new();
+            read_map(&args.file, &mut map)?;
+            map.insert(args.key, args.value);
+            save_map(&args.file, &map)?;
+            println!("Wrote to {}", args.file);
         }
-        save_map(&args.file, &map)?;
-        println!("Wrote to {}", args.file);
+        2u8 => {
+            let mut map: HashMap<String, String> = HashMap::new();
+            read_map(&args.file, &mut map)?;
+            if map.contains_key(&args.key) {
+                map.remove(&args.key);
+                println!("rmeoved key: {}", args.key);
+            } else {
+                println!("could not find key: {}", args.key);
+            }
+            save_map(&args.file, &map)?;
+            println!("Wrote to {}", args.file);
+        }
+        _ => {}
     }
 
     Ok(())
