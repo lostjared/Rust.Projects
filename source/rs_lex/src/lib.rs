@@ -423,4 +423,79 @@ pub mod rlex {
             self.scan_token()
         }
     }
+
+    pub fn convert_to_slash(input: &String) -> String {
+        let mut s = String::new();
+        let mut i = 0;
+        while i < input.len() {
+            let ch = input.chars().nth(i).unwrap();
+            i += 1;
+            match ch {
+                '\\' => {
+                    let chx = input.chars().nth(i).unwrap();
+                    s.push(ch);
+                    s.push(chx);
+                    i += 1;
+                }
+                '\"' => {
+                    s.push_str("\\\"");
+                }
+                '\'' => {
+                    s.push_str("\\\'");
+                }
+                '\n' => {
+                    s.push_str("\\n");
+                }
+                '\r' => {
+                    s.push_str("\\r");
+                }
+                '\t' => {
+                    s.push_str("\\t");
+                }
+                _ => {
+                    s.push(ch);
+                }
+            }
+        }
+        s
+    }
+    
+    pub fn convert_from_slash(input: &String) -> String {
+        let mut s: String = String::new();
+        let mut i = 0;
+        while i < input.len() {
+            let ch = input.chars().nth(i).unwrap();
+            i += 1;
+            match ch {
+                '\\' => {
+                    let chx = input.chars().nth(i).unwrap();
+                    match chx {
+                        'n' => {
+                            s.push('\n');
+                        }
+                        't' => {
+                            s.push('\t');
+                        }
+                        'r' => {
+                            s.push('\r');
+                        }
+                        '\"' => {
+                            s.push('\"');
+                        }
+                        '\'' => {
+                            s.push('\'');
+                        }
+                        _ => {
+                            s.push(chx);
+                        }
+                    }
+                    i += 1;
+                }
+                _ => {
+                    s.push(ch);
+                }
+            }
+        }
+        s
+    }
 }
