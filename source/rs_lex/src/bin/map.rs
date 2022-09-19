@@ -1,7 +1,6 @@
 use clap::{App, Arg};
+use rs_lex::rlex::map::rs_map::{read_map, save_map};
 use std::collections::HashMap;
-use rs_lex::rlex::map::rs_map::{save_map, read_map};
-
 
 struct Arguments {
     file: String,

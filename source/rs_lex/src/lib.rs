@@ -314,7 +314,7 @@ pub mod rlex {
                     }
                 }
             }
-            if !found  {
+            if !found {
                 let mut cmp_str = String::new();
                 cmp_str.push(ch);
                 cmp_str.push(ch2);
@@ -461,7 +461,7 @@ pub mod rlex {
         }
         s
     }
-    
+
     pub fn convert_from_slash(input: &String) -> String {
         let mut s: String = String::new();
         let mut i = 0;
