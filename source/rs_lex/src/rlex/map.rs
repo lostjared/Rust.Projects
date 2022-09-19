@@ -17,6 +17,14 @@ pub mod rs_map {
         writeln!(w,"}}")?;
         Ok(())
     }
+
+    pub fn consume_token(v: &Vec<Box<dyn Token>>, index: &mut usize, tok: &str) {
+        if v[*index].get_string() == tok.to_string() {
+            *index += 1;
+        } else {
+            panic!("Expected: {} found {}", tok, v[*index].get_string());
+        }
+    }
     
     pub fn read_map(in_file: &str, map: &mut HashMap<String, String>) -> std::io::Result<()> {
         let f = std::fs::File::open(in_file)?;
@@ -25,12 +33,11 @@ pub mod rs_map {
         r.read_to_string(&mut s)?;
         let scan = Scanner::new(&s);
         let v: Vec<Box<dyn Token>> = scan.into_iter().collect();
-        let mut index = 3;
-        if v.len() > 3
-            && v[0].get_string() == "map"
-            && v[1].get_string() == "="
-            && v[2].get_string() == "{"
-        {
+        let mut index : usize = 0;
+        if v.len() > 3 {
+            consume_token(&v,&mut index, "map");
+            consume_token(&v,&mut index, "=");
+            consume_token(&v,&mut index, "{");
             loop {
                 if index + 1 < v.len() {
                     let s1 = v[index].get_string();
