@@ -500,4 +500,29 @@ pub mod rlex {
         }
         s
     }
+
+    pub fn consume_token(v: &Vec<Box<dyn Token>>, index: &mut usize, tok: &str) {
+        if v[*index].get_string() == tok.to_string() {
+            *index += 1;
+        } else {
+            panic!("Expected: {} found {}", tok, v[*index].get_string());
+        }
+    }
+
+    pub fn match_token(v: &Vec<Box<dyn Token>>, index: usize, tok: &str) -> bool {
+        if v[index].get_string() == tok.to_string() {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    pub fn match_token_inc(v: &Vec<Box<dyn Token>>, index: &mut usize, tok: &str) -> bool {
+        if v[*index].get_string() == tok.to_string() {
+            *index += 1;
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

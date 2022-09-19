@@ -1,6 +1,6 @@
 pub mod rs_map {
 
-    use crate::rlex::{convert_from_slash, convert_to_slash, Scanner, Token};
+    use crate::rlex::{convert_from_slash, convert_to_slash, Scanner, Token, consume_token, match_token};
     use std::collections::HashMap;
     use std::io::Write;
     use std::io::Read;
@@ -18,30 +18,7 @@ pub mod rs_map {
         Ok(())
     }
 
-    pub fn consume_token(v: &Vec<Box<dyn Token>>, index: &mut usize, tok: &str) {
-        if v[*index].get_string() == tok.to_string() {
-            *index += 1;
-        } else {
-            panic!("Expected: {} found {}", tok, v[*index].get_string());
-        }
-    }
 
-    pub fn match_token(v: &Vec<Box<dyn Token>>, index: usize, tok: &str) -> bool {
-        if v[index].get_string() == tok.to_string() {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    pub fn match_token_inc(v: &Vec<Box<dyn Token>>, index: &mut usize, tok: &str) -> bool {
-        if v[*index].get_string() == tok.to_string() {
-            *index += 1;
-            return true;
-        } else {
-            return false;
-        }
-    }
     
     pub fn read_map(in_file: &str, map: &mut HashMap<String, String>) -> std::io::Result<()> {
         let f = std::fs::File::open(in_file)?;
