@@ -39,7 +39,7 @@ pub mod rs_map {
             consume_token(&v,&mut index, "=");
             consume_token(&v,&mut index, "{");
             loop {
-                if index + 1 < v.len() {
+                if index + 3 < v.len() {
                     let s1 = v[index].get_string();
                     let s2 = v[index + 2].get_string();
                     map.insert(convert_from_slash(&s1), convert_from_slash(&s2));
