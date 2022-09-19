@@ -33,6 +33,15 @@ pub mod rs_map {
             return false;
         }
     }
+
+    pub fn match_token_inc(v: &Vec<Box<dyn Token>>, index: &mut usize, tok: &str) -> bool {
+        if v[*index].get_string() == tok.to_string() {
+            *index += 1;
+            return true;
+        } else {
+            return false;
+        }
+    }
     
     pub fn read_map(in_file: &str, map: &mut HashMap<String, String>) -> std::io::Result<()> {
         let f = std::fs::File::open(in_file)?;
