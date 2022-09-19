@@ -25,6 +25,14 @@ pub mod rs_map {
             panic!("Expected: {} found {}", tok, v[*index].get_string());
         }
     }
+
+    pub fn match_token(v: &Vec<Box<dyn Token>>, index: usize, tok: &str) -> bool {
+        if v[index].get_string() == tok.to_string() {
+            return true;
+        } else {
+            return false;
+        }
+    }
     
     pub fn read_map(in_file: &str, map: &mut HashMap<String, String>) -> std::io::Result<()> {
         let f = std::fs::File::open(in_file)?;
@@ -43,7 +51,7 @@ pub mod rs_map {
                     let s1 = v[index].get_string();
                     let s2 = v[index + 2].get_string();
                     map.insert(convert_from_slash(&s1), convert_from_slash(&s2));
-                    if v[index + 3].get_string() == "}" {
+                    if match_token(&v, index + 3, "}") {
                         break;
                     }
                     index += 3;
