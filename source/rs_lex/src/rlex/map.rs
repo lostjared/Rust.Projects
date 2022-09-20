@@ -7,13 +7,12 @@ pub mod rs_map {
     use std::io::Read;
     use std::io::Write;
 
-
     #[test]
     fn test_map() {
         let s = "map = {\n\"value1\" = \"value2\"\n}\n";
         let scan = Scanner::new(s);
-        let v : Vec<Box<dyn Token>> = scan.into_iter().collect();
-        let mut index : usize = 0;
+        let v: Vec<Box<dyn Token>> = scan.into_iter().collect();
+        let mut index: usize = 0;
         consume_token(&v, &mut index, "map");
         consume_token(&v, &mut index, "=");
         consume_token(&v, &mut index, "{");
