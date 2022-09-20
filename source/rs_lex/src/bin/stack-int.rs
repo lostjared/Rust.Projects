@@ -8,7 +8,11 @@ fn test_stack_math() {
     assert_eq!(stack.pop(), Some(Input::Digit(8)));
     scan(&mut stack, "-1 -1 +");
     assert_eq!(stack.pop(), Some(Input::Digit(-2)));
-    
+    scan(&mut stack, "2 2 2 * *");
+    assert_eq!(stack.pop(), Some(Input::Digit(8)));
+    scan(&mut stack, "4 1 /");
+    assert_eq!(stack.pop(), Some(Input::Digit(4)));
+
 }
 
 #[derive(Debug, PartialEq)]
