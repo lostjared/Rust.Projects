@@ -73,7 +73,9 @@ fn main() -> std::io::Result<()> {
         }
         1u8 => {
             let mut map: HashMap<String, String> = HashMap::new();
-            read_map(&args.file, &mut map)?;
+            if std::path::Path::new(&args.file).exists() {
+                read_map(&args.file, &mut map)?;
+            }
             map.insert(args.key, args.value);
             save_map(&args.file, &map)?;
             println!("Wrote to {}", args.file);

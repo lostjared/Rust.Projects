@@ -1,7 +1,7 @@
 pub mod rs_map {
 
     use crate::rlex::{
-        consume_token, convert_from_slash, convert_to_slash, match_token, Scanner, Token,
+        consume_token, convert_from_slash, convert_to_slash, match_token, match_token_type, Scanner, Token, TokenType
     };
     use std::collections::HashMap;
     use std::io::Read;
@@ -51,14 +51,15 @@ pub mod rs_map {
             consume_token(&v, &mut index, "=");
             consume_token(&v, &mut index, "{");
             loop {
-                if index + 3 < v.len() {
-                    let s1 = v[index].get_string();
-                    let s2 = v[index + 2].get_string();
+                if index < v.len() {
+                    let s1 = match_token_type(&v, &mut index, TokenType::String).unwrap();
+                    consume_token(&v, &mut index, "=");
+                    let s2 = match_token_type(&v, &mut index, TokenType::String).unwrap();
                     map.insert(convert_from_slash(&s1), convert_from_slash(&s2));
-                    if match_token(&v, index + 3, "}") {
+                    if match_token(&v, index, "}") {
                         break;
                     }
-                    index += 3;
+                    
                 } else {
                     break;
                 }

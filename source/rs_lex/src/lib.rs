@@ -63,7 +63,7 @@ pub mod rlex {
         }
     }
 
-    #[derive(Copy, Clone, Debug)]
+    #[derive(Copy, Clone, Debug, PartialEq)]
     pub enum TokenType {
         NULL,
         Space,
@@ -525,4 +525,14 @@ pub mod rlex {
             return false;
         }
     }
+
+    pub fn match_token_type(v: &Vec<Box<dyn Token>>, index: &mut usize, tok_t: TokenType) -> Option<String> {
+        if v[*index].get_type() == tok_t {
+            let t = v[*index].get_string().to_owned();
+            *index += 1;
+            return Some(t);
+        }
+        None
+    }
 }
+
