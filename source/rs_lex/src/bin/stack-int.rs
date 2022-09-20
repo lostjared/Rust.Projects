@@ -12,7 +12,6 @@ fn test_stack_math() {
     assert_eq!(stack.pop(), Some(Input::Digit(8)));
     scan(&mut stack, "4 1 /");
     assert_eq!(stack.pop(), Some(Input::Digit(4)));
-
 }
 
 #[derive(Debug, PartialEq)]
@@ -43,16 +42,17 @@ fn print_stack(stack: &Vec<Input>) {
 }
 
 fn push_digits(v: &Vec<Box<dyn Token>>, index: &mut usize, stack: &mut Vec<Input>) {
-
-    if *index < v.len() && v[*index].get_type() == TokenType::Symbol && v[*index].get_string() == "-" {
+    if *index < v.len()
+        && v[*index].get_type() == TokenType::Symbol
+        && v[*index].get_string() == "-"
+    {
         *index += 1;
-        let d : i64 = v[*index].get_string().parse().unwrap();
+        let d: i64 = v[*index].get_string().parse().unwrap();
         let num = Input::Digit(-d);
         *index += 1;
         stack.push(num);
         push_digits(v, index, stack);
-    }
-    else if *index < v.len() && v[*index].get_type() == TokenType::Digits {
+    } else if *index < v.len() && v[*index].get_type() == TokenType::Digits {
         stack.push(Input::Digit(v[*index].get_string().parse().unwrap()));
         *index += 1;
         push_digits(v, index, stack);

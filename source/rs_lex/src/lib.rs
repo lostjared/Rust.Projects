@@ -14,10 +14,7 @@ pub mod rlex {
         pub fn new(input: &str) -> Self {
             let mut s = String::from(input);
             s.push('\n');
-            Self {
-                data: s,
-                pos: 0,
-            }
+            Self { data: s, pos: 0 }
         }
         pub fn getchar(&mut self) -> Option<char> {
             if self.pos < self.data.len() {
