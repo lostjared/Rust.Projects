@@ -19,7 +19,7 @@ fn scan(stack: &mut Vec<Input>, input: &str) {
     let v: Vec<Box<dyn Token>> = scan.into_iter().collect();
     let mut index: usize = 0;
     push_digits(&v, &mut index, stack);
-    //print_stack(stack);
+    print_stack(stack);
 }
 
 fn print_stack(stack: &Vec<Input>) {
