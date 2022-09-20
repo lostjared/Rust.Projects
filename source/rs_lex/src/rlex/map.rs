@@ -7,6 +7,22 @@ pub mod rs_map {
     use std::io::Read;
     use std::io::Write;
 
+
+    #[test]
+    fn test_map() {
+        let s = "map = {\n\"value1\" = \"value2\"\n}\n";
+        let scan = Scanner::new(s);
+        let v : Vec<Box<dyn Token>> = scan.into_iter().collect();
+        let mut index : usize = 0;
+        consume_token(&v, &mut index, "map");
+        consume_token(&v, &mut index, "=");
+        consume_token(&v, &mut index, "{");
+        consume_token(&v, &mut index, "value1");
+        consume_token(&v, &mut index, "=");
+        consume_token(&v, &mut index, "value2");
+        consume_token(&v, &mut index, "}");
+    }
+
     pub fn save_map(out_file: &str, map: &HashMap<String, String>) -> std::io::Result<()> {
         let f = std::fs::File::create(out_file)?;
         let mut w = std::io::BufWriter::new(f);
