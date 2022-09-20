@@ -8,7 +8,7 @@ pub mod rs_map {
     use std::io::Write;
 
     #[test]
-    fn test_map() {
+    fn test_scan_map() {
         let s = "map = {\n\"value1\" = \"value2\"\n}\n";
         let scan = Scanner::new(s);
         let v: Vec<Box<dyn Token>> = scan.into_iter().collect();
