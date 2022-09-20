@@ -1,3 +1,4 @@
+// test application for the Scanner
 use rs_lex::rlex::*;
 use std::io::Read;
 
