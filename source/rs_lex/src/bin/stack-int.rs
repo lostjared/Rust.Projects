@@ -6,6 +6,9 @@ fn test_stack_math() {
     let mut stack: Vec<Input> = Vec::new();
     scan(&mut stack, "2 2 4 + +");
     assert_eq!(stack.pop(), Some(Input::Digit(8)));
+    scan(&mut stack, "-1 -1 +");
+    assert_eq!(stack.pop(), Some(Input::Digit(-2)));
+    
 }
 
 #[derive(Debug, PartialEq)]
