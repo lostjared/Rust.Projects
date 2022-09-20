@@ -1,22 +1,28 @@
 use rs_lex::rlex::*;
 use std::io::Read;
 
+#[test]
+fn test_stack_math() {
+    let mut stack: Vec<Input> = Vec::new();
+    scan(&mut stack, "2 2 4 + +");
+    assert_eq!(stack.pop(), Some(Input::Digit(8)));
+}
+
 #[derive(Debug, PartialEq)]
-enum Input {
+pub enum Input {
     Digit(u64),
     Operator(char),
 }
 
-fn scan(input: &str) {
+fn scan(stack: &mut Vec<Input>, input: &str) {
     let scan = Scanner::new(input);
     let v: Vec<Box<dyn Token>> = scan.into_iter().collect();
-    let mut stack: Vec<Input> = Vec::new();
     let mut index: usize = 0;
-    push_digits(&v, &mut index, &mut stack);
-    print_stack(&mut stack);
+    push_digits(&v, &mut index, stack);
+    //print_stack(stack);
 }
 
-fn print_stack(stack: &mut Vec<Input>) {
+fn print_stack(stack: &Vec<Input>) {
     for i in 0..stack.len() {
         match stack[i] {
             Input::Digit(num) => {
@@ -125,7 +131,8 @@ fn read_data() {
     let mut r = std::io::stdin().lock();
     let mut s = String::new();
     r.read_to_string(&mut s).expect("read to string");
-    scan(&s);
+    let mut stack: Vec<Input> = Vec::new();
+    scan(&mut stack, &s);
 }
 
 fn main() -> std::io::Result<()> {

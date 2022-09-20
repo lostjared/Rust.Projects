@@ -12,8 +12,10 @@ pub mod rlex {
 
     impl StringStream {
         pub fn new(input: &str) -> Self {
+            let mut s = String::from(input);
+            s.push('\n');
             Self {
-                data: input.to_string(),
+                data: s,
                 pos: 0,
             }
         }
@@ -295,7 +297,6 @@ pub mod rlex {
         pub fn grab_symbol(&mut self) -> TokenValue {
             let mut token_string = String::new();
             let token_type = TokenType::Symbol;
-
             let ch = self.stream.getchar().unwrap();
             let ch2 = self.stream.curchar().unwrap();
             let ch3 = self.stream.peekchar();
