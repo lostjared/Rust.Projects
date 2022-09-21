@@ -12,7 +12,9 @@ fn test_stack_math() {
     scan(&mut stack, "2 2 2 * *");
     assert_eq!(stack.pop(), Some(Input::Digit(8)));
     scan(&mut stack, "4 1 /");
-    assert_eq!(stack.pop(), Some(Input::Digit(4)));
+    assert_eq!(stack.pop(), Some(Input::Digit(0)));
+    scan(&mut stack, "1 1 1 - -");
+    assert_eq!(stack.pop(), Some(Input::Digit(-1)));
 }
 
 #[derive(Debug, PartialEq)]
@@ -43,9 +45,9 @@ fn print_stack(stack: &Vec<Input>) {
 }
 
 fn push_digits(v: &Vec<Box<dyn Token>>, index: &mut usize, stack: &mut Vec<Input>) {
-    if *index < v.len()
+    if *index+1 < v.len()
         && v[*index].get_type() == TokenType::Symbol
-        && v[*index].get_string() == "-"
+        && v[*index].get_string() == "-" && v[*index+1].get_type() == TokenType::Digits
     {
         *index += 1;
         let d: i64 = v[*index].get_string().parse().unwrap();
@@ -60,8 +62,8 @@ fn push_digits(v: &Vec<Box<dyn Token>>, index: &mut usize, stack: &mut Vec<Input
     } else if *index < v.len() && v[*index].get_type() == TokenType::Symbol {
         match v[*index].get_string().chars().nth(0).unwrap() {
             '+' => {
-                let right = stack.pop().unwrap();
                 let left = stack.pop().unwrap();
+                let right = stack.pop().unwrap();
                 let mut d1: i64 = 0;
                 let mut d2: i64 = 0;
                 match left {
@@ -79,8 +81,8 @@ fn push_digits(v: &Vec<Box<dyn Token>>, index: &mut usize, stack: &mut Vec<Input
                 stack.push(Input::Digit(d1 + d2));
             }
             '-' => {
-                let right = stack.pop().unwrap();
                 let left = stack.pop().unwrap();
+                let right = stack.pop().unwrap();
                 let mut d1: i64 = 0;
                 let mut d2: i64 = 0;
                 match left {
@@ -95,11 +97,11 @@ fn push_digits(v: &Vec<Box<dyn Token>>, index: &mut usize, stack: &mut Vec<Input
                     }
                     _ => {}
                 }
-                stack.push(Input::Digit(d1 - d2));
+               stack.push(Input::Digit(d1 - d2));
             }
             '*' => {
-                let right = stack.pop().unwrap();
                 let left = stack.pop().unwrap();
+                let right = stack.pop().unwrap();
                 let mut d1: i64 = 0;
                 let mut d2: i64 = 0;
                 match left {
@@ -117,8 +119,8 @@ fn push_digits(v: &Vec<Box<dyn Token>>, index: &mut usize, stack: &mut Vec<Input
                 stack.push(Input::Digit(d1 * d2));
             }
             '/' => {
-                let right = stack.pop().unwrap();
                 let left = stack.pop().unwrap();
+                let right = stack.pop().unwrap();
                 let mut d1: i64 = 0;
                 let mut d2: i64 = 0;
                 match left {
