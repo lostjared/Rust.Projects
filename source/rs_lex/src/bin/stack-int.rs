@@ -56,10 +56,10 @@ fn push_digits(v: &Vec<Box<dyn Token>>, index: &mut usize, stack: &mut Vec<Input
             let num = Input::Digit(-d);
             *index += 1;
             stack.push(num);
-        } else if *index < v.len() && v[*index].get_type() == TokenType::Digits {
+        } else if v[*index].get_type() == TokenType::Digits {
             stack.push(Input::Digit(v[*index].get_string().parse().unwrap()));
             *index += 1;
-        } else if *index < v.len() && v[*index].get_type() == TokenType::Symbol {
+        } else if v[*index].get_type() == TokenType::Symbol {
             match v[*index].get_string().chars().nth(0).unwrap() {
                 '+' => {
                     let left = stack.pop().unwrap();
