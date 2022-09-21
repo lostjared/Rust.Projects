@@ -26,8 +26,7 @@ pub enum Input {
 fn scan(stack: &mut Vec<Input>, input: &str) {
     let scan = Scanner::new(input);
     let v: Vec<Box<dyn Token>> = scan.into_iter().collect();
-    let mut index: usize = 0;
-    push_digits(&v, &mut index, stack);
+    push_digits(&v, stack);
     print_stack(stack);
 }
 
@@ -44,23 +43,26 @@ fn print_stack(stack: &Vec<Input>) {
     }
 }
 
-fn push_digits(v: &Vec<Box<dyn Token>>, index: &mut usize, stack: &mut Vec<Input>) {
-    while *index < v.len() {
-        if *index + 1 < v.len()
-            && v[*index].get_type() == TokenType::Symbol
-            && v[*index].get_string() == "-"
-            && v[*index + 1].get_type() == TokenType::Digits
+fn push_digits(v: &Vec<Box<dyn Token>>, stack: &mut Vec<Input>) {
+
+    let mut index : usize = 0;
+
+    while index < v.len() {
+        if index + 1 < v.len()
+            && v[index].get_type() == TokenType::Symbol
+            && v[index].get_string() == "-"
+            && v[index + 1].get_type() == TokenType::Digits
         {
-            *index += 1;
-            let d: i64 = v[*index].get_string().parse().unwrap();
+            index += 1;
+            let d: i64 = v[index].get_string().parse().unwrap();
             let num = Input::Digit(-d);
-            *index += 1;
+            index += 1;
             stack.push(num);
-        } else if v[*index].get_type() == TokenType::Digits {
-            stack.push(Input::Digit(v[*index].get_string().parse().unwrap()));
-            *index += 1;
-        } else if v[*index].get_type() == TokenType::Symbol {
-            match v[*index].get_string().chars().nth(0).unwrap() {
+        } else if v[index].get_type() == TokenType::Digits {
+            stack.push(Input::Digit(v[index].get_string().parse().unwrap()));
+            index += 1;
+        } else if v[index].get_type() == TokenType::Symbol {
+            match v[index].get_string().chars().nth(0).unwrap() {
                 '+' => {
                     let left = stack.pop().unwrap();
                     let right = stack.pop().unwrap();
@@ -141,9 +143,9 @@ fn push_digits(v: &Vec<Box<dyn Token>>, index: &mut usize, stack: &mut Vec<Input
                     panic!("Unsupported operator ");
                 }
             }
-            *index += 1;
+            index += 1;
         } else {
-            *index += 1;
+            index += 1;
         }
     }
 }
