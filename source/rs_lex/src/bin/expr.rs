@@ -1,6 +1,21 @@
 use rs_lex::rlex::*;
 use std::io::Read;
 
+
+#[test]
+fn test_parse() {
+    assert_eq!(evaluate("2+2"), 4.0);
+    assert_eq!(evaluate("2+2*4"), 10.0);
+    assert_eq!(evaluate("(2+2)*4"), 16.0);
+}
+
+fn evaluate(input: &str) -> f64 {
+    let scan = Scanner::new(input);
+    let tokens: Vec<Box<dyn Token>> = scan.into_iter().collect();
+    let mut index: usize = 0;
+    expr(false, &tokens, &mut index)
+}
+
 fn parse_expr() {
     let mut r = std::io::stdin().lock();
     let mut s = String::new();
@@ -13,7 +28,6 @@ fn parse_expr() {
 
 fn expr(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
     let mut left: f64 = term(get, tokens, index);
-
     while *index < tokens.len() {
         match tokens[*index].get_type() {
             TokenType::Symbol => {
@@ -42,7 +56,6 @@ fn expr(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
 
 fn term(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
     let mut left: f64 = prim(get, tokens, index);
-
     while *index < tokens.len() {
         match tokens[*index].get_type() {
             TokenType::Symbol => {
@@ -66,8 +79,6 @@ fn term(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
             _ => { return left; }
         }
     }
-
-
     left
 }
 
@@ -75,7 +86,6 @@ fn prim(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
     if get {
         *index += 1;
     }
-
     match tokens[*index].get_type() {
         TokenType::Digits => {
             let d: f64 = tokens[*index].get_string().parse().unwrap();
