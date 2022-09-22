@@ -42,6 +42,32 @@ fn expr(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
 
 fn term(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
     let mut left: f64 = prim(get, tokens, index);
+
+    while *index < tokens.len() {
+        match tokens[*index].get_type() {
+            TokenType::Symbol => {
+                match tokens[*index].get_string().chars().nth(0).unwrap() {
+                    '*' => {
+                        let t = prim(true, tokens, index);
+                        left *= t;
+                    }
+                    '/' => {
+                        let t = prim(true, tokens, index);
+                        if t == 0.0 {
+                            panic!("Divide by zero");
+                        }
+                        left /= t;
+                    }
+                    _ => {
+                        return left;
+                    }
+                }
+            }
+            _ => { return left; }
+        }
+    }
+
+
     left
 }
 
