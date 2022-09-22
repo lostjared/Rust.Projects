@@ -44,8 +44,7 @@ fn print_stack(stack: &Vec<Input>) {
 }
 
 fn push_digits(v: &Vec<Box<dyn Token>>, stack: &mut Vec<Input>) {
-
-    let mut index : usize = 0;
+    let mut index: usize = 0;
 
     while index < v.len() {
         if index + 1 < v.len()
