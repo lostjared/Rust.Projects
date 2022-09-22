@@ -1,5 +1,6 @@
 use rs_lex::rlex::*;
 use std::io::BufRead;
+use std::io::Write;
 
 #[test]
 fn test_parse() {
@@ -18,6 +19,8 @@ fn evaluate(input: &str) -> f64 {
 
 fn parse_expr() {
     let r = std::io::stdin().lock();
+    print!("> ");
+    std::io::stdout().lock().flush().expect("on flush");
     for line in r.lines() {
         match line {
             Ok(e) => {
@@ -25,6 +28,8 @@ fn parse_expr() {
             }
             Err(e) => eprintln!("Error: {}", e),
         }
+        print!("> ");
+        std::io::stdout().lock().flush().expect("on flush");
     }
 }
 
