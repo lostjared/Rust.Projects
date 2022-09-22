@@ -1,12 +1,12 @@
 use rs_lex::rlex::*;
-use std::io::Read;
-
+use std::io::BufRead;
 
 #[test]
 fn test_parse() {
     assert_eq!(evaluate("2+2"), 4.0);
     assert_eq!(evaluate("2+2*4"), 10.0);
     assert_eq!(evaluate("(2+2)*4"), 16.0);
+    assert_eq!(evaluate("((2+2)*4)/2"), 8.0);
 }
 
 fn evaluate(input: &str) -> f64 {
@@ -17,39 +17,38 @@ fn evaluate(input: &str) -> f64 {
 }
 
 fn parse_expr() {
-    let mut r = std::io::stdin().lock();
-    let mut s = String::new();
-    r.read_to_string(&mut s).expect("Error reading data");
-    let scan = Scanner::new(&s);
-    let tokens: Vec<Box<dyn Token>> = scan.into_iter().collect();
-    let mut index: usize = 0;
-    println!("value is: {}", expr(false, &tokens, &mut index));
+    let r = std::io::stdin().lock();
+    for line in r.lines() {
+        match line {
+            Ok(e) => {
+                println!("value is: {}", evaluate(&e));
+            }
+            Err(e) => eprintln!("Error: {}", e),
+        }
+    }
 }
 
 fn expr(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
     let mut left: f64 = term(get, tokens, index);
     while *index < tokens.len() {
         match tokens[*index].get_type() {
-            TokenType::Symbol => {
-                match tokens[*index].get_string().chars().nth(0).unwrap() {
-                    '+' => {
-                        let t = term(true, tokens, index);
-                        left += t;
-                    }
-                    '-' => {
-                        let t = term(true, tokens, index);
-                        left -= t;
-                    }
-                    _ => {
-                        return left;
-                    }
+            TokenType::Symbol => match tokens[*index].get_string().chars().nth(0).unwrap() {
+                '+' => {
+                    let t = term(true, tokens, index);
+                    left += t;
                 }
-            }
+                '-' => {
+                    let t = term(true, tokens, index);
+                    left -= t;
+                }
+                _ => {
+                    return left;
+                }
+            },
             _ => {
                 return left;
             }
         }
-
     }
     left
 }
@@ -58,25 +57,25 @@ fn term(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
     let mut left: f64 = prim(get, tokens, index);
     while *index < tokens.len() {
         match tokens[*index].get_type() {
-            TokenType::Symbol => {
-                match tokens[*index].get_string().chars().nth(0).unwrap() {
-                    '*' => {
-                        let t = prim(true, tokens, index);
-                        left *= t;
-                    }
-                    '/' => {
-                        let t = prim(true, tokens, index);
-                        if t == 0.0 {
-                            panic!("Divide by zero");
-                        }
-                        left /= t;
-                    }
-                    _ => {
-                        return left;
-                    }
+            TokenType::Symbol => match tokens[*index].get_string().chars().nth(0).unwrap() {
+                '*' => {
+                    let t = prim(true, tokens, index);
+                    left *= t;
                 }
+                '/' => {
+                    let t = prim(true, tokens, index);
+                    if t == 0.0 {
+                        panic!("Divide by zero");
+                    }
+                    left /= t;
+                }
+                _ => {
+                    return left;
+                }
+            },
+            _ => {
+                return left;
             }
-            _ => { return left; }
         }
     }
     left
