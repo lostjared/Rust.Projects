@@ -1,3 +1,9 @@
+
+// parse simple expressions like 2*2+(4*2)
+// this is another program to test the Lexer (Scanner)
+// run
+// $ cargo test
+
 use rs_lex::rlex::*;
 use std::io::BufRead;
 use std::io::Write;
