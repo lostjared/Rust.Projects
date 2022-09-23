@@ -10,10 +10,10 @@ use std::io::Write;
 
 #[test]
 fn test_parse() {
-    assert_eq!(evaluate("2+2"), 4.0);
-    assert_eq!(evaluate("2+2*4"), 10.0);
-    assert_eq!(evaluate("(2+2)*4"), 16.0);
-    assert_eq!(evaluate("((2+2)*4)/2"), 8.0);
+    assert_eq!(evaluate("2+2"), 2.0+2.0);
+    assert_eq!(evaluate("2+2*4"), 2.0+2.0*4.0);
+    assert_eq!(evaluate("(2+2)*4"), (2.0+2.0)*4.0);
+    assert_eq!(evaluate("((2+2)*4)/2"), ((2.0+2.0)*4.0)/2.0);
 }
 
 fn evaluate(input: &str) -> f64 {
