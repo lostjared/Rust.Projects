@@ -140,7 +140,7 @@ pub mod rlex {
             map.insert('_', TokenType::Char);
             let o: Vec<&str> = vec![
                 "++", "--", ">>", "<<", ".=", "+=", "-=", "*=", "/=", "<>", "!=", "<=", ">=", "==",
-                "&&", "||", "^=", "%=", "&=", "?=", "->", "=>", "::", "**", ":=", "***", "|=",
+                "&&", "||", "^=", "%=", "&=", "?=", "->", "=>", "::", "**", ":=", "***", "|=","..",
                 "===", "!==", ">>=", "<<=",
             ];
             let mut o_s: Vec<String> = Vec::new();
@@ -203,6 +203,7 @@ pub mod rlex {
             let mut token_string = String::new();
             let token_type = TokenType::Digits;
             token_string.push(self.stream.getchar().unwrap());
+            let mut dot_count = 0;
             loop {
                 let ch_t = self.stream.getchar();
                 match ch_t {
@@ -218,6 +219,12 @@ pub mod rlex {
                             }
                             TokenType::Symbol => {
                                 if ch == '.' {
+                                    dot_count += 1;
+                                    if dot_count > 1 {
+                                       self.stream.putback();
+                                       self.stream.putback();
+                                       break;
+                                    }
                                     token_string.push(ch);
                                 } else {
                                     self.stream.putback();
