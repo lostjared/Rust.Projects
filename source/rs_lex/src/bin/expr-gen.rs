@@ -1,10 +1,8 @@
-
 // output steps involved in solving the expression
 
 use rs_lex::rlex::*;
 use std::io::BufRead;
 use std::io::Write;
-
 
 fn evaluate(input: &str) -> f64 {
     let scan = Scanner::new(input);
@@ -65,7 +63,6 @@ fn term(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
                     let t = prim(true, tokens, index);
                     println!("MUL {} * {}", left, t);
                     left *= t;
-                   
                 }
                 '/' => {
                     let t = prim(true, tokens, index);

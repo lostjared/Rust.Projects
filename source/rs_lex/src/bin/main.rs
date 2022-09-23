@@ -54,16 +54,18 @@ pub fn to_html(input: String) -> String {
     s
 }
 
-fn scan_text<T>(mut reader: T)
+fn scan_text<T>(reader: T)
 where
     T: std::io::BufRead + Sized,
 {
-    let mut input: String = String::new();
-    reader.read_to_string(&mut input).expect("read string");
-    let rlex = rs_lex::rlex::Scanner::new(&input);
-    for i in rlex {
-        let id = format!("{:?}", i.get_type());
-        println!("{:15} -> {}", id, i.get_string());
+    //let mut input: String = String::new();
+    //reader.read_to_string(&mut input).expect("read string");
+    for line in reader.lines() {
+        let rlex = rs_lex::rlex::Scanner::new(&line.unwrap());
+        for i in rlex {
+            let id = format!("{:?}", i.get_type());
+            println!("{:15} -> {}", id, i.get_string());
+        }
     }
 }
 

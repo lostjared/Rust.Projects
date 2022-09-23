@@ -140,8 +140,8 @@ pub mod rlex {
             map.insert('_', TokenType::Char);
             let o: Vec<&str> = vec![
                 "++", "--", ">>", "<<", ".=", "+=", "-=", "*=", "/=", "<>", "!=", "<=", ">=", "==",
-                "&&", "||", "^=", "%=", "&=", "?=", "->", "=>", "::", "**", ":=", "***", "|=","..",
-                "===", "!==", ">>=", "<<=",
+                "&&", "||", "^=", "%=", "&=", "?=", "->", "=>", "::", "**", ":=", "***", "|=",
+                "..", "===", "!==", ">>=", "<<=",
             ];
             let mut o_s: Vec<String> = Vec::new();
             for i in &o {
@@ -221,9 +221,10 @@ pub mod rlex {
                                 if ch == '.' {
                                     dot_count += 1;
                                     if dot_count > 1 {
-                                       self.stream.putback();
-                                       self.stream.putback();
-                                       break;
+                                        self.stream.putback();
+                                        self.stream.putback();
+                                        token_string.remove(token_string.len()-1);
+                                        break;
                                     }
                                     token_string.push(ch);
                                 } else {
