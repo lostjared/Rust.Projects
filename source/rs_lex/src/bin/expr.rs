@@ -14,6 +14,7 @@ fn test_parse() {
     assert_eq!(evaluate("2.0+2.0*4.0"), 2.0+2.0*4.0);
     assert_eq!(evaluate("(2.0+2.0)*4.0"), (2.0+2.0)*4.0);
     assert_eq!(evaluate("((2.0+2.0)*4.0)/2.0"), ((2.0+2.0)*4.0)/2.0);
+    assert_eq!(evaluate("-1.0 + -1.0"), -1.0 + -1.0);
 }
 
 fn evaluate(input: &str) -> f64 {
