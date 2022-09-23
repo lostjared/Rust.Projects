@@ -1,4 +1,5 @@
 use clap::{App, Arg};
+use std::io::Write;
 
 struct Arguments {
     in_file: String,
@@ -58,14 +59,16 @@ fn scan_text<T>(reader: T)
 where
     T: std::io::BufRead + Sized,
 {
-    //let mut input: String = String::new();
-    //reader.read_to_string(&mut input).expect("read string");
+    print!("> ");
+    std::io::stdout().lock().flush().expect("on flush");
     for line in reader.lines() {
         let rlex = rs_lex::rlex::Scanner::new(&line.unwrap());
         for i in rlex {
             let id = format!("{:?}", i.get_type());
             println!("{:15} -> {}", id, i.get_string());
         }
+        print!("> ");
+        std::io::stdout().lock().flush().expect("on flush");
     }
 }
 
