@@ -8,18 +8,22 @@ pub mod rlex {
     pub struct StringStream {
         data: String,
         pos: usize,
+        lineno: usize, 
     }
 
     impl StringStream {
         pub fn new(input: &str) -> Self {
             let mut s = String::from(input);
             s.push('\n');
-            Self { data: s, pos: 0 }
+            Self { data: s, pos: 0, lineno: 1 }
         }
         pub fn getchar(&mut self) -> Option<char> {
             if self.pos < self.data.len() {
                 let c = self.data.chars().nth(self.pos);
                 self.pos += 1;
+                if c == Some('\n') {
+                    self.lineno += 1;
+                }
                 return c;
             }
             None
@@ -27,6 +31,10 @@ pub mod rlex {
         pub fn curchar(&self) -> Option<char> {
             self.data.chars().nth(self.pos)
         }
+        pub fn prevchar(&self) -> Option<char> {
+            self.data.chars().nth(self.pos-1)
+        }
+
         pub fn putback(&mut self) {
             if self.pos > 0 {
                 self.pos -= 1;
@@ -213,26 +221,27 @@ pub mod rlex {
                             TokenType::Digits => {
                                 token_string.push(ch);
                             }
-                            TokenType::String => {
+                            TokenType::String | TokenType::SingleString => {
                                 self.stream.putback();
                                 break;
                             }
                             TokenType::Symbol => {
                                 if ch == '.' {
                                     dot_count += 1;
-                                    if dot_count > 1 {
+                                    if dot_count > 1 && self.stream.prevchar() == Some('.') {
                                         self.stream.putback();
                                         self.stream.putback();
                                         token_string.remove(token_string.len()-1);
                                         break;
-                                    }
-                                    token_string.push(ch);
+                                    } else  {
+                                        token_string.push(ch);
+                                    } 
                                 } else {
                                     self.stream.putback();
                                     break;
                                 }
                             }
-                            _ => {
+                            TokenType::Space | TokenType::NULL | TokenType::Identifier | TokenType::Char => {
                                 break;
                             }
                         }
@@ -242,6 +251,11 @@ pub mod rlex {
                     }
                 }
             }
+
+            if token_string.chars().nth(token_string.len()-1) == Some('.') {
+                panic!("Lex Error: Invalid decimal point on Number on Line: {}", self.stream.lineno);
+            }
+
             TokenValue::new(&token_string, token_type)
         }
 
