@@ -116,7 +116,39 @@ fn prim(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize, vmap: &mut H
                 vmap.insert(map_id.to_owned(), var_d);
                 println!("{} EQUALS {}", map_id, var_d);
                 return var_d;
-            } else {
+            } else  if *index < tokens.len() && tokens[*index].get_string() == "+=" {
+                let var_d = expr(true, tokens, index, vmap);
+                let mut var_val = vmap[&map_id];
+                var_val += var_d;
+                vmap.insert(map_id.to_owned(), var_val);
+                println!("{} PLUS-EQUALS {}", map_id, var_val);
+                return var_val;
+            } else  if *index < tokens.len() && tokens[*index].get_string() == "-=" {
+                let var_d = expr(true, tokens, index, vmap);
+                let mut var_val = vmap[&map_id];
+                var_val -= var_d;
+                vmap.insert(map_id.to_owned(), var_val);
+                println!("{} MINUS-EQUALS {}", map_id, var_val);
+                return var_val;
+            } else  if *index < tokens.len() && tokens[*index].get_string() == "*=" {
+                let var_d = expr(true, tokens, index, vmap);
+                let mut var_val = vmap[&map_id];
+                var_val *= var_d;
+                vmap.insert(map_id.to_owned(), var_val);
+                println!("{} MUL-EQUALS {}", map_id, var_val);
+                return var_val;
+            } else  if *index < tokens.len() && tokens[*index].get_string() == "/=" {
+                let var_d = expr(true, tokens, index, vmap);
+                let mut var_val = vmap[&map_id];
+                if var_d == 0.0 {
+                    panic!("Divde by zero");
+                }
+                var_val /= var_d;
+                vmap.insert(map_id.to_owned(), var_val);
+                println!("{} DIV-EQUALS {}", map_id, var_val);
+                return var_val;
+            } 
+            else {
                 return var_d;
             }
         }
