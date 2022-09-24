@@ -453,7 +453,7 @@ pub mod rlex {
                         }
                         TokenType::NULL => {
                             self.stream.advance();
-                            println!("Unrecongized character: {}", ch);
+                            println!("Unrecongnized character: {}", ch);
                             return self.scan_token();
                         }
                         _ => {
