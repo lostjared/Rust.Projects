@@ -3,22 +3,30 @@
 use rs_lex::rlex::*;
 use std::io::BufRead;
 use std::io::Write;
+use std::collections::HashMap;
 
-fn evaluate(input: &str) -> f64 {
+fn evaluate(input: &str, vmap: &mut HashMap<String, f64>) -> f64 {
     let scan = Scanner::new(input);
     let tokens: Vec<Box<dyn Token>> = scan.into_iter().collect();
     let mut index: usize = 0;
-    expr(false, &tokens, &mut index)
+    let value = expr(false, &tokens, &mut index, vmap);
+    println!("**** VAR TABLE ****");
+    for (key, value) in vmap {
+        println!("{:7} -> {}", key, value);
+    }
+    println!("**** END TABLE ****");
+    value
 }
 
 fn parse_expr() {
     let r = std::io::stdin().lock();
     print!("> ");
     std::io::stdout().lock().flush().expect("on flush");
+    let mut vmap : HashMap<String, f64> = HashMap::new();
     for line in r.lines() {
         match line {
             Ok(e) => {
-                println!("value is: {}", evaluate(&e));
+                println!("value is: {}", evaluate(&e, &mut vmap));
             }
             Err(e) => eprintln!("Error: {}", e),
         }
@@ -27,18 +35,18 @@ fn parse_expr() {
     }
 }
 
-fn expr(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
-    let mut left: f64 = term(get, tokens, index);
+fn expr(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize, vmap: &mut HashMap<String, f64>) -> f64 {
+    let mut left: f64 = term(get, tokens, index, vmap);
     while *index < tokens.len() {
         match tokens[*index].get_type() {
             TokenType::Symbol => match tokens[*index].get_string().chars().nth(0).unwrap() {
                 '+' => {
-                    let t = term(true, tokens, index);
+                    let t = term(true, tokens, index, vmap);
                     println!("ADD {} + {}", left, t);
                     left += t;
                 }
                 '-' => {
-                    let t = term(true, tokens, index);
+                    let t = term(true, tokens, index, vmap);
                     println!("SUB {} - {}", left, t);
                     left -= t;
                 }
@@ -54,18 +62,18 @@ fn expr(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
     left
 }
 
-fn term(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
-    let mut left: f64 = prim(get, tokens, index);
+fn term(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize, vmap: &mut HashMap<String, f64>) -> f64 {
+    let mut left: f64 = prim(get, tokens, index, vmap);
     while *index < tokens.len() {
         match tokens[*index].get_type() {
             TokenType::Symbol => match tokens[*index].get_string().chars().nth(0).unwrap() {
                 '*' => {
-                    let t = prim(true, tokens, index);
+                    let t = prim(true, tokens, index, vmap);
                     println!("MUL {} * {}", left, t);
                     left *= t;
                 }
                 '/' => {
-                    let t = prim(true, tokens, index);
+                    let t = prim(true, tokens, index, vmap);
                     if t == 0.0 {
                         panic!("Divide by zero");
                     }
@@ -84,7 +92,7 @@ fn term(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
     left
 }
 
-fn prim(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
+fn prim(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize, vmap: &mut HashMap<String, f64>) -> f64 {
     if get {
         *index += 1;
     }
@@ -94,13 +102,30 @@ fn prim(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
             *index += 1;
             return d;
         }
-        TokenType::Identifier => {}
+        TokenType::Identifier => {
+            let map_id = tokens[*index].get_string();
+            let var_d;
+            if vmap.contains_key(&map_id) {
+                var_d = vmap[&map_id];
+            } else {
+                var_d = 0.0;
+            }
+            *index += 1;
+            if *index < tokens.len() && tokens[*index].get_string() == "=" {
+                let var_d = expr(true, tokens, index, vmap);
+                vmap.insert(map_id.to_owned(), var_d);
+                println!("{} EQUALS {}", map_id, var_d);
+                return var_d;
+            } else {
+                return var_d;
+            }
+        }
         TokenType::Symbol => match tokens[*index].get_string().chars().nth(0).unwrap() {
             '-' => {
-                return -prim(true, tokens, index);
+                return -prim(true, tokens, index, vmap);
             }
             '(' => {
-                let f = expr(true, tokens, index);
+                let f = expr(true, tokens, index, vmap);
                 *index += 1;
                 return f;
             }
