@@ -1,1 +1,2 @@
-Test program I am working on.
+Test Lexer (Scanner) for Simple C like language.
+
