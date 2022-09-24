@@ -125,7 +125,7 @@ pub mod rlex {
         oper: Vec<String>,
     }
 
-    #[derive(PartialEq)]
+    #[derive(Copy, Clone, Debug, PartialEq)]
     pub enum ScanResult<T> {
         Ok(T),
         Error,
