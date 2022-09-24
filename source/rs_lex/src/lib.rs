@@ -190,7 +190,7 @@ pub mod rlex {
                             TokenType::Char | TokenType::Digits => {
                                 token_string.push(ch);
                             }
-                            TokenType::String | TokenType::Symbol => {
+                            TokenType::String | TokenType::Symbol | TokenType::SingleString => {
                                 self.stream.putback();
                                 break;
                             }
