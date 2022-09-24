@@ -18,11 +18,6 @@ fn evaluate(input: &str, vmap: &mut HashMap<String, f64>) -> f64 {
         ScanResult::Ok(tokens) => {
             let mut index: usize = 0;
             let value = expr(false, &tokens, &mut index, vmap);
-            println!("**** VAR TABLE ****");
-            for (key, value) in vmap {
-                println!("{:7} -> {}", key, value);
-            }
-            println!("**** END TABLE ****");
             return value;        
         }
     }
@@ -37,6 +32,11 @@ fn parse_expr() {
         match line {
             Ok(e) => {
                 println!("Value for expression is: {}", evaluate(&e, &mut vmap));
+                println!("<--- VAR TABLE --->");
+                for (key, value) in &vmap {
+                    println!("{:7} -> {}", key, value);
+                }
+                println!("<--- END TABLE --->");
             }
             Err(e) => eprintln!("Error: {}", e),
         }
