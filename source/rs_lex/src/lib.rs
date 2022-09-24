@@ -591,4 +591,26 @@ pub mod rlex {
         }
         None
     }
+
+    pub fn collect_tokens(scan: &mut Scanner) -> ScanResult<Vec<Box<dyn Token>>> {
+        let mut v : Vec<Box<dyn Token>> = Vec::new();
+        loop {
+            let token = scan.scan_token();
+            match token {
+                ScanResult::Error => {
+                    eprintln!("Scanner Error ");
+                    return ScanResult::Error;
+                }
+                ScanResult::Ok(tok) => match tok {
+                    Some(i) => {
+                        v.push(i);
+                    }
+                    None => {
+                        break;
+                    }
+                },
+            }
+        }
+        ScanResult::Ok(v)
+    }
 }

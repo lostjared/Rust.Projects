@@ -6,16 +6,23 @@ use std::io::Write;
 use std::collections::HashMap;
 
 fn evaluate(input: &str, vmap: &mut HashMap<String, f64>) -> f64 {
-    let scan = Scanner::new(input);
-    let tokens: Vec<Box<dyn Token>> = scan.into_iter().collect();
-    let mut index: usize = 0;
-    let value = expr(false, &tokens, &mut index, vmap);
-    println!("**** VAR TABLE ****");
-    for (key, value) in vmap {
-        println!("{:7} -> {}", key, value);
+    let mut scan = Scanner::new(input);
+    let tokens_result = collect_tokens(&mut scan);
+    match tokens_result {
+        ScanResult::Error => {
+            return 0.0;
+        }
+        ScanResult::Ok(tokens) => {
+            let mut index: usize = 0;
+            let value = expr(false, &tokens, &mut index, vmap);
+            println!("**** VAR TABLE ****");
+            for (key, value) in vmap {
+                println!("{:7} -> {}", key, value);
+            }
+            println!("**** END TABLE ****");
+            return value;        
+        }
     }
-    println!("**** END TABLE ****");
-    value
 }
 
 fn parse_expr() {
