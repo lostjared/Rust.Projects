@@ -118,10 +118,11 @@ fn prim(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize, vmap: &mut H
             if vmap.contains_key(&map_id) {
                 var_d = vmap[&map_id];
             } else {
+                let lineno = tokens[*index].get_line();
                 if *index+1 < tokens.len() && tokens[*index+1].get_string() != "=" {
-                    panic!("Variable {} not declared", map_id);
+                    panic!("Variable {} not declared on Line: {}", map_id, lineno);
                 } else if *index+1 >= tokens.len()  {
-                    panic!("Variable {} not declared", map_id);
+                    panic!("Variable {} not declared on Line: {}", map_id, lineno);
                 } else {
                     var_d = 0.0;
                 }

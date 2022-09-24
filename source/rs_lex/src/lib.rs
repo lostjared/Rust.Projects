@@ -51,11 +51,13 @@ pub mod rlex {
             None
         }
         pub fn advance(&mut self) {
-            self.pos += 1;
+            self.getchar();
         }
 
         pub fn advance_by(&mut self, index: usize) {
-            self.pos += index;
+            for _i in 0..index {
+                self.getchar();
+            }
         }
 
         pub fn moveback_by(mut self, index: usize) {
@@ -64,10 +66,12 @@ pub mod rlex {
 
         pub fn rewind(&mut self) {
             self.pos = 0;
+            self.lineno = 1;
         }
         pub fn reset(&mut self, input: &str) {
             self.data = input.to_string();
             self.pos = 0;
+            self.lineno = 1;
         }
         pub fn set_pos(&mut self, p: usize) {
             self.pos = p;
@@ -90,12 +94,14 @@ pub mod rlex {
         fn get_type(&self) -> TokenType;
         fn set_type(&mut self, t: TokenType);
         fn get_string(&self) -> String;
+        fn get_line(&self) -> usize;
     }
 
     #[derive(PartialEq)]
     pub struct TokenValue {
         token: String,
         token_type: TokenType,
+        line_number:  usize,
     }
 
     impl Token for TokenValue {
@@ -108,13 +114,17 @@ pub mod rlex {
         fn get_string(&self) -> String {
             self.token.to_owned()
         }
+        fn get_line(&self) -> usize {
+            return self.line_number;
+        }
     }
 
     impl TokenValue {
-        pub fn new(input: &str, t: TokenType) -> Self {
+        pub fn new(input: &str, t: TokenType, lineno: usize) -> Self {
             Self {
                 token: input.to_string(),
                 token_type: t,
+                line_number: lineno,
             }
         }
     }
@@ -191,6 +201,7 @@ pub mod rlex {
         pub fn grab_id(&mut self) -> TokenValue {
             let mut token_string = String::new();
             let token_type = TokenType::Identifier;
+            let lineno = self.stream.lineno;
             token_string.push(self.stream.getchar().unwrap());
             loop {
                 let ch_t = self.stream.getchar();
@@ -215,12 +226,13 @@ pub mod rlex {
                     }
                 }
             }
-            TokenValue::new(&token_string, token_type)
+            TokenValue::new(&token_string, token_type, lineno)
         }
 
         pub fn grab_digits(&mut self) -> Option<TokenValue> {
             let mut token_string = String::new();
             let token_type = TokenType::Digits;
+            let lineno = self.stream.lineno;
             token_string.push(self.stream.getchar().unwrap());
             let mut dot_count = 0;
             loop {
@@ -274,12 +286,13 @@ pub mod rlex {
                 return None;
             }
 
-            Some(TokenValue::new(&token_string, token_type))
+            Some(TokenValue::new(&token_string, token_type, lineno))
         }
 
         pub fn grab_string(&mut self) -> Option<TokenValue> {
             let mut token_string = String::new();
             let token_type = TokenType::String;
+            let lineno = self.stream.lineno;
             self.stream.advance();
             loop {
                 let ch = self.stream.getchar();
@@ -302,12 +315,13 @@ pub mod rlex {
                     }
                 }
             }
-            Some(TokenValue::new(&token_string, token_type))
+            Some(TokenValue::new(&token_string, token_type, lineno))
         }
 
         pub fn grab_single_string(&mut self) -> Option<TokenValue> {
             let mut token_string = String::new();
             let token_type = TokenType::SingleString;
+            let lineno = self.stream.lineno;
             self.stream.advance();
             loop {
                 let ch = self.stream.getchar();
@@ -330,12 +344,13 @@ pub mod rlex {
                     }
                 }
             }
-            Some(TokenValue::new(&token_string, token_type))
+            Some(TokenValue::new(&token_string, token_type, lineno))
         }
 
         pub fn grab_symbol(&mut self) -> TokenValue {
             let mut token_string = String::new();
             let token_type = TokenType::Symbol;
+            let lineno = self.stream.lineno;
             let ch = self.stream.getchar().unwrap();
             let ch2 = self.stream.curchar().unwrap();
             let ch3 = self.stream.peekchar();
@@ -368,7 +383,7 @@ pub mod rlex {
             if token_string.is_empty() {
                 token_string.push(ch);
             }
-            TokenValue::new(&token_string, token_type)
+            TokenValue::new(&token_string, token_type, lineno)
         }
 
         pub fn scan_token(&mut self) -> ScanResult<Option<Box<dyn Token>>> {
