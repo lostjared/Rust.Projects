@@ -465,6 +465,10 @@ pub mod rlex {
             }
             ScanResult::Ok(None)
         }
+
+        pub fn collect_lex(&mut self) -> ScanResult<Vec<Box<dyn Token>>> {
+            collect_tokens(self)
+        }
     }
 
     impl Iterator for Scanner {
