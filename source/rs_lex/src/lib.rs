@@ -8,14 +8,18 @@ pub mod rlex {
     pub struct StringStream {
         data: String,
         pos: usize,
-        lineno: usize, 
+        lineno: usize,
     }
 
     impl StringStream {
         pub fn new(input: &str) -> Self {
             let mut s = String::from(input);
             s.push('\n');
-            Self { data: s, pos: 0, lineno: 1 }
+            Self {
+                data: s,
+                pos: 0,
+                lineno: 1,
+            }
         }
         pub fn getchar(&mut self) -> Option<char> {
             if self.pos < self.data.len() {
@@ -32,7 +36,7 @@ pub mod rlex {
             self.data.chars().nth(self.pos)
         }
         pub fn prevchar(&self) -> Option<char> {
-            self.data.chars().nth(self.pos-1)
+            self.data.chars().nth(self.pos - 1)
         }
 
         pub fn putback(&mut self) {
@@ -88,6 +92,7 @@ pub mod rlex {
         fn get_string(&self) -> String;
     }
 
+    #[derive(PartialEq)]
     pub struct TokenValue {
         token: String,
         token_type: TokenType,
@@ -118,6 +123,12 @@ pub mod rlex {
         stream: StringStream,
         token_map: HashMap<char, TokenType>,
         oper: Vec<String>,
+    }
+
+    #[derive(PartialEq)]
+    pub enum ScanResult<T> {
+        Ok(T),
+        Error,
     }
 
     impl Scanner {
@@ -207,7 +218,7 @@ pub mod rlex {
             TokenValue::new(&token_string, token_type)
         }
 
-        pub fn grab_digits(&mut self) -> TokenValue {
+        pub fn grab_digits(&mut self) -> Option<TokenValue> {
             let mut token_string = String::new();
             let token_type = TokenType::Digits;
             token_string.push(self.stream.getchar().unwrap());
@@ -231,17 +242,20 @@ pub mod rlex {
                                     if dot_count > 1 && self.stream.prevchar() == Some('.') {
                                         self.stream.putback();
                                         self.stream.putback();
-                                        token_string.remove(token_string.len()-1);
+                                        token_string.remove(token_string.len() - 1);
                                         break;
-                                    } else  {
+                                    } else {
                                         token_string.push(ch);
-                                    } 
+                                    }
                                 } else {
                                     self.stream.putback();
                                     break;
                                 }
                             }
-                            TokenType::Space | TokenType::NULL | TokenType::Identifier | TokenType::Char => {
+                            TokenType::Space
+                            | TokenType::NULL
+                            | TokenType::Identifier
+                            | TokenType::Char => {
                                 break;
                             }
                         }
@@ -252,14 +266,18 @@ pub mod rlex {
                 }
             }
 
-            if token_string.chars().nth(token_string.len()-1) == Some('.') {
-                panic!("Lex Error: Invalid decimal point on Number on Line: {}", self.stream.lineno);
+            if token_string.chars().nth(token_string.len() - 1) == Some('.') {
+                eprintln!(
+                    "Lexer Error: Invalid decimal point on Number on Line: {}",
+                    self.stream.lineno
+                );
+                return None;
             }
 
-            TokenValue::new(&token_string, token_type)
+            Some(TokenValue::new(&token_string, token_type))
         }
 
-        pub fn grab_string(&mut self) -> TokenValue {
+        pub fn grab_string(&mut self) -> Option<TokenValue> {
             let mut token_string = String::new();
             let token_type = TokenType::String;
             self.stream.advance();
@@ -279,15 +297,15 @@ pub mod rlex {
                         }
                     }
                     None => {
-                        panic!("Lexer Error: String missing closing \"");
-                        //break;
+                        eprintln!("Lexer Error: String missing closing \" quote");
+                        return None;
                     }
                 }
             }
-            TokenValue::new(&token_string, token_type)
+            Some(TokenValue::new(&token_string, token_type))
         }
 
-        pub fn grab_single_string(&mut self) -> TokenValue {
+        pub fn grab_single_string(&mut self) -> Option<TokenValue> {
             let mut token_string = String::new();
             let token_type = TokenType::SingleString;
             self.stream.advance();
@@ -307,11 +325,12 @@ pub mod rlex {
                         }
                     }
                     None => {
-                        break;
+                        eprintln!("Lexer Error: String missing closing \' quote.");
+                        return None;
                     }
                 }
             }
-            TokenValue::new(&token_string, token_type)
+            Some(TokenValue::new(&token_string, token_type))
         }
 
         pub fn grab_symbol(&mut self) -> TokenValue {
@@ -352,7 +371,7 @@ pub mod rlex {
             TokenValue::new(&token_string, token_type)
         }
 
-        pub fn scan_token(&mut self) -> Option<Box<dyn Token>> {
+        pub fn scan_token(&mut self) -> ScanResult<Option<Box<dyn Token>>> {
             let c = self.stream.curchar();
             match c {
                 Some(ch) => {
@@ -360,19 +379,28 @@ pub mod rlex {
                     match val {
                         TokenType::Char => {
                             let token = self.grab_id();
-                            return Some(Box::new(token));
+                            return ScanResult::Ok(Some(Box::new(token)));
                         }
                         TokenType::Digits => {
                             let token = self.grab_digits();
-                            return Some(Box::new(token));
+                            if token == None {
+                                return ScanResult::Error; // Error occoured stop scan
+                            }
+                            return ScanResult::Ok(Some(Box::new(token.unwrap())));
                         }
                         TokenType::String => {
                             let token = self.grab_string();
-                            return Some(Box::new(token));
+                            if token == None {
+                                return ScanResult::Error; // Error occoured stop scan
+                            }
+                            return ScanResult::Ok(Some(Box::new(token.unwrap())));
                         }
                         TokenType::SingleString => {
                             let token = self.grab_single_string();
-                            return Some(Box::new(token));
+                            if token == None {
+                                return ScanResult::Error; // Error occoured stop scan
+                            }
+                            return ScanResult::Ok(Some(Box::new(token.unwrap())));
                         }
                         TokenType::Symbol => {
                             if ch == '/' {
@@ -417,7 +445,7 @@ pub mod rlex {
                                 }
                             }
                             let token = self.grab_symbol();
-                            return Some(Box::new(token));
+                            return ScanResult::Ok(Some(Box::new(token)));
                         }
                         TokenType::Space => {
                             self.stream.advance();
@@ -435,7 +463,7 @@ pub mod rlex {
                 }
                 None => {}
             }
-            None
+            ScanResult::Ok(None)
         }
     }
 
@@ -443,7 +471,11 @@ pub mod rlex {
         type Item = Box<dyn Token>;
         /// next item for iterator
         fn next(&mut self) -> Option<Self::Item> {
-            self.scan_token()
+            let x = self.scan_token();
+            match x {
+                ScanResult::Ok(it) => return it,
+                ScanResult::Error => return None,
+            }
         }
     }
 
