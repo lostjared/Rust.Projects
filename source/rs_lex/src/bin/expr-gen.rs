@@ -119,23 +119,26 @@ fn prim(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize, vmap: &mut H
             } else  if *index < tokens.len() && tokens[*index].get_string() == "+=" {
                 let var_d = expr(true, tokens, index, vmap);
                 let mut var_val = vmap[&map_id];
+                println!("{} PLUS-EQUALS {}", map_id, var_d);
                 var_val += var_d;
                 vmap.insert(map_id.to_owned(), var_val);
-                println!("{} PLUS-EQUALS {}", map_id, var_val);
+                println!("{} EQUALS {}", map_id, var_val);
                 return var_val;
             } else  if *index < tokens.len() && tokens[*index].get_string() == "-=" {
                 let var_d = expr(true, tokens, index, vmap);
                 let mut var_val = vmap[&map_id];
+                println!("{} MINUS-EQUALS {}", map_id, var_d);
                 var_val -= var_d;
                 vmap.insert(map_id.to_owned(), var_val);
-                println!("{} MINUS-EQUALS {}", map_id, var_val);
+                println!("{} EQUALS {}", map_id, var_val);
                 return var_val;
             } else  if *index < tokens.len() && tokens[*index].get_string() == "*=" {
                 let var_d = expr(true, tokens, index, vmap);
                 let mut var_val = vmap[&map_id];
+                println!("{} MUL-EQUALS {}", map_id, var_d);
                 var_val *= var_d;
                 vmap.insert(map_id.to_owned(), var_val);
-                println!("{} MUL-EQUALS {}", map_id, var_val);
+                println!("{} EQUALS {}", map_id, var_val);
                 return var_val;
             } else  if *index < tokens.len() && tokens[*index].get_string() == "/=" {
                 let var_d = expr(true, tokens, index, vmap);
@@ -143,6 +146,7 @@ fn prim(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize, vmap: &mut H
                 if var_d == 0.0 {
                     panic!("Divde by zero");
                 }
+                println!("{} DIV-EQUALS {}", map_id, var_d);
                 var_val /= var_d;
                 vmap.insert(map_id.to_owned(), var_val);
                 println!("{} DIV-EQUALS {}", map_id, var_val);
