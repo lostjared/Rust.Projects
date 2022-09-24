@@ -6,6 +6,9 @@ use std::io::Write;
 use std::collections::HashMap;
 
 fn evaluate(input: &str, vmap: &mut HashMap<String, f64>) -> f64 {
+    if input.trim().len() == 0 {
+        return 0.0;
+    }
     let mut scan = Scanner::new(input);
     let tokens_result = collect_tokens(&mut scan);
     match tokens_result {
@@ -33,7 +36,7 @@ fn parse_expr() {
     for line in r.lines() {
         match line {
             Ok(e) => {
-                println!("value is: {}", evaluate(&e, &mut vmap));
+                println!("Value for expression is: {}", evaluate(&e, &mut vmap));
             }
             Err(e) => eprintln!("Error: {}", e),
         }
@@ -115,7 +118,13 @@ fn prim(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize, vmap: &mut H
             if vmap.contains_key(&map_id) {
                 var_d = vmap[&map_id];
             } else {
-                var_d = 0.0;
+                if *index+1 < tokens.len() && tokens[*index+1].get_string() != "=" {
+                    panic!("Variable {} not declared", map_id);
+                } else if *index+1 >= tokens.len()  {
+                    panic!("Variable {} not declared", map_id);
+                } else {
+                    var_d = 0.0;
+                }
             }
             *index += 1;
             if *index < tokens.len() && tokens[*index].get_string() == "=" {
@@ -125,28 +134,28 @@ fn prim(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize, vmap: &mut H
                 return var_d;
             } else  if *index < tokens.len() && tokens[*index].get_string() == "+=" {
                 let var_d = expr(true, tokens, index, vmap);
-                let mut var_val = vmap[&map_id];
+                let mut var_val = if vmap.contains_key(&map_id) { vmap[&map_id] } else { 0.0 };
                 println!("{} PLUS-EQUALS {}", map_id, var_d);
                 var_val += var_d;
                 vmap.insert(map_id.to_owned(), var_val);
                 return var_val;
             } else  if *index < tokens.len() && tokens[*index].get_string() == "-=" {
                 let var_d = expr(true, tokens, index, vmap);
-                let mut var_val = vmap[&map_id];
+                let mut var_val = if vmap.contains_key(&map_id) { vmap[&map_id] } else { 0.0 };
                 println!("{} MINUS-EQUALS {}", map_id, var_d);
                 var_val -= var_d;
                 vmap.insert(map_id.to_owned(), var_val);
                 return var_val;
             } else  if *index < tokens.len() && tokens[*index].get_string() == "*=" {
                 let var_d = expr(true, tokens, index, vmap);
-                let mut var_val = vmap[&map_id];
+                let mut var_val = if vmap.contains_key(&map_id) { vmap[&map_id] } else { 0.0 };
                 println!("{} MUL-EQUALS {}", map_id, var_d);
                 var_val *= var_d;
                 vmap.insert(map_id.to_owned(), var_val);
                 return var_val;
             } else  if *index < tokens.len() && tokens[*index].get_string() == "/=" {
                 let var_d = expr(true, tokens, index, vmap);
-                let mut var_val = vmap[&map_id];
+                let mut var_val = if vmap.contains_key(&map_id) { vmap[&map_id] } else { 0.0 };
                 if var_d == 0.0 {
                     panic!("Divde by zero");
                 }
