@@ -279,7 +279,8 @@ pub mod rlex {
                         }
                     }
                     None => {
-                        break;
+                        panic!("Lexer Error: String missing closing \"");
+                        //break;
                     }
                 }
             }
