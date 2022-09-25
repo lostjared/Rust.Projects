@@ -88,7 +88,22 @@ fn main() -> std::io::Result<()> {
                 }
             }
         }
-        1u8 => {}
+        1u8 => {
+            let mut map: BTreeMap<String, BTreeMap<String, String>> = BTreeMap::new();
+            if std::path::Path::new(&args.file).exists() {
+                let f = std::fs::File::open(args.file.to_owned())?;
+                let r = std::io::BufReader::new(f);
+                read_tree_map(r, &mut map);
+            }
+
+            let  m = map.get_mut(&args.cls).unwrap();
+            println!("{} -> {}", args.key, args.value);
+            m.insert(args.key, args.value);
+            let f = std::fs::File::create(args.file.to_owned())?;
+            let w = std::io::BufWriter::new(f);
+            save_tree_map(w, &map);
+            println!("Wrote to {}", args.file);
+        }
         2u8 => {}
         _ => {}
     }
