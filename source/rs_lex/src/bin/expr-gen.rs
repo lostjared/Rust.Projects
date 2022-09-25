@@ -16,6 +16,9 @@ fn evaluate(input: &str, vmap: &mut HashMap<String, f64>) -> f64 {
             return 0.0;
         }
         ScanResult::Ok(tokens) => {
+            if match_token(&tokens, 0, "quit") {
+                std::process::exit(0);
+            }
             let mut index: usize = 0;
             let value = expr(false, &tokens, &mut index, vmap);
             return value;        
