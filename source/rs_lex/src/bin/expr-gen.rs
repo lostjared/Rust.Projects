@@ -1,9 +1,9 @@
 // output steps involved in solving the expression
 
 use rs_lex::rlex::*;
+use std::collections::HashMap;
 use std::io::BufRead;
 use std::io::Write;
-use std::collections::HashMap;
 
 /// evalulate expression save variables to vmap
 fn evaluate(input: &str, vmap: &mut HashMap<String, f64>) -> f64 {
@@ -22,7 +22,7 @@ fn evaluate(input: &str, vmap: &mut HashMap<String, f64>) -> f64 {
             }
             let mut index: usize = 0;
             let value = expr(false, &tokens, &mut index, vmap);
-            return value;        
+            return value;
         }
     }
 }
@@ -31,7 +31,7 @@ fn parse_expr() {
     let r = std::io::stdin().lock();
     print!("> ");
     std::io::stdout().lock().flush().expect("on flush");
-    let mut vmap : HashMap<String, f64> = HashMap::new();
+    let mut vmap: HashMap<String, f64> = HashMap::new();
     for line in r.lines() {
         match line {
             Ok(e) => {
@@ -50,7 +50,12 @@ fn parse_expr() {
 }
 
 /// recursive expression
-fn expr(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize, vmap: &mut HashMap<String, f64>) -> f64 {
+fn expr(
+    get: bool,
+    tokens: &Vec<Box<dyn Token>>,
+    index: &mut usize,
+    vmap: &mut HashMap<String, f64>,
+) -> f64 {
     let mut left: f64 = term(get, tokens, index, vmap);
     while *index < tokens.len() {
         match tokens[*index].get_type() {
@@ -78,7 +83,12 @@ fn expr(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize, vmap: &mut H
 }
 
 /// term
-fn term(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize, vmap: &mut HashMap<String, f64>) -> f64 {
+fn term(
+    get: bool,
+    tokens: &Vec<Box<dyn Token>>,
+    index: &mut usize,
+    vmap: &mut HashMap<String, f64>,
+) -> f64 {
     let mut left: f64 = prim(get, tokens, index, vmap);
     while *index < tokens.len() {
         match tokens[*index].get_type() {
@@ -109,7 +119,12 @@ fn term(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize, vmap: &mut H
 }
 
 /// prim
-fn prim(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize, vmap: &mut HashMap<String, f64>) -> f64 {
+fn prim(
+    get: bool,
+    tokens: &Vec<Box<dyn Token>>,
+    index: &mut usize,
+    vmap: &mut HashMap<String, f64>,
+) -> f64 {
     if get {
         *index += 1;
     }
@@ -126,9 +141,9 @@ fn prim(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize, vmap: &mut H
                 var_d = vmap[&map_id];
             } else {
                 let lineno = tokens[*index].get_line();
-                if *index+1 < tokens.len() && tokens[*index+1].get_string() != "=" {
+                if *index + 1 < tokens.len() && tokens[*index + 1].get_string() != "=" {
                     panic!("Variable {} not declared on Line: {}", map_id, lineno);
-                } else if *index+1 >= tokens.len()  {
+                } else if *index + 1 >= tokens.len() {
                     panic!("Variable {} not declared on Line: {}", map_id, lineno);
                 } else {
                     var_d = 0.0;
@@ -140,30 +155,46 @@ fn prim(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize, vmap: &mut H
                 vmap.insert(map_id.to_owned(), var_d);
                 println!("{} EQUALS {}", map_id, var_d);
                 return var_d;
-            } else  if *index < tokens.len() && tokens[*index].get_string() == "+=" {
+            } else if *index < tokens.len() && tokens[*index].get_string() == "+=" {
                 let var_d = expr(true, tokens, index, vmap);
-                let mut var_val = if vmap.contains_key(&map_id) { vmap[&map_id] } else { 0.0 };
+                let mut var_val = if vmap.contains_key(&map_id) {
+                    vmap[&map_id]
+                } else {
+                    0.0
+                };
                 println!("{} PLUS-EQUALS {}", map_id, var_d);
                 var_val += var_d;
                 vmap.insert(map_id.to_owned(), var_val);
                 return var_val;
-            } else  if *index < tokens.len() && tokens[*index].get_string() == "-=" {
+            } else if *index < tokens.len() && tokens[*index].get_string() == "-=" {
                 let var_d = expr(true, tokens, index, vmap);
-                let mut var_val = if vmap.contains_key(&map_id) { vmap[&map_id] } else { 0.0 };
+                let mut var_val = if vmap.contains_key(&map_id) {
+                    vmap[&map_id]
+                } else {
+                    0.0
+                };
                 println!("{} MINUS-EQUALS {}", map_id, var_d);
                 var_val -= var_d;
                 vmap.insert(map_id.to_owned(), var_val);
                 return var_val;
-            } else  if *index < tokens.len() && tokens[*index].get_string() == "*=" {
+            } else if *index < tokens.len() && tokens[*index].get_string() == "*=" {
                 let var_d = expr(true, tokens, index, vmap);
-                let mut var_val = if vmap.contains_key(&map_id) { vmap[&map_id] } else { 0.0 };
+                let mut var_val = if vmap.contains_key(&map_id) {
+                    vmap[&map_id]
+                } else {
+                    0.0
+                };
                 println!("{} MUL-EQUALS {}", map_id, var_d);
                 var_val *= var_d;
                 vmap.insert(map_id.to_owned(), var_val);
                 return var_val;
-            } else  if *index < tokens.len() && tokens[*index].get_string() == "/=" {
+            } else if *index < tokens.len() && tokens[*index].get_string() == "/=" {
                 let var_d = expr(true, tokens, index, vmap);
-                let mut var_val = if vmap.contains_key(&map_id) { vmap[&map_id] } else { 0.0 };
+                let mut var_val = if vmap.contains_key(&map_id) {
+                    vmap[&map_id]
+                } else {
+                    0.0
+                };
                 if var_d == 0.0 {
                     panic!("Divde by zero");
                 }
@@ -171,8 +202,7 @@ fn prim(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize, vmap: &mut H
                 var_val /= var_d;
                 vmap.insert(map_id.to_owned(), var_val);
                 return var_val;
-            } 
-            else {
+            } else {
                 return var_d;
             }
         }

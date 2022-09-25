@@ -1,7 +1,6 @@
 use rs_lex::rlex::*;
 use std::io::BufRead;
 
-
 #[test]
 fn test_collect_tokens() {
     assert_eq!(collect_tokens_count("x = 1"), 3);

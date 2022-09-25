@@ -18,7 +18,6 @@ fn test_parse() {
 
 /// evaulate expression
 fn evaluate(input: &str) -> f64 {
-
     if input.trim().is_empty() {
         return 0.0;
     }

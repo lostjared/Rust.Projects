@@ -23,7 +23,7 @@ pub enum Input {
     Digit(i64),
     Operator(char),
 }
-/// scan 
+/// scan
 fn scan(stack: &mut Vec<Input>, input: &str) {
     let scan = Scanner::new(input);
     let v: Vec<Box<dyn Token>> = scan.into_iter().collect();

@@ -1,4 +1,3 @@
-
 /// rlex moudle
 pub mod rlex {
 
@@ -119,7 +118,7 @@ pub mod rlex {
     pub struct TokenValue {
         token: String,
         token_type: TokenType,
-        line_number:  usize,
+        line_number: usize,
     }
 
     impl Token for TokenValue {
@@ -650,7 +649,7 @@ pub mod rlex {
 
     /// collect all tokens return as Vector
     pub fn collect_tokens(scan: &mut Scanner) -> ScanResult<Vec<Box<dyn Token>>> {
-        let mut v : Vec<Box<dyn Token>> = Vec::new();
+        let mut v: Vec<Box<dyn Token>> = Vec::new();
         loop {
             let token = scan.scan_token();
             match token {

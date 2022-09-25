@@ -4,7 +4,7 @@ pub mod rs_map {
         consume_token, convert_from_slash, convert_to_slash, match_token, match_token_type,
         Scanner, Token, TokenType,
     };
-    use std::collections::HashMap;
+    use std::collections::{BTreeMap, HashMap};
     use std::io::Read;
     use std::io::Write;
 
@@ -67,5 +67,63 @@ pub mod rs_map {
             }
         }
         Ok(())
+    }
+
+    pub fn save_tree_map<T>(mut writer: T, tmap: &BTreeMap<String, BTreeMap<String, String>>)
+    where
+        T: std::io::Write + Sized,
+    {
+        for (key, value) in tmap {
+            writeln!(writer, "map \"{}\" = {{", key).expect("on write");
+            for (key2, value2) in value {
+                writeln!(
+                    writer,
+                    "\"{}\" = \"{}\"",
+                    convert_to_slash(key2),
+                    convert_to_slash(value2)
+                )
+                .expect("on write");
+            }
+            writeln!(writer, "}}\n").expect("on write");
+        }
+    }
+
+    pub fn read_tree_map<T>(mut r: T, btmap: &mut BTreeMap<String, BTreeMap<String, String>>)
+    where
+        T: std::io::BufRead + Sized,
+    {
+        let mut s: String = String::new();
+        r.read_to_string(&mut s).expect("read ");
+        let scan = Scanner::new(&s);
+        let v: Vec<Box<dyn Token>> = scan.into_iter().collect();
+        let mut index: usize = 0;
+        if v.len() > 3 {
+            loop {
+                consume_token(&v, &mut index, "map");
+                let id = v[index].get_string();
+                index += 1;
+                consume_token(&v, &mut index, "=");
+                consume_token(&v, &mut index, "{");
+                let mut tmap: BTreeMap<String, String> = BTreeMap::new();
+                loop {
+                    if index < v.len() {
+                        let s1 = match_token_type(&v, &mut index, TokenType::String).unwrap();
+                        consume_token(&v, &mut index, "=");
+                        let s2 = match_token_type(&v, &mut index, TokenType::String).unwrap();
+                        tmap.insert(convert_from_slash(&s1), convert_from_slash(&s2));
+                        if match_token(&v, index, "}") {
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+                index += 1;
+                btmap.insert(id, tmap);
+                if index >= v.len() {
+                    break;
+                }
+            }
+        }
     }
 }
