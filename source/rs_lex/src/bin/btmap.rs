@@ -7,7 +7,7 @@ enum Actions {
     Save,
     Load,
     Remove,
-    Display
+    Display,
 }
 
 /// Arguments
@@ -75,7 +75,11 @@ fn parse_args() -> Arguments {
     let class_name = m.value_of_lossy("class").unwrap();
     let key_value = m.value_of_lossy("key").unwrap();
     let value_value = m.value_of_lossy("value").unwrap();
-    let mut action_value = if value_value == "<NO-VAL>" { Actions::Load } else { Actions::Save };
+    let mut action_value = if value_value == "<NO-VAL>" {
+        Actions::Load
+    } else {
+        Actions::Save
+    };
     if m.is_present("remove") {
         action_value = Actions::Remove;
     }
@@ -126,7 +130,7 @@ fn main() -> std::io::Result<()> {
                     save_tree_map(w, &map);
                 }
                 None => {
-                    let mut mv : BTreeMap<String,String> = BTreeMap::new();
+                    let mut mv: BTreeMap<String, String> = BTreeMap::new();
                     mv.insert(args.key, args.value.to_owned());
                     map.insert(args.cls, mv);
                     let f = std::fs::File::create(args.file.to_owned())?;

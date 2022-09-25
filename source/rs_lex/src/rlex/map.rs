@@ -74,17 +74,19 @@ pub mod rs_map {
         T: std::io::Write + Sized,
     {
         for (key, value) in tmap {
-            writeln!(writer, "map \"{}\" = {{", key).expect("on write");
-            for (key2, value2) in value {
-                writeln!(
-                    writer,
-                    "\"{}\" = \"{}\"",
-                    convert_to_slash(key2),
-                    convert_to_slash(value2)
-                )
-                .expect("on write");
+            if value.len() >= 1 {
+                writeln!(writer, "map \"{}\" = {{", key).expect("on write");
+                for (key2, value2) in value {
+                    writeln!(
+                        writer,
+                        "\"{}\" = \"{}\"",
+                        convert_to_slash(key2),
+                        convert_to_slash(value2)
+                    )
+                    .expect("on write");
+                }
+                writeln!(writer, "}}\n").expect("on write");
             }
-            writeln!(writer, "}}\n").expect("on write");
         }
     }
 
@@ -100,8 +102,7 @@ pub mod rs_map {
         if v.len() > 3 {
             loop {
                 consume_token(&v, &mut index, "map");
-                let id = v[index].get_string();
-                index += 1;
+                let id = match_token_type(&v, &mut index, TokenType::String).unwrap();
                 consume_token(&v, &mut index, "=");
                 consume_token(&v, &mut index, "{");
                 let mut tmap: BTreeMap<String, String> = BTreeMap::new();
@@ -127,7 +128,10 @@ pub mod rs_map {
         }
     }
 
-    pub fn merge_maps(dst: &mut BTreeMap<String, BTreeMap<String, String>>, src: &BTreeMap<String, BTreeMap<String, String>>) {
+    pub fn merge_maps(
+        dst: &mut BTreeMap<String, BTreeMap<String, String>>,
+        src: &BTreeMap<String, BTreeMap<String, String>>,
+    ) {
         for (key, value) in src {
             dst.insert(key.to_owned(), value.to_owned());
         }
