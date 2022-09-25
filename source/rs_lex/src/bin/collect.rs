@@ -16,10 +16,10 @@ fn collect_tokens_count(input: &str) -> usize {
     match token_result {
         ScanResult::Error => {
             eprintln!("Error quitting");
-            return 0;
+            0
         }
         ScanResult::Ok(tokens) => {
-            return tokens.len();
+            tokens.len()
         }
     }
 }
@@ -30,10 +30,10 @@ fn collect_tokens_member(input: &str) -> usize {
     match token_result {
         ScanResult::Error => {
             eprintln!("Error quitting");
-            return 0;
+            0
         }
         ScanResult::Ok(tokens) => {
-            return tokens.len();
+            tokens.len()
         }
     }
 }

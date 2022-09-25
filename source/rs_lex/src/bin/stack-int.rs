@@ -31,9 +31,9 @@ fn scan(stack: &mut Vec<Input>, input: &str) {
     print_stack(stack);
 }
 /// print the stack to stdout
-fn print_stack(stack: &Vec<Input>) {
-    for i in 0..stack.len() {
-        match stack[i] {
+fn print_stack(stack: &[Input]) {
+    for (i, item) in stack.iter().enumerate() {
+        match item {
             Input::Digit(num) => {
                 println!("stack [{}] = {}", i, num);
             }
@@ -62,23 +62,17 @@ fn push_digits(v: &Vec<Box<dyn Token>>, stack: &mut Vec<Input>) {
             stack.push(Input::Digit(v[index].get_string().parse().unwrap()));
             index += 1;
         } else if v[index].get_type() == TokenType::Symbol {
-            match v[index].get_string().chars().nth(0).unwrap() {
+            match v[index].get_string().chars().next().unwrap() {
                 '+' => {
                     let left = stack.pop().unwrap();
                     let right = stack.pop().unwrap();
                     let mut d1: i64 = 0;
                     let mut d2: i64 = 0;
-                    match left {
-                        Input::Digit(num) => {
-                            d1 = num;
-                        }
-                        _ => {}
+                    if let Input::Digit(num) = left {
+                        d1 = num;
                     }
-                    match right {
-                        Input::Digit(num) => {
-                            d2 = num;
-                        }
-                        _ => {}
+                    if let Input::Digit(num) = right {
+                        d2 = num;
                     }
                     stack.push(Input::Digit(d1 + d2));
                 }
@@ -87,18 +81,13 @@ fn push_digits(v: &Vec<Box<dyn Token>>, stack: &mut Vec<Input>) {
                     let right = stack.pop().unwrap();
                     let mut d1: i64 = 0;
                     let mut d2: i64 = 0;
-                    match left {
-                        Input::Digit(num) => {
-                            d1 = num;
-                        }
-                        _ => {}
+                    if let Input::Digit(num) = left {
+                        d1 = num;
                     }
-                    match right {
-                        Input::Digit(num) => {
-                            d2 = num;
-                        }
-                        _ => {}
+                    if let Input::Digit(num) = right {
+                        d2 = num;
                     }
+                    
                     stack.push(Input::Digit(d1 - d2));
                 }
                 '*' => {
@@ -106,18 +95,13 @@ fn push_digits(v: &Vec<Box<dyn Token>>, stack: &mut Vec<Input>) {
                     let right = stack.pop().unwrap();
                     let mut d1: i64 = 0;
                     let mut d2: i64 = 0;
-                    match left {
-                        Input::Digit(num) => {
-                            d1 = num;
-                        }
-                        _ => {}
+                    if let Input::Digit(num) = left {
+                        d1 = num;
                     }
-                    match right {
-                        Input::Digit(num) => {
-                            d2 = num;
-                        }
-                        _ => {}
+                    if let Input::Digit(num) = right {
+                        d2 = num;
                     }
+                    
                     stack.push(Input::Digit(d1 * d2));
                 }
                 '/' => {
@@ -125,17 +109,11 @@ fn push_digits(v: &Vec<Box<dyn Token>>, stack: &mut Vec<Input>) {
                     let right = stack.pop().unwrap();
                     let mut d1: i64 = 0;
                     let mut d2: i64 = 0;
-                    match left {
-                        Input::Digit(num) => {
-                            d1 = num;
-                        }
-                        _ => {}
+                    if let Input::Digit(num) = left {
+                        d1 = num;
                     }
-                    match right {
-                        Input::Digit(num) => {
-                            d2 = num;
-                        }
-                        _ => {}
+                    if let Input::Digit(num) = right {
+                        d2 = num;
                     }
                     stack.push(Input::Digit(d1 / d2));
                 }

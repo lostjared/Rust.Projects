@@ -74,7 +74,7 @@ pub mod rs_map {
         T: std::io::Write + Sized,
     {
         for (key, value) in tmap {
-            if value.len() >= 1 {
+            if !value.is_empty() {
                 writeln!(writer, "map \"{}\" = {{", key).expect("on write");
                 for (key2, value2) in value {
                     writeln!(

@@ -50,7 +50,7 @@ fn expr(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
     let mut left: f64 = term(get, tokens, index);
     while *index < tokens.len() {
         match tokens[*index].get_type() {
-            TokenType::Symbol => match tokens[*index].get_string().chars().nth(0).unwrap() {
+            TokenType::Symbol => match tokens[*index].get_string().chars().next().unwrap() {
                 '+' => {
                     let t = term(true, tokens, index);
                     left += t;
@@ -76,7 +76,7 @@ fn term(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
     let mut left: f64 = prim(get, tokens, index);
     while *index < tokens.len() {
         match tokens[*index].get_type() {
-            TokenType::Symbol => match tokens[*index].get_string().chars().nth(0).unwrap() {
+            TokenType::Symbol => match tokens[*index].get_string().chars().next().unwrap() {
                 '*' => {
                     let t = prim(true, tokens, index);
                     left *= t;
@@ -112,7 +112,7 @@ fn prim(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
             return d;
         }
         TokenType::Identifier => {}
-        TokenType::Symbol => match tokens[*index].get_string().chars().nth(0).unwrap() {
+        TokenType::Symbol => match tokens[*index].get_string().chars().next().unwrap() {
             '-' => {
                 return -prim(true, tokens, index);
             }

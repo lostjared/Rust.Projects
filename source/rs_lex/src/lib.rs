@@ -136,7 +136,7 @@ pub mod rlex {
         }
         /// get token line position
         fn get_line(&self) -> usize {
-            return self.line_number;
+            self.line_number
         }
     }
 
@@ -526,8 +526,8 @@ pub mod rlex {
         fn next(&mut self) -> Option<Self::Item> {
             let x = self.scan_token();
             match x {
-                ScanResult::Ok(it) => return it,
-                ScanResult::Error => return None,
+                ScanResult::Ok(it) => it,
+                ScanResult::Error => None,
             }
         }
     }
@@ -609,38 +609,34 @@ pub mod rlex {
     }
 
     /// consume token (if doesn't exisit panic)
-    pub fn consume_token(v: &Vec<Box<dyn Token>>, index: &mut usize, tok: &str) {
-        if v[*index].get_string() == tok.to_string() {
+    pub fn consume_token(v: &[Box<dyn Token>], index: &mut usize, tok: &str) {
+        if v[*index].get_string() == *tok {
             *index += 1;
         } else {
             panic!("Expected: {} found {}", tok, v[*index].get_string());
         }
     }
     /// match token
-    pub fn match_token(v: &Vec<Box<dyn Token>>, index: usize, tok: &str) -> bool {
-        if v[index].get_string() == tok.to_string() {
-            return true;
-        } else {
-            return false;
-        }
+    pub fn match_token(v: &[Box<dyn Token>], index: usize, tok: &str) -> bool {
+       v[index].get_string() == *tok
     }
     /// match token increase position
-    pub fn match_token_inc(v: &Vec<Box<dyn Token>>, index: &mut usize, tok: &str) -> bool {
-        if v[*index].get_string() == tok.to_string() {
+    pub fn match_token_inc(v: &[Box<dyn Token>], index: &mut usize, tok: &str) -> bool {
+        if v[*index].get_string() == *tok {
             *index += 1;
-            return true;
+            true
         } else {
-            return false;
+            false
         }
     }
     /// match token type return String
     pub fn match_token_type(
-        v: &Vec<Box<dyn Token>>,
+        v: &[Box<dyn Token>],
         index: &mut usize,
         tok_t: TokenType,
     ) -> Option<String> {
         if v[*index].get_type() == tok_t {
-            let t = v[*index].get_string().to_owned();
+            let t = v[*index].get_string();
             *index += 1;
             return Some(t);
         }

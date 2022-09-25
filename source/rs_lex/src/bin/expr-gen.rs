@@ -14,15 +14,14 @@ fn evaluate(input: &str, vmap: &mut HashMap<String, f64>) -> f64 {
     let tokens_result = collect_tokens(&mut scan);
     match tokens_result {
         ScanResult::Error => {
-            return 0.0;
+            0.0
         }
         ScanResult::Ok(tokens) => {
             if match_token(&tokens, 0, "quit") {
                 std::process::exit(0);
             }
             let mut index: usize = 0;
-            let value = expr(false, &tokens, &mut index, vmap);
-            return value;
+            expr(false, &tokens, &mut index, vmap)
         }
     }
 }
@@ -59,7 +58,7 @@ fn expr(
     let mut left: f64 = term(get, tokens, index, vmap);
     while *index < tokens.len() {
         match tokens[*index].get_type() {
-            TokenType::Symbol => match tokens[*index].get_string().chars().nth(0).unwrap() {
+            TokenType::Symbol => match tokens[*index].get_string().chars().next().unwrap() {
                 '+' => {
                     let t = term(true, tokens, index, vmap);
                     println!("ADD {} + {}", left, t);
@@ -92,7 +91,7 @@ fn term(
     let mut left: f64 = prim(get, tokens, index, vmap);
     while *index < tokens.len() {
         match tokens[*index].get_type() {
-            TokenType::Symbol => match tokens[*index].get_string().chars().nth(0).unwrap() {
+            TokenType::Symbol => match tokens[*index].get_string().chars().next().unwrap() {
                 '*' => {
                     let t = prim(true, tokens, index, vmap);
                     println!("MUL {} * {}", left, t);
@@ -141,11 +140,9 @@ fn prim(
                 var_d = vmap[&map_id];
             } else {
                 let lineno = tokens[*index].get_line();
-                if *index + 1 < tokens.len() && tokens[*index + 1].get_string() != "=" {
+                if (*index + 1 < tokens.len() && tokens[*index + 1].get_string() != "=") || (*index + 1 >= tokens.len()){
                     panic!("Variable {} not declared on Line: {}", map_id, lineno);
-                } else if *index + 1 >= tokens.len() {
-                    panic!("Variable {} not declared on Line: {}", map_id, lineno);
-                } else {
+                }  else {
                     var_d = 0.0;
                 }
             }
@@ -164,7 +161,7 @@ fn prim(
                 };
                 println!("{} PLUS-EQUALS {}", map_id, var_d);
                 var_val += var_d;
-                vmap.insert(map_id.to_owned(), var_val);
+                vmap.insert(map_id, var_val);
                 return var_val;
             } else if *index < tokens.len() && tokens[*index].get_string() == "-=" {
                 let var_d = expr(true, tokens, index, vmap);
@@ -175,7 +172,7 @@ fn prim(
                 };
                 println!("{} MINUS-EQUALS {}", map_id, var_d);
                 var_val -= var_d;
-                vmap.insert(map_id.to_owned(), var_val);
+                vmap.insert(map_id, var_val);
                 return var_val;
             } else if *index < tokens.len() && tokens[*index].get_string() == "*=" {
                 let var_d = expr(true, tokens, index, vmap);
@@ -186,7 +183,7 @@ fn prim(
                 };
                 println!("{} MUL-EQUALS {}", map_id, var_d);
                 var_val *= var_d;
-                vmap.insert(map_id.to_owned(), var_val);
+                vmap.insert(map_id, var_val);
                 return var_val;
             } else if *index < tokens.len() && tokens[*index].get_string() == "/=" {
                 let var_d = expr(true, tokens, index, vmap);
@@ -200,13 +197,13 @@ fn prim(
                 }
                 println!("{} DIV-EQUALS {}", map_id, var_d);
                 var_val /= var_d;
-                vmap.insert(map_id.to_owned(), var_val);
+                vmap.insert(map_id, var_val);
                 return var_val;
             } else {
                 return var_d;
             }
         }
-        TokenType::Symbol => match tokens[*index].get_string().chars().nth(0).unwrap() {
+        TokenType::Symbol => match tokens[*index].get_string().chars().next().unwrap() {
             '-' => {
                 return -prim(true, tokens, index, vmap);
             }
