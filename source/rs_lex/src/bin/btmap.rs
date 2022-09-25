@@ -2,13 +2,21 @@ use clap::{App, Arg};
 use rs_lex::rlex::map::rs_map::*;
 use std::collections::BTreeMap;
 
+/// Actions
+enum Actions {
+    Save,
+    Load,
+    Remove,
+    Display
+}
+
 /// Arguments
 struct Arguments {
     file: String,
     cls: String,
     key: String,
     value: String,
-    action: u8,
+    action: Actions,
 }
 
 /// parse the arguments
@@ -67,12 +75,12 @@ fn parse_args() -> Arguments {
     let class_name = m.value_of_lossy("class").unwrap();
     let key_value = m.value_of_lossy("key").unwrap();
     let value_value = m.value_of_lossy("value").unwrap();
-    let mut action_value = if value_value == "<NO-VAL>" { 0u8 } else { 1u8 };
+    let mut action_value = if value_value == "<NO-VAL>" { Actions::Load } else { Actions::Save };
     if m.is_present("remove") {
-        action_value = 2u8;
+        action_value = Actions::Remove;
     }
     if m.is_present("list") {
-        action_value = 3u8;
+        action_value = Actions::Display;
     }
     Arguments {
         file: filename.to_string(),
@@ -86,11 +94,11 @@ fn main() -> std::io::Result<()> {
     let mut args = parse_args();
 
     if args.key == "list" {
-        args.action = 3u8;
+        args.action = Actions::Display;
     }
 
     match args.action {
-        0u8 => {
+        Actions::Load => {
             let f = std::fs::File::open(args.file)?;
             let r = std::io::BufReader::new(f);
             let mut btmap: BTreeMap<String, BTreeMap<String, String>> = BTreeMap::new();
@@ -102,7 +110,7 @@ fn main() -> std::io::Result<()> {
                 }
             }
         }
-        1u8 => {
+        Actions::Save => {
             let mut map: BTreeMap<String, BTreeMap<String, String>> = BTreeMap::new();
             if std::path::Path::new(&args.file).exists() {
                 let f = std::fs::File::open(args.file.to_owned())?;
@@ -128,7 +136,7 @@ fn main() -> std::io::Result<()> {
             }
             println!("Wrote to {}", args.file);
         }
-        2u8 => {
+        Actions::Remove => {
             let mut map: BTreeMap<String, BTreeMap<String, String>> = BTreeMap::new();
             let f = std::fs::File::open(args.file.to_owned())?;
             let r = std::io::BufReader::new(f);
@@ -144,7 +152,7 @@ fn main() -> std::io::Result<()> {
             let w = std::io::BufWriter::new(f);
             save_tree_map(w, &map);
         }
-        3u8 => {
+        Actions::Display => {
             let f = std::fs::File::open(args.file)?;
             let r = std::io::BufReader::new(f);
             let mut map: BTreeMap<String, BTreeMap<String, String>> = BTreeMap::new();
@@ -154,7 +162,6 @@ fn main() -> std::io::Result<()> {
                 println!("{} = {}", key, value);
             }
         }
-        _ => {}
     }
     Ok(())
 }
