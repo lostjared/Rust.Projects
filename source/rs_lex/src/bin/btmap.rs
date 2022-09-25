@@ -37,7 +37,8 @@ fn parse_args() -> Arguments {
             Arg::with_name("key")
                 .short('k')
                 .long("key")
-                .required(true)
+                .required(false)
+                .default_value("list")
                 .takes_value(true)
                 .allow_invalid_utf8(true),
         )
@@ -55,6 +56,12 @@ fn parse_args() -> Arguments {
                 .long("remove")
                 .required(false),
         )
+        .arg(
+            Arg::with_name("list")
+                .short('l')
+                .long("list")
+                .required(false),
+        )
         .get_matches();
     let filename = m.value_of_lossy("file").unwrap();
     let class_name = m.value_of_lossy("class").unwrap();
@@ -63,6 +70,9 @@ fn parse_args() -> Arguments {
     let mut action_value = if value_value == "<NO-VAL>" { 0u8 } else { 1u8 };
     if m.is_present("remove") {
         action_value = 2u8;
+    }
+    if m.is_present("list") {
+        action_value = 3u8;
     }
     Arguments {
         file: filename.to_string(),
@@ -73,7 +83,11 @@ fn parse_args() -> Arguments {
     }
 }
 fn main() -> std::io::Result<()> {
-    let args = parse_args();
+    let mut args = parse_args();
+
+    if args.key == "list" {
+        args.action = 3u8;
+    }
 
     match args.action {
         0u8 => {
@@ -96,8 +110,8 @@ fn main() -> std::io::Result<()> {
                 read_tree_map(r, &mut map);
             }
 
-            let  m = map.get_mut(&args.cls).unwrap();
-             m.insert(args.key, args.value);
+            let m = map.get_mut(&args.cls).unwrap();
+            m.insert(args.key, args.value);
             let f = std::fs::File::create(args.file.to_owned())?;
             let w = std::io::BufWriter::new(f);
             save_tree_map(w, &map);
@@ -119,8 +133,17 @@ fn main() -> std::io::Result<()> {
             let w = std::io::BufWriter::new(f);
             save_tree_map(w, &map);
         }
+        3u8 => {
+            let f = std::fs::File::open(args.file)?;
+            let r = std::io::BufReader::new(f);
+            let mut map: BTreeMap<String, BTreeMap<String, String>> = BTreeMap::new();
+            read_tree_map(r, &mut map);
+            let m = &map[&args.cls];
+            for (key, value) in m {
+                println!("{} = {}", key, value);
+            }
+        }
         _ => {}
     }
-
     Ok(())
 }
