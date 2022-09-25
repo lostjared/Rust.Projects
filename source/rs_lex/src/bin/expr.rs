@@ -17,6 +17,11 @@ fn test_parse() {
 }
 
 fn evaluate(input: &str) -> f64 {
+
+    if input.trim().is_empty() {
+        return 0.0;
+    }
+
     let scan = Scanner::new(input);
     let tokens: Vec<Box<dyn Token>> = scan.into_iter().collect();
     let mut index: usize = 0;

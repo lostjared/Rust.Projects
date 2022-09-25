@@ -6,7 +6,7 @@ use std::io::Write;
 use std::collections::HashMap;
 
 fn evaluate(input: &str, vmap: &mut HashMap<String, f64>) -> f64 {
-    if input.trim().len() == 0 {
+    if input.trim().is_empty() {
         return 0.0;
     }
     let mut scan = Scanner::new(input);
