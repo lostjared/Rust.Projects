@@ -109,12 +109,23 @@ fn main() -> std::io::Result<()> {
                 let r = std::io::BufReader::new(f);
                 read_tree_map(r, &mut map);
             }
-
-            let m = map.get_mut(&args.cls).unwrap();
-            m.insert(args.key, args.value);
-            let f = std::fs::File::create(args.file.to_owned())?;
-            let w = std::io::BufWriter::new(f);
-            save_tree_map(w, &map);
+            let m = map.get_mut(&args.cls);
+            match m {
+                Some(m) => {
+                    m.insert(args.key, args.value);
+                    let f = std::fs::File::create(args.file.to_owned())?;
+                    let w = std::io::BufWriter::new(f);
+                    save_tree_map(w, &map);
+                }
+                None => {
+                    let mut mv : BTreeMap<String,String> = BTreeMap::new();
+                    mv.insert(args.key, args.value.to_owned());
+                    map.insert(args.cls, mv);
+                    let f = std::fs::File::create(args.file.to_owned())?;
+                    let w = std::io::BufWriter::new(f);
+                    save_tree_map(w, &map);
+                }
+            }
             println!("Wrote to {}", args.file);
         }
         2u8 => {
