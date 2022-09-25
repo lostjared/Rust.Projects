@@ -5,6 +5,7 @@ use std::io::BufRead;
 use std::io::Write;
 use std::collections::HashMap;
 
+/// evalulate expression save variables to vmap
 fn evaluate(input: &str, vmap: &mut HashMap<String, f64>) -> f64 {
     if input.trim().is_empty() {
         return 0.0;
@@ -25,7 +26,7 @@ fn evaluate(input: &str, vmap: &mut HashMap<String, f64>) -> f64 {
         }
     }
 }
-
+/// parse expressions
 fn parse_expr() {
     let r = std::io::stdin().lock();
     print!("> ");
@@ -48,6 +49,7 @@ fn parse_expr() {
     }
 }
 
+/// recursive expression
 fn expr(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize, vmap: &mut HashMap<String, f64>) -> f64 {
     let mut left: f64 = term(get, tokens, index, vmap);
     while *index < tokens.len() {
@@ -75,6 +77,7 @@ fn expr(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize, vmap: &mut H
     left
 }
 
+/// term
 fn term(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize, vmap: &mut HashMap<String, f64>) -> f64 {
     let mut left: f64 = prim(get, tokens, index, vmap);
     while *index < tokens.len() {
@@ -105,6 +108,7 @@ fn term(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize, vmap: &mut H
     left
 }
 
+/// prim
 fn prim(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize, vmap: &mut HashMap<String, f64>) -> f64 {
     if get {
         *index += 1;
@@ -188,6 +192,7 @@ fn prim(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize, vmap: &mut H
     0.0
 }
 
+/// main function
 fn main() -> std::io::Result<()> {
     parse_expr();
     Ok(())

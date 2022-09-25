@@ -16,6 +16,7 @@ fn test_parse() {
     assert_eq!(evaluate("-1.0 + -1.0"), -1.0 + -1.0);
 }
 
+/// evaulate expression
 fn evaluate(input: &str) -> f64 {
 
     if input.trim().is_empty() {
@@ -28,6 +29,7 @@ fn evaluate(input: &str) -> f64 {
     expr(false, &tokens, &mut index)
 }
 
+/// parse expression
 fn parse_expr() {
     let r = std::io::stdin().lock();
     print!("> ");
@@ -44,6 +46,7 @@ fn parse_expr() {
     }
 }
 
+/// recursive expression parser
 fn expr(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
     let mut left: f64 = term(get, tokens, index);
     while *index < tokens.len() {
@@ -69,6 +72,7 @@ fn expr(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
     left
 }
 
+/// term
 fn term(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
     let mut left: f64 = prim(get, tokens, index);
     while *index < tokens.len() {
@@ -97,6 +101,7 @@ fn term(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
     left
 }
 
+/// prim
 fn prim(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
     if get {
         *index += 1;
@@ -124,6 +129,7 @@ fn prim(get: bool, tokens: &Vec<Box<dyn Token>>, index: &mut usize) -> f64 {
     0.0
 }
 
+/// main function
 fn main() -> std::io::Result<()> {
     parse_expr();
     Ok(())

@@ -17,19 +17,20 @@ fn test_stack_math() {
     assert_eq!(stack.pop(), Some(Input::Digit(-1)));
 }
 
+/// input enum
 #[derive(Debug, PartialEq)]
 pub enum Input {
     Digit(i64),
     Operator(char),
 }
-
+/// scan 
 fn scan(stack: &mut Vec<Input>, input: &str) {
     let scan = Scanner::new(input);
     let v: Vec<Box<dyn Token>> = scan.into_iter().collect();
     push_digits(&v, stack);
     print_stack(stack);
 }
-
+/// print the stack to stdout
 fn print_stack(stack: &Vec<Input>) {
     for i in 0..stack.len() {
         match stack[i] {
@@ -42,7 +43,7 @@ fn print_stack(stack: &Vec<Input>) {
         }
     }
 }
-
+/// push digits/operations into the stack
 fn push_digits(v: &Vec<Box<dyn Token>>, stack: &mut Vec<Input>) {
     let mut index: usize = 0;
 
@@ -149,6 +150,7 @@ fn push_digits(v: &Vec<Box<dyn Token>>, stack: &mut Vec<Input>) {
     }
 }
 
+/// read data
 fn read_data() {
     let mut r = std::io::stdin().lock();
     let mut s = String::new();
@@ -157,6 +159,7 @@ fn read_data() {
     scan(&mut stack, &s);
 }
 
+/// main function
 fn main() -> std::io::Result<()> {
     read_data();
     Ok(())

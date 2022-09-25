@@ -1,11 +1,12 @@
 use clap::{App, Arg};
 use std::io::Write;
 
+/// Arguments
 struct Arguments {
     in_file: String,
     html: bool,
 }
-
+/// Parse the arguments
 fn parse_args() -> Arguments {
     let m = App::new("rs_lex")
         .help("rs_lex")
@@ -35,7 +36,7 @@ fn parse_args() -> Arguments {
         html: h,
     }
 }
-
+/// convert string to HTML
 pub fn to_html(input: String) -> String {
     let mut s = String::new();
     for i in 0..input.len() as usize {
@@ -54,7 +55,7 @@ pub fn to_html(input: String) -> String {
     }
     s
 }
-
+/// scan text
 fn scan_text<T>(reader: T)
 where
     T: std::io::BufRead + Sized,
@@ -72,6 +73,7 @@ where
     }
 }
 
+/// scan text and output html to stdout (redirect to file with >)
 fn scan_text_output_html<T>(mut reader: T)
 where
     T: std::io::BufRead + Sized,
@@ -95,6 +97,7 @@ where
     println!("</table></body></html>");
 }
 
+/// main function
 fn main() -> std::io::Result<()> {
     let args = parse_args();
     if args.in_file == "<STDIN>" {

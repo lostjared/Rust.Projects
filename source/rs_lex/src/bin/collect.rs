@@ -10,6 +10,7 @@ fn test_collect_tokens() {
     assert_eq!(collect_tokens_member("test(&x);"), 6);
 }
 
+/// collect tokens count (how many?)
 fn collect_tokens_count(input: &str) -> usize {
     let mut scan = Scanner::new(input);
     let token_result = collect_tokens(&mut scan);
@@ -23,7 +24,7 @@ fn collect_tokens_count(input: &str) -> usize {
         }
     }
 }
-
+/// collect tokens count (How many)?
 fn collect_tokens_member(input: &str) -> usize {
     let mut scan = Scanner::new(input);
     let token_result = scan.collect_lex();
@@ -38,6 +39,7 @@ fn collect_tokens_member(input: &str) -> usize {
     }
 }
 
+/// main function
 fn main() -> std::io::Result<()> {
     for i in std::io::stdin().lock().lines() {
         match i {

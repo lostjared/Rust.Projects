@@ -23,6 +23,7 @@ pub mod rs_map {
         consume_token(&v, &mut index, "}");
     }
 
+    /// save map to file
     pub fn save_map(out_file: &str, map: &HashMap<String, String>) -> std::io::Result<()> {
         let f = std::fs::File::create(out_file)?;
         let mut w = std::io::BufWriter::new(f);
@@ -38,7 +39,7 @@ pub mod rs_map {
         writeln!(w, "}}")?;
         Ok(())
     }
-
+    /// read map from file
     pub fn read_map(in_file: &str, map: &mut HashMap<String, String>) -> std::io::Result<()> {
         let f = std::fs::File::open(in_file)?;
         let mut s: String = String::new();

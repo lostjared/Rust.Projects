@@ -32,7 +32,7 @@ where
         std::io::stdout().lock().flush().expect("on flush");
     }
 }
-
+/// main function
 pub fn main() -> std::io::Result<()> {
     scan_text(std::io::stdin().lock());
     Ok(())

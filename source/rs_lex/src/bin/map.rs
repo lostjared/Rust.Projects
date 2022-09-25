@@ -2,6 +2,7 @@ use clap::{App, Arg};
 use rs_lex::rlex::map::rs_map::{read_map, save_map};
 use std::collections::HashMap;
 
+/// Arguments
 struct Arguments {
     file: String,
     key: String,
@@ -9,6 +10,7 @@ struct Arguments {
     action: u8,
 }
 
+/// parse the arguments
 fn parse_args() -> Arguments {
     let m = App::new("map")
         .author("Jared")
@@ -59,6 +61,7 @@ fn parse_args() -> Arguments {
     }
 }
 
+/// main function
 fn main() -> std::io::Result<()> {
     let args = parse_args();
     match args.action {

@@ -1,9 +1,12 @@
+
+/// rlex moudle
 pub mod rlex {
 
     use std::collections::HashMap;
 
     pub mod map;
 
+    /// StringStream struct to keep track of current character position
     #[derive(Clone, Debug)]
     pub struct StringStream {
         data: String,
@@ -12,6 +15,7 @@ pub mod rlex {
     }
 
     impl StringStream {
+        /// create a new string stream
         pub fn new(input: &str) -> Self {
             let mut s = String::from(input);
             s.push('\n');
@@ -21,6 +25,7 @@ pub mod rlex {
                 lineno: 1,
             }
         }
+        /// get a character from stream
         pub fn getchar(&mut self) -> Option<char> {
             if self.pos < self.data.len() {
                 let c = self.data.chars().nth(self.pos);
@@ -32,52 +37,63 @@ pub mod rlex {
             }
             None
         }
+        /// current character in stream
         pub fn curchar(&self) -> Option<char> {
             self.data.chars().nth(self.pos)
         }
+        /// previous character from stream
         pub fn prevchar(&self) -> Option<char> {
             self.data.chars().nth(self.pos - 1)
         }
 
+        /// put back a character into stream
         pub fn putback(&mut self) {
             if self.pos > 0 {
                 self.pos -= 1;
             }
         }
+        /// peek next character from stream without increasing position
         pub fn peekchar(&mut self) -> Option<char> {
             if self.pos + 1 < self.data.len() {
                 return self.data.chars().nth(self.pos + 1);
             }
             None
         }
+        /// advance position without getting character
         pub fn advance(&mut self) {
             self.getchar();
         }
 
+        /// advance position by number of iterations
         pub fn advance_by(&mut self, index: usize) {
             for _i in 0..index {
                 self.getchar();
             }
         }
 
+        /// move position back by number of iterations
         pub fn moveback_by(mut self, index: usize) {
             self.pos -= index;
         }
 
+        /// rewind to start of stream
         pub fn rewind(&mut self) {
             self.pos = 0;
             self.lineno = 1;
         }
+        /// reset stream with new input string
         pub fn reset(&mut self, input: &str) {
             self.data = input.to_string();
             self.pos = 0;
             self.lineno = 1;
         }
+        /// set stream position
         pub fn set_pos(&mut self, p: usize) {
             self.pos = p;
         }
     }
 
+    /// the different types of tokens
     #[derive(Copy, Clone, Debug, PartialEq)]
     pub enum TokenType {
         NULL,
@@ -90,6 +106,7 @@ pub mod rlex {
         Symbol,
     }
 
+    /// Token type trait
     pub trait Token {
         fn get_type(&self) -> TokenType;
         fn set_type(&mut self, t: TokenType);
@@ -97,6 +114,7 @@ pub mod rlex {
         fn get_line(&self) -> usize;
     }
 
+    /// Token value
     #[derive(PartialEq)]
     pub struct TokenValue {
         token: String,
@@ -105,21 +123,26 @@ pub mod rlex {
     }
 
     impl Token for TokenValue {
+        /// get token type
         fn get_type(&self) -> TokenType {
             self.token_type
         }
+        /// set token type
         fn set_type(&mut self, t: TokenType) {
             self.token_type = t;
         }
+        /// get token string
         fn get_string(&self) -> String {
             self.token.to_owned()
         }
+        /// get token line position
         fn get_line(&self) -> usize {
             return self.line_number;
         }
     }
 
     impl TokenValue {
+        /// create a new token value
         pub fn new(input: String, t: TokenType, lineno: usize) -> Self {
             Self {
                 token: input,
@@ -129,12 +152,14 @@ pub mod rlex {
         }
     }
 
+    /// the scanner structure
     pub struct Scanner {
         stream: StringStream,
         token_map: HashMap<char, TokenType>,
         oper: Vec<String>,
     }
 
+    /// scan result enum for success or error
     #[derive(Copy, Clone, Debug, PartialEq)]
     pub enum ScanResult<T> {
         Ok(T),
@@ -142,6 +167,7 @@ pub mod rlex {
     }
 
     impl Scanner {
+        /// create a new Scanner struct
         pub fn new(input: &str) -> Self {
             let mut map: HashMap<char, TokenType> = HashMap::new();
             for i in 0..255u8 {
@@ -183,6 +209,7 @@ pub mod rlex {
             }
         }
 
+        /// is scanner structure valid?
         pub fn valid(&self) -> bool {
             if self.stream.pos < self.stream.data.len() {
                 return true;
@@ -190,6 +217,7 @@ pub mod rlex {
             false
         }
 
+        /// convert type from character
         pub fn type_from_char(&self, c: char) -> Option<TokenType> {
             if self.token_map.contains_key(&c) {
                 return Some(self.token_map[&c]);
@@ -198,6 +226,7 @@ pub mod rlex {
             None
         }
 
+        /// grab id token value
         pub fn grab_id(&mut self) -> TokenValue {
             let mut token_string = String::new();
             let token_type = TokenType::Identifier;
@@ -229,6 +258,7 @@ pub mod rlex {
             TokenValue::new(token_string, token_type, lineno)
         }
 
+        /// grab digits token value
         pub fn grab_digits(&mut self) -> Option<TokenValue> {
             let mut token_string = String::new();
             let token_type = TokenType::Digits;
@@ -289,6 +319,7 @@ pub mod rlex {
             Some(TokenValue::new(token_string, token_type, lineno))
         }
 
+        /// grab string token value
         pub fn grab_string(&mut self) -> Option<TokenValue> {
             let mut token_string = String::new();
             let token_type = TokenType::String;
@@ -318,6 +349,7 @@ pub mod rlex {
             Some(TokenValue::new(token_string, token_type, lineno))
         }
 
+        /// grab single quote string token value
         pub fn grab_single_string(&mut self) -> Option<TokenValue> {
             let mut token_string = String::new();
             let token_type = TokenType::SingleString;
@@ -347,6 +379,7 @@ pub mod rlex {
             Some(TokenValue::new(token_string, token_type, lineno))
         }
 
+        /// grab symbol token value
         pub fn grab_symbol(&mut self) -> TokenValue {
             let mut token_string = String::new();
             let token_type = TokenType::Symbol;
@@ -386,6 +419,7 @@ pub mod rlex {
             TokenValue::new(token_string, token_type, lineno)
         }
 
+        /// scan for token function
         pub fn scan_token(&mut self) -> ScanResult<Option<Box<dyn Token>>> {
             let c = self.stream.curchar();
             match c {
@@ -481,6 +515,7 @@ pub mod rlex {
             ScanResult::Ok(None)
         }
 
+        /// collect all tokens return as Vector
         pub fn collect_lex(&mut self) -> ScanResult<Vec<Box<dyn Token>>> {
             collect_tokens(self)
         }
@@ -498,6 +533,7 @@ pub mod rlex {
         }
     }
 
+    /// convert to slash format
     pub fn convert_to_slash(input: &String) -> String {
         let mut s = String::new();
         let mut i = 0;
@@ -533,7 +569,7 @@ pub mod rlex {
         }
         s
     }
-
+    /// convert from slash format
     pub fn convert_from_slash(input: &String) -> String {
         let mut s: String = String::new();
         let mut i = 0;
@@ -573,6 +609,7 @@ pub mod rlex {
         s
     }
 
+    /// consume token (if doesn't exisit panic)
     pub fn consume_token(v: &Vec<Box<dyn Token>>, index: &mut usize, tok: &str) {
         if v[*index].get_string() == tok.to_string() {
             *index += 1;
@@ -580,7 +617,7 @@ pub mod rlex {
             panic!("Expected: {} found {}", tok, v[*index].get_string());
         }
     }
-
+    /// match token
     pub fn match_token(v: &Vec<Box<dyn Token>>, index: usize, tok: &str) -> bool {
         if v[index].get_string() == tok.to_string() {
             return true;
@@ -588,7 +625,7 @@ pub mod rlex {
             return false;
         }
     }
-
+    /// match token increase position
     pub fn match_token_inc(v: &Vec<Box<dyn Token>>, index: &mut usize, tok: &str) -> bool {
         if v[*index].get_string() == tok.to_string() {
             *index += 1;
@@ -597,7 +634,7 @@ pub mod rlex {
             return false;
         }
     }
-
+    /// match token type return String
     pub fn match_token_type(
         v: &Vec<Box<dyn Token>>,
         index: &mut usize,
@@ -611,6 +648,7 @@ pub mod rlex {
         None
     }
 
+    /// collect all tokens return as Vector
     pub fn collect_tokens(scan: &mut Scanner) -> ScanResult<Vec<Box<dyn Token>>> {
         let mut v : Vec<Box<dyn Token>> = Vec::new();
         loop {
