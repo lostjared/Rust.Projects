@@ -126,4 +126,10 @@ pub mod rs_map {
             }
         }
     }
+
+    pub fn merge_maps(dst: &mut BTreeMap<String, BTreeMap<String, String>>, src: &BTreeMap<String, BTreeMap<String, String>>) {
+        for (key, value) in src {
+            dst.insert(key.to_owned(), value.to_owned());
+        }
+    }
 }
