@@ -120,9 +120,9 @@ pub mod rlex {
     }
 
     impl TokenValue {
-        pub fn new(input: &str, t: TokenType, lineno: usize) -> Self {
+        pub fn new(input: String, t: TokenType, lineno: usize) -> Self {
             Self {
-                token: input.to_string(),
+                token: input,
                 token_type: t,
                 line_number: lineno,
             }
@@ -226,7 +226,7 @@ pub mod rlex {
                     }
                 }
             }
-            TokenValue::new(&token_string, token_type, lineno)
+            TokenValue::new(token_string, token_type, lineno)
         }
 
         pub fn grab_digits(&mut self) -> Option<TokenValue> {
@@ -286,7 +286,7 @@ pub mod rlex {
                 return None;
             }
 
-            Some(TokenValue::new(&token_string, token_type, lineno))
+            Some(TokenValue::new(token_string, token_type, lineno))
         }
 
         pub fn grab_string(&mut self) -> Option<TokenValue> {
@@ -315,7 +315,7 @@ pub mod rlex {
                     }
                 }
             }
-            Some(TokenValue::new(&token_string, token_type, lineno))
+            Some(TokenValue::new(token_string, token_type, lineno))
         }
 
         pub fn grab_single_string(&mut self) -> Option<TokenValue> {
@@ -344,7 +344,7 @@ pub mod rlex {
                     }
                 }
             }
-            Some(TokenValue::new(&token_string, token_type, lineno))
+            Some(TokenValue::new(token_string, token_type, lineno))
         }
 
         pub fn grab_symbol(&mut self) -> TokenValue {
@@ -383,7 +383,7 @@ pub mod rlex {
             if token_string.is_empty() {
                 token_string.push(ch);
             }
-            TokenValue::new(&token_string, token_type, lineno)
+            TokenValue::new(token_string, token_type, lineno)
         }
 
         pub fn scan_token(&mut self) -> ScanResult<Option<Box<dyn Token>>> {
