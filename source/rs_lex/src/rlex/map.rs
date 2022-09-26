@@ -76,7 +76,7 @@ pub mod rs_map {
     {
         for (key, value) in tmap {
             if !value.is_empty() {
-                writeln!(writer, "map \"{}\" = {{", key).expect("on write");
+                writeln!(writer, "map \"{}\" = {{", convert_to_slash(key)).expect("on write");
                 for (key2, value2) in value {
                     writeln!(
                         writer,
@@ -122,7 +122,7 @@ pub mod rs_map {
                     }
                 }
                 index += 1;
-                btmap.insert(id, tmap);
+                btmap.insert(convert_from_slash(&id), tmap);
                 if index >= v.len() {
                     break;
                 }
