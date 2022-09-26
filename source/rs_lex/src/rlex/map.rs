@@ -136,4 +136,60 @@ pub mod rs_map {
             dst.insert(key.to_owned(), value.to_owned());
         }
     }
+
+    pub struct ConfigFile {
+        btmap: BTreeMap<String, BTreeMap<String, String>>,
+        filename: String,
+    }
+
+    impl ConfigFile {
+        pub fn new(input: &str) -> Self {
+            let mut map : BTreeMap<String, BTreeMap<String, String>> = BTreeMap::new();
+            if std::path::Path::new(input).exists() {
+                let f = std::fs::File::open(input).expect("open file");
+                let r = std::io::BufReader::new(f);
+                read_tree_map(r, &mut map);
+            }
+            Self {
+                btmap: map,
+                filename: input.to_string()
+            }
+        }
+
+        pub fn save(&mut self) {
+            let f = std::fs::File::create(&self.filename).expect("on save");
+            let w = std::io::BufWriter::new(f);
+            save_tree_map(w, &self.btmap);
+        }
+
+        pub fn reload(&mut self) {
+            let f = std::fs::File::open(&self.filename).expect("on load");
+            let r = std::io::BufReader::new(f);
+            read_tree_map(r, &mut self.btmap);
+        }
+
+        pub fn class_exists(&self, cls: &str) -> bool {
+            self.btmap.contains_key(cls)
+        }
+
+        pub fn insert_class(&mut self, cls: &str) {
+            let m : BTreeMap<String, String> = BTreeMap::new();
+            self.btmap.insert(cls.to_string(), m);
+        }
+
+        pub fn set_key(&mut self, cls: &str, key: &str, value: &str) {
+            if self.btmap.contains_key(cls) {
+                let m = self.btmap.get_mut(cls).unwrap();
+                m.insert(key.to_string(), value.to_string());
+            }            
+        }
+
+        pub fn get_key(&self, cls: &str, key: &str) -> Option<String> {
+            if self.btmap.contains_key(cls) {
+                let m = self.btmap.get(cls).unwrap();
+                return Some(m.get(key).unwrap().to_string());
+            }
+            None
+        }
+    }
 }
