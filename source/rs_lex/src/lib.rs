@@ -618,7 +618,7 @@ pub mod rlex {
     }
     /// match token
     pub fn match_token(v: &[Box<dyn Token>], index: usize, tok: &str) -> bool {
-       v[index].get_string() == *tok
+        v[index].get_string() == *tok
     }
     /// match token increase position
     pub fn match_token_inc(v: &[Box<dyn Token>], index: &mut usize, tok: &str) -> bool {

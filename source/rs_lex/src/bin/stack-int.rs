@@ -87,7 +87,7 @@ fn push_digits(v: &Vec<Box<dyn Token>>, stack: &mut Vec<Input>) {
                     if let Input::Digit(num) = right {
                         d2 = num;
                     }
-                    
+
                     stack.push(Input::Digit(d1 - d2));
                 }
                 '*' => {
@@ -101,7 +101,7 @@ fn push_digits(v: &Vec<Box<dyn Token>>, stack: &mut Vec<Input>) {
                     if let Input::Digit(num) = right {
                         d2 = num;
                     }
-                    
+
                     stack.push(Input::Digit(d1 * d2));
                 }
                 '/' => {

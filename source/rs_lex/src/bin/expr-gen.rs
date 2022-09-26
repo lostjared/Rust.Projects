@@ -13,9 +13,7 @@ fn evaluate(input: &str, vmap: &mut HashMap<String, f64>) -> f64 {
     let mut scan = Scanner::new(input);
     let tokens_result = collect_tokens(&mut scan);
     match tokens_result {
-        ScanResult::Error => {
-            0.0
-        }
+        ScanResult::Error => 0.0,
         ScanResult::Ok(tokens) => {
             if match_token(&tokens, 0, "quit") {
                 std::process::exit(0);
@@ -140,9 +138,11 @@ fn prim(
                 var_d = vmap[&map_id];
             } else {
                 let lineno = tokens[*index].get_line();
-                if (*index + 1 < tokens.len() && tokens[*index + 1].get_string() != "=") || (*index + 1 >= tokens.len()){
+                if (*index + 1 < tokens.len() && tokens[*index + 1].get_string() != "=")
+                    || (*index + 1 >= tokens.len())
+                {
                     panic!("Variable {} not declared on Line: {}", map_id, lineno);
-                }  else {
+                } else {
                     var_d = 0.0;
                 }
             }
