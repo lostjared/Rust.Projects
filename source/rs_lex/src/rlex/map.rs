@@ -149,7 +149,7 @@ pub mod rs_map {
     impl ConfigFile {
         /// create new config file if input does exist than create blank tree
         pub fn new(input: &str) -> Self {
-            let mut map : BTreeMap<String, BTreeMap<String, String>> = BTreeMap::new();
+            let mut map: BTreeMap<String, BTreeMap<String, String>> = BTreeMap::new();
             if std::path::Path::new(input).exists() {
                 let f = std::fs::File::open(input).expect("open file");
                 let r = std::io::BufReader::new(f);
@@ -157,7 +157,7 @@ pub mod rs_map {
             }
             Self {
                 btmap: map,
-                filename: input.to_string()
+                filename: input.to_string(),
             }
         }
 
@@ -181,7 +181,7 @@ pub mod rs_map {
 
         /// insert a class into the tree
         pub fn insert_class(&mut self, cls: &str) {
-            let m : BTreeMap<String, String> = BTreeMap::new();
+            let m: BTreeMap<String, String> = BTreeMap::new();
             self.btmap.insert(cls.to_string(), m);
         }
 
@@ -190,7 +190,7 @@ pub mod rs_map {
             if self.btmap.contains_key(cls) {
                 let m = self.btmap.get_mut(cls).unwrap();
                 m.insert(key.to_string(), value.to_string());
-            }            
+            }
         }
         /// get value from key / class
         pub fn get_key(&self, cls: &str, key: &str) -> Option<String> {
