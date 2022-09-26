@@ -1,5 +1,6 @@
 use rs_lex::rlex::map::rs_map::*;
 
+/// count how many times program has been run
 fn run_count() -> usize {
     let mut count = 0;
     let mut config = ConfigFile::new("count.dat");

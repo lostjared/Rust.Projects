@@ -69,6 +69,7 @@ pub mod rs_map {
         Ok(())
     }
 
+    /// save tree map to writer stream
     pub fn save_tree_map<T>(mut writer: T, tmap: &BTreeMap<String, BTreeMap<String, String>>)
     where
         T: std::io::Write + Sized,
@@ -90,6 +91,7 @@ pub mod rs_map {
         }
     }
 
+    /// read tree map from reader stream
     pub fn read_tree_map<T>(mut r: T, btmap: &mut BTreeMap<String, BTreeMap<String, String>>)
     where
         T: std::io::BufRead + Sized,
@@ -128,6 +130,7 @@ pub mod rs_map {
         }
     }
 
+    /// merge two maps
     pub fn merge_maps(
         dst: &mut BTreeMap<String, BTreeMap<String, String>>,
         src: &BTreeMap<String, BTreeMap<String, String>>,
@@ -137,12 +140,14 @@ pub mod rs_map {
         }
     }
 
+    /// config file structure
     pub struct ConfigFile {
         btmap: BTreeMap<String, BTreeMap<String, String>>,
         filename: String,
     }
 
     impl ConfigFile {
+        /// create new config file if input does exist than create blank tree
         pub fn new(input: &str) -> Self {
             let mut map : BTreeMap<String, BTreeMap<String, String>> = BTreeMap::new();
             if std::path::Path::new(input).exists() {
@@ -156,34 +161,38 @@ pub mod rs_map {
             }
         }
 
+        /// save to file
         pub fn save(&mut self) {
             let f = std::fs::File::create(&self.filename).expect("on save");
             let w = std::io::BufWriter::new(f);
             save_tree_map(w, &self.btmap);
         }
-
+        /// reload tree from file
         pub fn reload(&mut self) {
             let f = std::fs::File::open(&self.filename).expect("on load");
             let r = std::io::BufReader::new(f);
             read_tree_map(r, &mut self.btmap);
         }
 
+        /// does this class exist?
         pub fn class_exists(&self, cls: &str) -> bool {
             self.btmap.contains_key(cls)
         }
 
+        /// insert a class into the tree
         pub fn insert_class(&mut self, cls: &str) {
             let m : BTreeMap<String, String> = BTreeMap::new();
             self.btmap.insert(cls.to_string(), m);
         }
 
+        /// set a key with a value
         pub fn set_key(&mut self, cls: &str, key: &str, value: &str) {
             if self.btmap.contains_key(cls) {
                 let m = self.btmap.get_mut(cls).unwrap();
                 m.insert(key.to_string(), value.to_string());
             }            
         }
-
+        /// get value from key / class
         pub fn get_key(&self, cls: &str, key: &str) -> Option<String> {
             if self.btmap.contains_key(cls) {
                 let m = self.btmap.get(cls).unwrap();
