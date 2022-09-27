@@ -39,18 +39,22 @@ pub mod btree {
         pub root: Node<T>,
     }
 
-    impl<T> Tree<T> {
+    impl<T: std::fmt::Debug> Tree<T> {
 
         pub fn new() -> Self {
             Self {
                 root: None,
             }
         }       
-
+        
         pub fn new_node(node: Node<T>) -> Self {
             Self {
                 root: node,
             }
+        }
+
+        pub fn print_nodes(&self) {
+            TreeNode::<T>::print_nodes(&self.root);
         }
     }
 
