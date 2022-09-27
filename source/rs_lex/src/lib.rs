@@ -4,6 +4,7 @@ pub mod rlex {
     use std::collections::HashMap;
 
     pub mod map;
+    pub mod tree;
 
     /// StringStream struct to keep track of current character position
     #[derive(Clone, Debug)]
