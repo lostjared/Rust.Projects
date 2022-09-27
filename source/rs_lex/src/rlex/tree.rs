@@ -28,11 +28,30 @@ pub mod btree {
 
        pub fn print_nodes(node: &Node<T>) {
             if let Some(n) = node {
-                Self::print_nodes(&n.left);
                 println!("{:?}", n.data);
+                Self::print_nodes(&n.left);
                 Self::print_nodes(&n.right);
             }
        }
+    }
+
+    pub struct Tree<T> {
+        pub root: Node<T>,
+    }
+
+    impl<T> Tree<T> {
+
+        pub fn new() -> Self {
+            Self {
+                root: None,
+            }
+        }       
+
+        pub fn new_node(node: Node<T>) -> Self {
+            Self {
+                root: node,
+            }
+        }
     }
 
 }
