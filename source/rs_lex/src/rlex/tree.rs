@@ -7,7 +7,7 @@ pub mod btree {
         pub data: T,
     }
 
-    type Node<T> = Option<Box<TreeNode<T>>>;
+    pub type Node<T> = Option<Box<TreeNode<T>>>;
 
     impl<T: std::fmt::Debug> TreeNode<T> {
         pub fn new(dat: T) -> Self {
@@ -32,6 +32,14 @@ pub mod btree {
                 Self::print_nodes(&n.left);
                 Self::print_nodes(&n.right);
             }
+       }
+
+       pub fn set_left_node(&mut self, data: T) {
+            self.left = Some(Box::new(TreeNode::new(data)));
+       }
+
+       pub fn set_right_node(&mut self, data: T) {
+            self.right = Some(Box::new(TreeNode::new(data)));
        }
     }
 
