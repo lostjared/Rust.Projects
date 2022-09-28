@@ -64,7 +64,7 @@ fn convert_text(input: &str) {
         ScanResult::Ok(tokens) => {
             let mut index: usize = 0;
             let node = expr(false, &tokens, &mut index);
-            TreeNode::print_nodes(&node);
+            //TreeNode::print_nodes(&node);
             println!("Value is: {}", eval(&node));
         }
     }
