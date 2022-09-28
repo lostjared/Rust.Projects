@@ -121,7 +121,6 @@ fn prim(get: bool, tokens: &Vec<TokenVar>, index: &mut usize) -> Node<Ast> {
         TokenType::Digits => {
             let d: f64 = tokens[*index].get_string().parse().unwrap();
             *index += 1;
-            println!("PUSH {}", d);
             return Ast::new_value(d);
         }
         TokenType::Identifier => {}
@@ -152,18 +151,27 @@ fn eval(node: &Node<Ast>) -> f64 {
     match node {
         Some(node) => match node.data.op {
             '+' => {
-                return eval(&node.left) + eval(&node.right);
+                let value = eval(&node.left) + eval(&node.right);
+                println!("PLUS");
+                return value;
             }
             '-' => {
-                return eval(&node.left) - eval(&node.right);
+                let value = eval(&node.left) - eval(&node.right);
+                println!("MINUS");
+                return value;
             }
             '*' => {
-                return eval(&node.left) * eval(&node.right);
+                let value = eval(&node.left) * eval(&node.right);
+                println!("MUL");
+                return value;
             }
             '/' => {
-                return eval(&node.left) / eval(&node.right);
+                let value = eval(&node.left) / eval(&node.right);
+                println!("DIV");
+                return value;
             }
             '0' => {
+                println!("PUSH {}", node.data.val);
                 return node.data.val;
             }
             _ => {}
