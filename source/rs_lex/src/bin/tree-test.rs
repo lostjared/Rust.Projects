@@ -1,6 +1,7 @@
 use rs_lex::rlex::tree::btree::*;
 use rs_lex::rlex::*;
 use std::io::BufRead;
+use std::io::Write;
 
 #[test]
 fn tree_test() {
@@ -37,6 +38,8 @@ impl Ast {
 
 fn process_text() {
     let r = std::io::stdin().lock();
+    print!("> ");
+    std::io::stdout().lock().flush().expect("on flush");
     for line in r.lines() {
         match line {
             Ok(s) => {
@@ -46,6 +49,8 @@ fn process_text() {
                 eprintln!("{}", e);
             }
         }
+        print!("> ");
+        std::io::stdout().lock().flush().expect("on flush");
     }
 }
 
