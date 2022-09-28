@@ -41,6 +41,7 @@ pub mod btree {
        pub fn set_right_node(&mut self, data: T) {
             self.right = Some(Box::new(TreeNode::new(data)));
        }
+       
     }
 
     pub struct Tree<T> {

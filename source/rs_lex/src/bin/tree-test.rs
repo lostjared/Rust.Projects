@@ -20,7 +20,6 @@ fn test_tree() {
 
 
 fn main() -> std::io::Result<()> {
-   
-    Ok(())
-
+   tree_test();
+   Ok(())
 }
