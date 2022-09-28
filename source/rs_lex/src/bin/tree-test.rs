@@ -55,12 +55,19 @@ fn process_text() {
 }
 
 fn convert_text(input: &str) {
-    let scan: Scanner = Scanner::new(input);
-    let tokens: Vec<TokenVar> = scan.into_iter().collect();
-    let mut index: usize = 0;
-    let node = expr(false, &tokens, &mut index);
-    TreeNode::print_nodes(&node);
-    println!("Value is: {}", eval(&node));
+    let mut scan: Scanner = Scanner::new(input);
+    let result = scan.collect_lex();
+    match result {
+        ScanResult::Error => {
+            eprintln!("Scanner Error ");
+        }
+        ScanResult::Ok(tokens) => {
+            let mut index: usize = 0;
+            let node = expr(false, &tokens, &mut index);
+            TreeNode::print_nodes(&node);
+            println!("Value is: {}", eval(&node));
+        }
+    }
 }
 
 fn expr(get: bool, tokens: &Vec<TokenVar>, index: &mut usize) -> Node<Ast> {
