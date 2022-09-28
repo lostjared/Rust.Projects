@@ -122,6 +122,8 @@ pub mod rlex {
         line_number: usize,
     }
 
+    pub type TokenVar = Box<dyn Token>;
+
     impl Token for TokenValue {
         /// get token type
         fn get_type(&self) -> TokenType {
