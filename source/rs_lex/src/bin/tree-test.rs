@@ -2,6 +2,7 @@ use rs_lex::rlex::tree::btree::*;
 use rs_lex::rlex::*;
 use std::io::BufRead;
 
+#[test]
 fn tree_test() {
     let mut tree: Tree<i32> = Tree::new();
     let mut node: TreeNode<i32> = TreeNode::new(25);
@@ -12,11 +13,6 @@ fn tree_test() {
     tree.root = Some(Box::new(node));
     //TreeNode::<i32>::print_nodes(&tree.root);
     tree.print_nodes();
-}
-
-#[test]
-fn test_tree() {
-    tree_test();
 }
 
 #[derive(Copy, Clone, Debug)]
