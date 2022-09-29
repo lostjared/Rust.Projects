@@ -117,7 +117,7 @@ fn term(get: bool, tokens: &Vec<TokenVar>, index: &mut usize) -> Node<Ast> {
                 return left;
             }
         }
-    }               
+    }
     left
 }
 
