@@ -160,12 +160,12 @@ fn eval(node: &Node<Ast>) -> f64 {
         Some(node) => match node.data.op {
             '+' => {
                 let value = eval(&node.left) + eval(&node.right);
-                println!("PLUS");
+                println!("ADD");
                 return value;
             }
             '-' => {
                 let value = eval(&node.left) - eval(&node.right);
-                println!("MINUS");
+                println!("SUB");
                 return value;
             }
             '*' => {
