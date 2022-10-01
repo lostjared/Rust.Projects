@@ -35,7 +35,7 @@ impl Ast {
         Some(Box::new(TreeNode::new(Self::new_val(v))))
     }
 }
-#[derive(Copy,Clone,Debug)]
+#[derive(Copy, Clone, Debug)]
 enum Code {
     Add,
     Sub,
@@ -44,7 +44,7 @@ enum Code {
     Push,
 }
 
-#[derive(Copy,Clone,Debug)]
+#[derive(Copy, Clone, Debug)]
 struct Instruct {
     opcode: Code,
     operand1: f64,
@@ -53,7 +53,11 @@ struct Instruct {
 
 impl Instruct {
     pub fn new(opc: Code, op1: f64, op2: f64) -> Self {
-        Self { opcode: opc, operand1: op1, operand2: op2 }
+        Self {
+            opcode: opc,
+            operand1: op1,
+            operand2: op2,
+        }
     }
 }
 
@@ -63,9 +67,7 @@ struct ICode {
 
 impl ICode {
     pub fn new() -> Self {
-        Self {
-            icode: Vec::new(),
-        }
+        Self { icode: Vec::new() }
     }
     pub fn push_code(&mut self, ins: Instruct) {
         self.icode.push(ins);
