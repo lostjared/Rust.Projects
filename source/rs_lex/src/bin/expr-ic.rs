@@ -59,14 +59,12 @@ impl Instruct {
 
 struct ICode {
     icode: Vec<Instruct>,
-    index: usize,
 }
 
 impl ICode {
     pub fn new() -> Self {
         Self {
             icode: Vec::new(),
-            index: 0
         }
     }
     pub fn push_code(&mut self, ins: Instruct) {
@@ -74,7 +72,25 @@ impl ICode {
     }
 
     pub fn translate_code(&self) {
-
+        for i in &self.icode {
+            match i.opcode {
+                Code::Add => {
+                    println!("ADD");
+                }
+                Code::Sub => {
+                    println!("SUB");
+                }
+                Code::Mul => {
+                    println!("MUL");
+                }
+                Code::Div => {
+                    println!("DIV");
+                }
+                Code::Push => {
+                    println!("PUSH {}", i.operand1);
+                }
+            }
+        }
     }
 }
 
@@ -109,6 +125,7 @@ fn convert_text(input: &str) {
             //TreeNode::print_nodes(&node);
             let mut code: ICode = ICode::new();
             gen(&node, &mut code);
+            code.translate_code();
         }
     }
 }
