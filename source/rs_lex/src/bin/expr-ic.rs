@@ -142,7 +142,9 @@ fn process_text() {
     for line in r.lines() {
         match line {
             Ok(s) => {
-                convert_text(&s);
+                if !s.trim().is_empty() {
+                    convert_text(&s);
+                }
             }
             Err(e) => {
                 eprintln!("{}", e);
