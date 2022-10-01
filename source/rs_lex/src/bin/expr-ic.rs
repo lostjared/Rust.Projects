@@ -36,7 +36,7 @@ impl Ast {
     }
 }
 #[derive(Copy, Clone, Debug)]
-enum Code {
+pub enum Code {
     Add,
     Sub,
     Mul,
@@ -45,10 +45,10 @@ enum Code {
 }
 
 #[derive(Copy, Clone, Debug)]
-struct Instruct {
-    opcode: Code,
-    operand1: f64,
-    operand2: f64,
+pub struct Instruct {
+    pub opcode: Code,
+    pub operand1: f64,
+    pub operand2: f64,
 }
 
 impl Instruct {
