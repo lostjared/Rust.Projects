@@ -94,6 +94,45 @@ impl ICode {
             }
         }
     }
+
+    pub fn interp_code(&self) -> f64 {
+        let mut index = 0;
+        let mut stack : Vec<f64> = Vec::new();
+
+        while index < self.icode.len() {
+            match self.icode[index].opcode {
+                Code::Add => {
+                    let value2 = stack.pop().unwrap();
+                    let value1 = stack.pop().unwrap();
+                    stack.push(value1 + value2);
+                }
+                Code::Sub => {
+                    let value2 = stack.pop().unwrap();
+                    let value1 = stack.pop().unwrap();
+                    stack.push(value1 - value2);
+                }
+                Code::Mul => {
+                    let value2 = stack.pop().unwrap();
+                    let value1 = stack.pop().unwrap();
+                    stack.push(value1 * value2);
+                }
+                Code::Div => {
+                    let value2 = stack.pop().unwrap();
+                    let value1 = stack.pop().unwrap();
+                    stack.push(value1 / value2);
+                }
+                Code::Push => {
+                    stack.push(self.icode[index].operand1);
+                }
+            }
+            index += 1;
+        }
+
+        if !stack.is_empty() {
+            return stack.pop().unwrap();
+        }
+        0.0
+    }
 }
 
 fn process_text() {
@@ -128,6 +167,7 @@ fn convert_text(input: &str) {
             let mut code: ICode = ICode::new();
             gen(&node, &mut code);
             code.translate_code();
+            println!("The value is: {}", code.interp_code());
         }
     }
 }
