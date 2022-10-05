@@ -5,7 +5,6 @@ pub mod stream {
     use crate::rlex::*;
 
     pub struct TokenStream {
-        pub scan: Scanner,
         pub tokens: Vec<Box<dyn Token>>,
         pub index: usize,
     }
@@ -13,9 +12,11 @@ pub mod stream {
     impl TokenStream {
 
         pub fn new(scanner: Scanner) -> Self {
+
+            let tokens : Vec<Box<dyn Token>> = scanner.into_iter().collect();
+           
             Self {
-                scan: scanner,
-                tokens: Vec::new(),
+                tokens: tokens,
                 index: 0
             }
         }
