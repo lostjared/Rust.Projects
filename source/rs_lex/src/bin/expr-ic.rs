@@ -97,7 +97,7 @@ impl ICode {
 
     pub fn interp_code(&self) -> f64 {
         let mut index = 0;
-        let mut stack : Vec<f64> = Vec::new();
+        let mut stack: Vec<f64> = Vec::new();
 
         while index < self.icode.len() {
             match self.icode[index].opcode {

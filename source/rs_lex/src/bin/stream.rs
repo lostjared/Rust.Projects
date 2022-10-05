@@ -1,10 +1,8 @@
-
-use rs_lex::rlex::*;
 use rs_lex::rlex::token_stream::stream::TokenStream;
+use rs_lex::rlex::*;
 use std::io::BufRead;
 
 fn main() -> std::io::Result<()> {
-  
     for i in std::io::stdin().lock().lines() {
         match i {
             Ok(input) => {

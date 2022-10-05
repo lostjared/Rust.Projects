@@ -1,6 +1,3 @@
-
-
-
 pub mod stream {
     use crate::rlex::*;
 
@@ -10,14 +7,12 @@ pub mod stream {
     }
 
     impl TokenStream {
-
         pub fn new(scanner: Scanner) -> Self {
+            let tokens: Vec<Box<dyn Token>> = scanner.into_iter().collect();
 
-            let tokens : Vec<Box<dyn Token>> = scanner.into_iter().collect();
-           
             Self {
                 tokens: tokens,
-                index: 0
+                index: 0,
             }
         }
 
@@ -58,7 +53,7 @@ pub mod stream {
             }
         }
 
-        pub fn consume_token_string(&mut self, input: &str)  {
+        pub fn consume_token_string(&mut self, input: &str) {
             let st = self.current().get_string();
             if st == input.to_string() {
                 self.next_token();
@@ -67,6 +62,4 @@ pub mod stream {
             }
         }
     }
-
-
 }
