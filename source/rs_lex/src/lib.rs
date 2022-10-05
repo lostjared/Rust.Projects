@@ -5,6 +5,7 @@ pub mod rlex {
 
     pub mod map;
     pub mod tree;
+    pub mod token_stream;
 
     /// StringStream struct to keep track of current character position
     #[derive(Clone, Debug)]
