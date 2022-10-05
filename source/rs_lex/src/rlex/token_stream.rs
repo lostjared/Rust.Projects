@@ -16,6 +16,21 @@ pub mod stream {
             }
         }
 
+        pub fn create(mut scanner: Scanner) -> Option<Self> {
+            let result = scanner.collect_lex();
+            match result {
+                ScanResult::Error => {
+                    return None;
+                }
+                ScanResult::Ok(tokenz) => {
+                    return Some(Self {
+                        tokens: tokenz,
+                        index: 0
+                    });
+                }
+            }
+        }
+
         pub fn valid(&self) -> bool {
             self.index < self.tokens.len()
         }
