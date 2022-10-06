@@ -25,7 +25,7 @@ pub mod stream {
                 ScanResult::Ok(tokenz) => {
                     return Some(Self {
                         tokens: tokenz,
-                        index: 0
+                        index: 0,
                     });
                 }
             }

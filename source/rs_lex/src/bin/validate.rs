@@ -17,13 +17,12 @@ fn define(stream: &mut TokenStream) {
 }
 
 fn main() -> std::io::Result<()> {
-
     for line in std::io::stdin().lock().lines() {
         match line {
             Ok(data) => {
-                if !data.trim().is_empty() && validate(&data)  {
+                if !data.trim().is_empty() && validate(&data) {
                     println!("Correct");
-                } 
+                }
             }
             Err(e) => {
                 eprintln!("Error: {}", e);
