@@ -10,4 +10,4 @@ dirs = "4.0.0"
 
 [dependencies.sdl2]
 version = "0.35.1"
-features = ["bundled", "ttf"]
+features = ["ttf"]

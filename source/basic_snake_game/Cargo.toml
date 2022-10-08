@@ -9,4 +9,4 @@ edition = "2021"
 rand = "0.8.5"
 [dependencies.sdl2]
 version = "0.35.1"
-features = ["bundled", "ttf"]
+features = ["ttf"]
