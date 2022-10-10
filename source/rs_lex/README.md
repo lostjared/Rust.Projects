@@ -1,6 +1,5 @@
 Test Lexer (Scanner) for Simple C like language.
-
-run
+Also contains my own version of the Demo compiler from Chapter 1 of "Modern Compiler Design" Second Edition.
 
 $ cargo doc --open
 
