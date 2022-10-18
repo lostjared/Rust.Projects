@@ -90,6 +90,7 @@ fn gen_words(input: &str, num: usize, num_len: usize) {
         print!("{} ", value);
         v.remove(r);
     }
+    print!("\n");
 }
 
 fn main() -> std::io::Result<()> {
