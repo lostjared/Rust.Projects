@@ -1,12 +1,13 @@
 use clap::{App, Arg};
+use rand::Rng;
 use rs_lex::rlex::*;
 use std::io::Read;
-use rand::Rng;
 
 struct Arguments {
     file: String,
     num_words: usize,
     word_len: usize,
+    under: bool,
 }
 
 fn parse_args() -> Arguments {
@@ -37,32 +38,41 @@ fn parse_args() -> Arguments {
                 .required(true)
                 .allow_invalid_utf8(true),
         )
+        .arg(
+            Arg::with_name("under")
+                .long("underscore")
+                .short('u')
+                .takes_value(false)
+                .required(false),
+        )
         .get_matches();
 
     let i = m.value_of_lossy("input").unwrap();
     let num = m.value_of_lossy("num").unwrap().parse().unwrap();
     let l = m.value_of_lossy("len").unwrap().parse().unwrap();
+    let u = m.is_present("under");
     Arguments {
         file: i.to_string(),
         num_words: num,
         word_len: l,
+        under: u,
     }
 }
 
-fn gen_words(input: &str, num: usize, num_len: usize) {
+fn gen_words(input: &str, num: usize, num_len: usize, under: bool) {
     let f = std::fs::File::open(input).expect("on file open");
     let mut r = std::io::BufReader::new(f);
     let mut s = String::new();
     r.read_to_string(&mut s).expect("on read");
-    let scan : Scanner = Scanner::new(&s);
-    let mut v : Vec<String> = Vec::new();
+    let scan: Scanner = Scanner::new(&s);
+    let mut v: Vec<String> = Vec::new();
     for i in scan {
         match i.get_type() {
             TokenType::Identifier => {
                 let s = i.get_string();
                 if s.len() > num_len {
                     let f = s.find('_');
-                    if f != None {
+                    if f != None || under == false {
                         let value2 = &s[..f.unwrap()];
 
                         let found_value = v.iter().find(|&x| *x == value2.to_string());
@@ -95,6 +105,6 @@ fn gen_words(input: &str, num: usize, num_len: usize) {
 
 fn main() -> std::io::Result<()> {
     let args = parse_args();
-    gen_words(&args.file, args.num_words, args.word_len);
+    gen_words(&args.file, args.num_words, args.word_len, args.under);
     Ok(())
 }
