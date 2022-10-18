@@ -37,7 +37,7 @@ fn main() -> std::io::Result<()> {
         let r = std::io::BufReader::new(f);
         proc_list(r, &args[2]);
     } else {
-        eprintln!("Requires two arguments: input_list.txt \"command\"");
+        eprintln!("Requires one or two arguments: input_list.txt \"command\"");
         return Ok(());
     }
     Ok(())
