@@ -64,7 +64,11 @@ fn gen_words(input: &str, num: usize, num_len: usize) {
                     let f = s.find('_');
                     if f != None {
                         let value2 = &s[..f.unwrap()];
-                        v.push(value2.to_string());
+
+                        let found_value = v.iter().find(|&x| *x == value2.to_string());
+                        if found_value == None {
+                            v.push(value2.to_string());
+                        }
                     }
                 }
                 if v.len() > num {
