@@ -1,6 +1,5 @@
 /// validate function decleration statement
 /// function test();
-
 use rs_lex::rlex::token_stream::stream::TokenStream;
 use rs_lex::rlex::*;
 use std::io::BufRead;
