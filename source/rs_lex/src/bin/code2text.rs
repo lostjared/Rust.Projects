@@ -101,6 +101,9 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool) {
 
     let mut rng = rand::thread_rng();
     for _i in 0..num {
+        if v.is_empty() {
+            break;
+        }
         let r = rng.gen_range(0..v.len());
         let value = v.get(r).clone().unwrap();
         print!("{} ", value);
