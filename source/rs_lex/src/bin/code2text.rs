@@ -70,7 +70,14 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool) {
         match i.get_type() {
             TokenType::Identifier => {
                 let s = i.get_string();
-                if s.len() > num_len {
+                if s.len() > num_len {                    
+                    if under == false {
+                        let found_value = v.iter().find(|&x| *x ==s.to_string());
+                        if found_value == None {
+                            v.push(s.to_string());
+                        }
+                        continue;
+                    }
                     let f = s.find('_');
                     if f != None {
                         let value2 = &s[..f.unwrap()];
@@ -78,12 +85,7 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool) {
                         if found_value == None {
                             v.push(value2.to_string());
                         }
-                    } else if under == false {
-                        let found_value = v.iter().find(|&x| *x ==s.to_string());
-                        if found_value == None {
-                            v.push(s.to_string());
-                        }
-                    }
+                    } 
                 }
                 if v.len() > num {
                     break;
