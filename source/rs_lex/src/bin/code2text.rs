@@ -70,7 +70,6 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool) {
     let mut counter = 0;
 
     let mut map: HashMap<String, bool> = HashMap::new();
-
     for i in scan {
         if counter % 1000 == 0 {
             println!("{} tokens processed...", counter);
@@ -102,9 +101,8 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool) {
             }
             _ => {}
         }
-    }
-    println!("code2text: scanning finish generating words...");
-
+    } 
+    println!("code2text: scanning finish scanned {} tokens, generating words...", counter);
     if v.len() < num {
         panic!("Not enough words");
     }
