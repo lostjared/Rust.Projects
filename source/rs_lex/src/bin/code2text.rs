@@ -65,44 +65,66 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool) {
     let mut r = std::io::BufReader::new(f);
     let mut s = String::new();
     r.read_to_string(&mut s).expect("on read");
-    let scan: Scanner = Scanner::new(&s);
+    let slen = s.len();
+    let mut scan: Scanner = Scanner::new(&s);
     let mut v: Vec<String> = Vec::new();
     let mut counter = 0;
 
     let mut map: HashMap<String, bool> = HashMap::new();
-    for i in scan {
-        if counter % 1000 == 0 {
-            println!("{} tokens processed...", counter);
-        }
-        counter += 1;
-        match i.get_type() {
-            TokenType::Identifier => {
-                let s = i.get_string();
-                if s.len() > num_len {
-                    if map.contains_key(&s.to_string()) {
-                        continue;
-                    } else {
-                        map.insert(s.to_string(), true);
+    loop {
+        let token_result = scan.scan_token();
+        match token_result {
+            ScanResult::Error => {}
+            ScanResult::Ok(val1) => {
+                match val1 {
+                    Some(i) => {
+                        if counter % 1000 == 0 {
+                            let per: f64 = (scan.getpos() as f64 / slen as f64) * 100.0;
 
-                        if under == false {
-                            v.push(s.to_string());
-                            continue;
+                            println!(
+                                "{} - ({}/{}) {:.2}%  tokens processed...",
+                                counter,
+                                scan.getpos(),
+                                slen,
+                                per
+                            );
                         }
-                        let f = s.find('_');
-                        if f != None {
-                            let value2 = &s[..f.unwrap()];
-                            v.push(value2.to_string());
+                        counter += 1;
+                        match i.get_type() {
+                            TokenType::Identifier => {
+                                let s = i.get_string();
+                                if s.len() > num_len {
+                                    if map.contains_key(&s.to_string()) {
+                                        continue;
+                                    } else {
+                                        map.insert(s.to_string(), true);
+
+                                        if under == false {
+                                            v.push(s.to_string());
+                                            continue;
+                                        }
+                                        let f = s.find('_');
+                                        if f != None {
+                                            let value2 = &s[..f.unwrap()];
+                                            v.push(value2.to_string());
+                                        }
+                                    }
+                                }
+                            }
+                            _ => {}
                         }
                     }
-                }
-                if v.len() > num {
-                    break;
+                    None => {
+                        break;
+                    }
                 }
             }
-            _ => {}
         }
-    } 
-    println!("code2text: scanning finish scanned {} tokens, generating words...", counter);
+    }
+    println!(
+        "code2text: scanning finish scanned {} tokens, generating words...",
+        counter
+    );
     if v.len() < num {
         panic!("Not enough words");
     }

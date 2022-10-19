@@ -38,6 +38,11 @@ pub mod rlex {
             }
             None
         }
+
+        pub fn getpos(&self) -> usize {
+            self.pos
+        }
+
         /// current character in stream
         pub fn curchar(&self) -> Option<char> {
             self.data.chars().nth(self.pos)
@@ -210,6 +215,10 @@ pub mod rlex {
                 token_map: map,
                 oper: o_s,
             }
+        }
+
+        pub fn getpos(&self) -> usize {
+            self.stream.getpos()
         }
 
         /// is scanner structure valid?
