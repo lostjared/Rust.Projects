@@ -2,11 +2,12 @@
 
 use:
 
-    -i filename
+    -i filename.txt
     -s stop when found enough words
     -u only find underscore words
     -n how many words to find
     -l how long each word must be
+    -m collect at most max words
 
 */
 
@@ -22,6 +23,7 @@ struct Arguments {
     word_len: usize,
     under: bool,
     stop: bool,
+    max: usize,
 }
 
 fn parse_args() -> Arguments {
@@ -59,12 +61,29 @@ fn parse_args() -> Arguments {
                 .takes_value(false)
                 .required(false),
         )
-        .arg(Arg::with_name("stop").long("stop").short('s').takes_value(false).required(false))
+        .arg(
+            Arg::with_name("stop")
+                .long("stop")
+                .short('s')
+                .takes_value(false)
+                .required(false),
+        )
+        .arg(
+            Arg::with_name("max")
+                .long("max")
+                .short('m')
+                .takes_value(true)
+                .required(false)
+                .default_value("0")
+                .allow_invalid_utf8(true),
+        )
         .get_matches();
 
     let i = m.value_of_lossy("input").unwrap();
     let num = m.value_of_lossy("num").unwrap().parse().unwrap();
     let l = m.value_of_lossy("len").unwrap().parse().unwrap();
+    let max_t = m.value_of_lossy("max").unwrap().parse().unwrap();
+
     let u = m.is_present("under");
     let s = m.is_present("stop");
     Arguments {
@@ -73,10 +92,11 @@ fn parse_args() -> Arguments {
         word_len: l,
         under: u,
         stop: s,
+        max: max_t,
     }
 }
 
-fn gen_words(input: &str, num: usize, num_len: usize, under: bool, stop: bool) {
+fn gen_words(input: &str, num: usize, num_len: usize, under: bool, stop: bool, max_t: usize) {
     let f = std::fs::File::open(input).expect("on file open");
     let mut r = std::io::BufReader::new(f);
     let mut s = String::new();
@@ -95,17 +115,23 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool, stop: bool) {
                 if stop == true && v.len() > num {
                     break;
                 }
+
+                if max_t != 0 && v.len() > max_t {
+                    break;
+                }
+
                 match val1 {
                     Some(i) => {
                         if counter % 1000 == 0 {
                             let per: f64 = (scan.getpos() as f64 / slen as f64) * 100.0;
 
                             println!(
-                                "{} - ({}/{}) {:.2}%  tokens processed...",
+                                "{} - ({}/{}) {:.2}% - found {} tokens processed...",
                                 counter,
                                 scan.getpos(),
                                 slen,
-                                per
+                                per,
+                                v.len()
                             );
                         }
                         counter += 1;
@@ -163,6 +189,13 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool, stop: bool) {
 
 fn main() -> std::io::Result<()> {
     let args = parse_args();
-    gen_words(&args.file, args.num_words, args.word_len, args.under, args.stop);
+    gen_words(
+        &args.file,
+        args.num_words,
+        args.word_len,
+        args.under,
+        args.stop,
+        args.max,
+    );
     Ok(())
 }
