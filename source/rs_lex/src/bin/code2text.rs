@@ -170,7 +170,7 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool, stop: bool, m
         }
     }
     println!(
-        "code2text: scanning finish scanned {} tokens, generating words...",
+        "code2text: scanning finished scanned {} tokens, generating words...",
         counter
     );
     if v.len() < num {
