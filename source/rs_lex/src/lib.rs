@@ -431,89 +431,94 @@ pub mod rlex {
             let c = self.stream.curchar();
             match c {
                 Some(ch) => {
-                    let val = self.type_from_char(ch).unwrap();
-                    match val {
-                        TokenType::Char => {
-                            let token = self.grab_id();
-                            return ScanResult::Ok(Some(Box::new(token)));
-                        }
-                        TokenType::Digits => {
-                            let token = self.grab_digits();
-                            if token == None {
-                                return ScanResult::Error; // Error occoured stop scan
+                    let val = self.type_from_char(ch);
+
+                    if val != None {
+                        let val = val.unwrap();
+
+                        match val {
+                            TokenType::Char => {
+                                let token = self.grab_id();
+                                return ScanResult::Ok(Some(Box::new(token)));
                             }
-                            return ScanResult::Ok(Some(Box::new(token.unwrap())));
-                        }
-                        TokenType::String => {
-                            let token = self.grab_string();
-                            if token == None {
-                                return ScanResult::Error; // Error occoured stop scan
+                            TokenType::Digits => {
+                                let token = self.grab_digits();
+                                if token == None {
+                                    return ScanResult::Error; // Error occoured stop scan
+                                }
+                                return ScanResult::Ok(Some(Box::new(token.unwrap())));
                             }
-                            return ScanResult::Ok(Some(Box::new(token.unwrap())));
-                        }
-                        TokenType::SingleString => {
-                            let token = self.grab_single_string();
-                            if token == None {
-                                return ScanResult::Error; // Error occoured stop scan
+                            TokenType::String => {
+                                let token = self.grab_string();
+                                if token == None {
+                                    return ScanResult::Error; // Error occoured stop scan
+                                }
+                                return ScanResult::Ok(Some(Box::new(token.unwrap())));
                             }
-                            return ScanResult::Ok(Some(Box::new(token.unwrap())));
-                        }
-                        TokenType::Symbol => {
-                            if ch == '/' {
-                                let chz = self.stream.peekchar();
-                                match chz {
-                                    Some(com) => match com {
-                                        '/' => loop {
-                                            let ch = self.stream.getchar();
-                                            match ch {
-                                                Some(ch2) => {
-                                                    if ch2 == '\n' {
+                            TokenType::SingleString => {
+                                let token = self.grab_single_string();
+                                if token == None {
+                                    return ScanResult::Error; // Error occoured stop scan
+                                }
+                                return ScanResult::Ok(Some(Box::new(token.unwrap())));
+                            }
+                            TokenType::Symbol => {
+                                if ch == '/' {
+                                    let chz = self.stream.peekchar();
+                                    match chz {
+                                        Some(com) => match com {
+                                            '/' => loop {
+                                                let ch = self.stream.getchar();
+                                                match ch {
+                                                    Some(ch2) => {
+                                                        if ch2 == '\n' {
+                                                            return self.scan_token();
+                                                        }
+                                                    }
+                                                    None => {
+                                                        break;
+                                                    }
+                                                }
+                                            },
+                                            '*' => {
+                                                self.stream.advance();
+                                                loop {
+                                                    let chx = self.stream.getchar();
+                                                    let ch_close = self.stream.curchar();
+                                                    if chx != None
+                                                        && ch_close != None
+                                                        && chx == Some('*')
+                                                        && ch_close == Some('/')
+                                                    {
+                                                        self.stream.advance();
+                                                        return self.scan_token();
+                                                    }
+                                                    if chx == None {
+                                                        self.stream.advance();
                                                         return self.scan_token();
                                                     }
                                                 }
-                                                None => {
-                                                    break;
-                                                }
                                             }
+                                            _ => {}
                                         },
-                                        '*' => {
-                                            self.stream.advance();
-                                            loop {
-                                                let chx = self.stream.getchar();
-                                                let ch_close = self.stream.curchar();
-                                                if chx != None
-                                                    && ch_close != None
-                                                    && chx == Some('*')
-                                                    && ch_close == Some('/')
-                                                {
-                                                    self.stream.advance();
-                                                    return self.scan_token();
-                                                }
-                                                if chx == None {
-                                                    self.stream.advance();
-                                                    return self.scan_token();
-                                                }
-                                            }
-                                        }
-                                        _ => {}
-                                    },
-                                    None => {}
+                                        None => {}
+                                    }
                                 }
+                                let token = self.grab_symbol();
+                                return ScanResult::Ok(Some(Box::new(token)));
                             }
-                            let token = self.grab_symbol();
-                            return ScanResult::Ok(Some(Box::new(token)));
-                        }
-                        TokenType::Space => {
-                            self.stream.advance();
-                            return self.scan_token();
-                        }
-                        TokenType::NULL => {
-                            self.stream.advance();
-                            println!("Unrecongnized character: {}", ch);
-                            return self.scan_token();
-                        }
-                        _ => {
-                            println!("type: {:?}", val);
+                            TokenType::Space => {
+                                self.stream.advance();
+                                return self.scan_token();
+                            }
+                            TokenType::NULL => {
+                                self.stream.advance();
+                                println!("Unrecongnized character: {}", ch);
+                                return self.scan_token();
+                            }
+                            _ => {
+                                println!("type: {:?}", val);
+                            }
                         }
                     }
                 }

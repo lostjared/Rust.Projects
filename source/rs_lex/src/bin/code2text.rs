@@ -1,6 +1,7 @@
 use clap::{App, Arg};
 use rand::Rng;
 use rs_lex::rlex::*;
+use std::collections::HashMap;
 use std::io::Read;
 
 struct Arguments {
@@ -66,26 +67,34 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool) {
     r.read_to_string(&mut s).expect("on read");
     let scan: Scanner = Scanner::new(&s);
     let mut v: Vec<String> = Vec::new();
+    let mut counter = 0;
+
+    let mut map: HashMap<String, bool> = HashMap::new();
+
     for i in scan {
+        if counter % 1000 == 0 {
+            println!("{} tokens processed...", counter);
+        }
+        counter += 1;
         match i.get_type() {
             TokenType::Identifier => {
                 let s = i.get_string();
-                if s.len() > num_len {                    
-                    if under == false {
-                        let found_value = v.iter().find(|&x| *x ==s.to_string());
-                        if found_value == None {
-                            v.push(s.to_string());
-                        }
+                if s.len() > num_len {
+                    if map.contains_key(&s.to_string()) {
                         continue;
-                    }
-                    let f = s.find('_');
-                    if f != None {
-                        let value2 = &s[..f.unwrap()];
-                        let found_value = v.iter().find(|&x| *x == value2.to_string());
-                        if found_value == None {
+                    } else {
+                        map.insert(s.to_string(), true);
+
+                        if under == false {
+                            v.push(s.to_string());
+                            continue;
+                        }
+                        let f = s.find('_');
+                        if f != None {
+                            let value2 = &s[..f.unwrap()];
                             v.push(value2.to_string());
                         }
-                    } 
+                    }
                 }
                 if v.len() > num {
                     break;
@@ -94,6 +103,7 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool) {
             _ => {}
         }
     }
+    println!("code2text: scanning finish generating words...");
 
     if v.len() < num {
         panic!("Not enough words");
