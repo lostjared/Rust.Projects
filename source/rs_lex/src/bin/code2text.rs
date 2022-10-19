@@ -115,7 +115,7 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool, stop: bool, m
                 break;
             }
             ScanResult::Ok(val1) => {
-                if stop == true && v.len() > num {
+                if stop && v.len() > num {
                     break;
                 }
 
@@ -138,8 +138,7 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool, stop: bool, m
                             );
                         }
                         counter += 1;
-                        match i.get_type() {
-                            TokenType::Identifier => {
+                        if i.get_type() == TokenType::Identifier  {
                                 let s = i.get_string();
                                 if s.len() > num_len {
                                     if map.contains_key(&s.to_string()) {
@@ -147,7 +146,7 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool, stop: bool, m
                                     } else {
                                         map.insert(s.to_string(), true);
 
-                                        if under == false {
+                                        if !under {
                                             v.push(s.to_string());
                                             continue;
                                         }
@@ -158,8 +157,6 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool, stop: bool, m
                                         }
                                     }
                                 }
-                            }
-                            _ => {}
                         }
                     }
                     None => {
@@ -183,11 +180,11 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool, stop: bool, m
             break;
         }
         let r = rng.gen_range(0..v.len());
-        let value = v.get(r).clone().unwrap();
+        let value = v.get(r).unwrap();
         print!("{} ", value);
         v.remove(r);
     }
-    print!("\n");
+    println!();
 }
 
 fn main() -> std::io::Result<()> {

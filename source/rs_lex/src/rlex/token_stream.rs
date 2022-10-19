@@ -8,10 +8,10 @@ pub mod stream {
 
     impl TokenStream {
         pub fn new(scanner: Scanner) -> Self {
-            let tokens: Vec<Box<dyn Token>> = scanner.into_iter().collect();
+            let tokenz: Vec<Box<dyn Token>> = scanner.into_iter().collect();
 
             Self {
-                tokens: tokens,
+                tokens: tokenz,
                 index: 0,
             }
         }
@@ -20,13 +20,13 @@ pub mod stream {
             let result = scanner.collect_lex();
             match result {
                 ScanResult::Error => {
-                    return None;
+                     None
                 }
                 ScanResult::Ok(tokenz) => {
-                    return Some(Self {
+                    Some(Self {
                         tokens: tokenz,
                         index: 0,
-                    });
+                    })
                 }
             }
         }
