@@ -9,6 +9,7 @@ struct Arguments {
     num_words: usize,
     word_len: usize,
     under: bool,
+    stop: bool,
 }
 
 fn parse_args() -> Arguments {
@@ -46,21 +47,24 @@ fn parse_args() -> Arguments {
                 .takes_value(false)
                 .required(false),
         )
+        .arg(Arg::with_name("stop").long("stop").short('s').takes_value(false).required(false))
         .get_matches();
 
     let i = m.value_of_lossy("input").unwrap();
     let num = m.value_of_lossy("num").unwrap().parse().unwrap();
     let l = m.value_of_lossy("len").unwrap().parse().unwrap();
     let u = m.is_present("under");
+    let s = m.is_present("stop");
     Arguments {
         file: i.to_string(),
         num_words: num,
         word_len: l,
         under: u,
+        stop: s,
     }
 }
 
-fn gen_words(input: &str, num: usize, num_len: usize, under: bool) {
+fn gen_words(input: &str, num: usize, num_len: usize, under: bool, stop: bool) {
     let f = std::fs::File::open(input).expect("on file open");
     let mut r = std::io::BufReader::new(f);
     let mut s = String::new();
@@ -76,6 +80,9 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool) {
         match token_result {
             ScanResult::Error => {}
             ScanResult::Ok(val1) => {
+                if stop == true && v.len() > num {
+                    break;
+                }
                 match val1 {
                     Some(i) => {
                         if counter % 1000 == 0 {
@@ -144,6 +151,6 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool) {
 
 fn main() -> std::io::Result<()> {
     let args = parse_args();
-    gen_words(&args.file, args.num_words, args.word_len, args.under);
+    gen_words(&args.file, args.num_words, args.word_len, args.under, args.stop);
     Ok(())
 }
