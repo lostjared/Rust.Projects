@@ -1,3 +1,15 @@
+/*
+
+use:
+
+    -i filename
+    -s stop when found enough words
+    -u only find underscore words
+    -n how many words to find
+    -l how long each word must be
+
+*/
+
 use clap::{App, Arg};
 use rand::Rng;
 use rs_lex::rlex::*;
