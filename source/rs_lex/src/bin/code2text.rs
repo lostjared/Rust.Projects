@@ -110,7 +110,10 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool, stop: bool, m
     loop {
         let token_result = scan.scan_token();
         match token_result {
-            ScanResult::Error => {}
+            ScanResult::Error => {
+                eprintln!("code2text: Scanner error");
+                break;
+            }
             ScanResult::Ok(val1) => {
                 if stop == true && v.len() > num {
                     break;
