@@ -227,7 +227,7 @@ pub mod rlex {
 
         /// is scanner structure valid?
         pub fn valid(&self) -> bool {
-            if self.stream.pos < self.stream.data.len() {
+            if self.stream.pos < self.stream.len {
                 return true;
             }
             false
