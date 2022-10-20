@@ -88,13 +88,13 @@ fn parse_args() -> Arguments {
         )
         .arg(
             Arg::with_name("output")
-            .long("output")
-            .short('o')
-            .takes_value(true)
-            .required(false)
-            .default_value("<STDOUT>")
-            .help("output to filename")
-            .allow_invalid_utf8(true)
+                .long("output")
+                .short('o')
+                .takes_value(true)
+                .required(false)
+                .default_value("<STDOUT>")
+                .help("output to filename")
+                .allow_invalid_utf8(true),
         )
         .get_matches();
 
@@ -116,7 +116,15 @@ fn parse_args() -> Arguments {
     }
 }
 
-fn gen_words(input: &str, num: usize, num_len: usize, under: bool, stop: bool, max_t: usize, ofile: &str) {
+fn gen_words(
+    input: &str,
+    num: usize,
+    num_len: usize,
+    under: bool,
+    stop: bool,
+    max_t: usize,
+    ofile: &str,
+) {
     let f = std::fs::File::open(input).expect("on file open");
     let mut r = std::io::BufReader::new(f);
     let mut s = String::new();
@@ -158,25 +166,25 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool, stop: bool, m
                             );
                         }
                         counter += 1;
-                        if i.get_type() == TokenType::Identifier  {
-                                let s = i.get_string();
-                                if s.len() > num_len {
-                                    if map.contains_key(&s.to_string()) {
-                                        continue;
-                                    } else {
-                                        map.insert(s.to_string(), true);
+                        if i.get_type() == TokenType::Identifier {
+                            let s = i.get_string();
+                            if s.len() > num_len {
+                                if map.contains_key(&s.to_string()) {
+                                    continue;
+                                } else {
+                                    map.insert(s.to_string(), true);
 
-                                        if !under {
-                                            v.push(s.to_string());
-                                            continue;
-                                        }
-                                        let f = s.find('_');
-                                        if f != None {
-                                            let value2 = &s[..f.unwrap()];
-                                            v.push(value2.to_string());
-                                        }
+                                    if !under {
+                                        v.push(s.to_string());
+                                        continue;
+                                    }
+                                    let f = s.find('_');
+                                    if f != None {
+                                        let value2 = &s[..f.unwrap()];
+                                        v.push(value2.to_string());
                                     }
                                 }
+                            }
                         }
                     }
                     None => {
@@ -193,7 +201,7 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool, stop: bool, m
     if v.len() < num {
         panic!("Not enough words");
     }
-    let mut w : std::io::BufWriter<Box<dyn Write>>;
+    let mut w: std::io::BufWriter<Box<dyn Write>>;
     if ofile != "<STDOUT>" {
         let f = std::fs::File::create(ofile).unwrap();
         w = std::io::BufWriter::new(Box::new(f));
@@ -225,7 +233,7 @@ fn main() -> std::io::Result<()> {
         args.under,
         args.stop,
         args.max,
-        &args.ofile
+        &args.ofile,
     );
     Ok(())
 }

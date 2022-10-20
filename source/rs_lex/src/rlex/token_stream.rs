@@ -19,15 +19,11 @@ pub mod stream {
         pub fn create(mut scanner: Scanner) -> Option<Self> {
             let result = scanner.collect_lex();
             match result {
-                ScanResult::Error => {
-                     None
-                }
-                ScanResult::Ok(tokenz) => {
-                    Some(Self {
-                        tokens: tokenz,
-                        index: 0,
-                    })
-                }
+                ScanResult::Error => None,
+                ScanResult::Ok(tokenz) => Some(Self {
+                    tokens: tokenz,
+                    index: 0,
+                }),
             }
         }
 
