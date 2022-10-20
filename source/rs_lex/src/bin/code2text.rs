@@ -129,7 +129,7 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool, stop: bool, m
                             let per: f64 = (scan.getpos() as f64 / slen as f64) * 100.0;
 
                             println!(
-                                "{} - ({}/{}) {:.2}% - found {} tokens processed...",
+                                "code2text: {} - ({}/{}) {:.2}% - found {} tokens processed...",
                                 counter,
                                 scan.getpos(),
                                 slen,
