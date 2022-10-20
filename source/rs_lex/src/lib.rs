@@ -13,6 +13,7 @@ pub mod rlex {
         data: String,
         pos: usize,
         lineno: usize,
+        len: usize,
     }
 
     impl StringStream {
@@ -20,15 +21,17 @@ pub mod rlex {
         pub fn new(input: &str) -> Self {
             let mut s = String::from(input);
             s.push('\n');
+            let l = s.len();
             Self {
                 data: s,
                 pos: 0,
                 lineno: 1,
+                len: l,
             }
         }
         /// get a character from stream
         pub fn getchar(&mut self) -> Option<char> {
-            if self.pos < self.data.len() {
+            if self.pos < self.len {
                 let c = self.data.chars().nth(self.pos);
                 self.pos += 1;
                 if c == Some('\n') {
@@ -60,7 +63,7 @@ pub mod rlex {
         }
         /// peek next character from stream without increasing position
         pub fn peekchar(&mut self) -> Option<char> {
-            if self.pos + 1 < self.data.len() {
+            if self.pos + 1 < self.len {
                 return self.data.chars().nth(self.pos + 1);
             }
             None
@@ -92,6 +95,7 @@ pub mod rlex {
             self.data = input.to_string();
             self.pos = 0;
             self.lineno = 1;
+            self.len = input.len();
         }
         /// set stream position
         pub fn set_pos(&mut self, p: usize) {
