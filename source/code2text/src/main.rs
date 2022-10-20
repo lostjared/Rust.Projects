@@ -1,5 +1,7 @@
 /*
 
+code2text - generate random words from text files or source code
+
 use:
 
     -i filename.txt
@@ -139,17 +141,21 @@ fn gen_words(
             }
         }
     }
+    let num_lines = lines.len();
     let v: Vec<String> = Vec::new();
+    let map: HashMap<String, bool> = HashMap::new();
+   
     let data = Arc::new(Mutex::new(v));
+    let map_data = Arc::new(Mutex::new(map));
 
     lines.into_par_iter().for_each(|line| {
         let mut v = data.lock().unwrap();
+        let mut map = map_data.lock().unwrap();
 
         let mut scan: Scanner = Scanner::new(&line);
         let mut counter = 0;
 
-        let mut map: HashMap<String, bool> = HashMap::new();
-        loop {
+       loop {
             let token_result = scan.scan_token();
             match token_result {
                 ScanResult::Error => {
@@ -213,8 +219,9 @@ fn gen_words(
     let mut v = data.lock().unwrap();
 
     println!(
-        "code2text: scanning finished gathered {} tokens for pool, generating words...",
-        v.len()
+        "code2text: scanning finished gathered {} tokens for pool out of {} lines, generating words...",
+        v.len(),
+        num_lines
     );
     if v.len() < num {
         panic!("Not enough words");
