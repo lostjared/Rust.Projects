@@ -215,7 +215,7 @@ fn gen_words(
     let mut v = data.lock().unwrap();
 
     println!(
-        "code2text: scanning finished scanned {} tokens, generating words...", v.len()
+        "code2text: scanning finished gathered {} tokens for pool, generating words...", v.len()
     );
     if v.len() < num {
         panic!("Not enough words");
