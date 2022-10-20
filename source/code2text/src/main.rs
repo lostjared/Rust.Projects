@@ -14,10 +14,10 @@ use:
 
 use clap::{App, Arg};
 use rand::Rng;
+use rayon::prelude::*;
 use rs_lex::rlex::*;
 use std::collections::HashMap;
-use std::io::{Write,BufRead};
-use rayon::prelude::*;
+use std::io::{BufRead, Write};
 use std::sync::{Arc, Mutex};
 
 struct Arguments {
@@ -127,8 +127,8 @@ fn gen_words(
     ofile: &str,
 ) {
     let f = std::fs::File::open(input).expect("on file open");
-    let r = std::io::BufReader::new(f);   
-    let mut lines : Vec<String> = Vec::new();
+    let r = std::io::BufReader::new(f);
+    let mut lines: Vec<String> = Vec::new();
     for line in r.lines() {
         match line {
             Ok(l) => {
@@ -143,12 +143,11 @@ fn gen_words(
     let data = Arc::new(Mutex::new(v));
 
     lines.into_par_iter().for_each(|line| {
-
         let mut v = data.lock().unwrap();
 
-        let mut scan : Scanner = Scanner::new(&line);
+        let mut scan: Scanner = Scanner::new(&line);
         let mut counter = 0;
-    
+
         let mut map: HashMap<String, bool> = HashMap::new();
         loop {
             let token_result = scan.scan_token();
@@ -161,16 +160,16 @@ fn gen_words(
                     if stop && v.len() > num {
                         break;
                     }
-    
+
                     if max_t != 0 && v.len() > max_t {
                         break;
                     }
-    
+
                     match val1 {
                         Some(i) => {
                             if counter % 1000 == 0 {
                                 /*let per: f64 = (scan.getpos() as f64 / slen as f64) * 100.0;
-    
+
                                 println!(
                                     "code2text: {} - ({}/{}) {:.2}% - found {} tokens processed...",
                                     counter,
@@ -188,7 +187,7 @@ fn gen_words(
                                         continue;
                                     } else {
                                         map.insert(s.to_string(), true);
-    
+
                                         if !under {
                                             v.push(s.to_string());
                                             continue;
@@ -209,13 +208,13 @@ fn gen_words(
                 }
             }
         }
-
     });
 
     let mut v = data.lock().unwrap();
 
     println!(
-        "code2text: scanning finished gathered {} tokens for pool, generating words...", v.len()
+        "code2text: scanning finished gathered {} tokens for pool, generating words...",
+        v.len()
     );
     if v.len() < num {
         panic!("Not enough words");
