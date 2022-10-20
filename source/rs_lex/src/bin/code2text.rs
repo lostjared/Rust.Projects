@@ -8,6 +8,7 @@ use:
     -n how many words to find
     -l how long each word must be
     -m collect at most max words
+    -o output to filename
 
 */
 
@@ -38,7 +39,8 @@ fn parse_args() -> Arguments {
                 .short('i')
                 .takes_value(true)
                 .required(true)
-                .allow_invalid_utf8(true),
+                .allow_invalid_utf8(true)
+                .help("input filename"),
         )
         .arg(
             Arg::with_name("num")
@@ -46,7 +48,8 @@ fn parse_args() -> Arguments {
                 .short('n')
                 .takes_value(true)
                 .required(true)
-                .allow_invalid_utf8(true),
+                .allow_invalid_utf8(true)
+                .help("how many words to find"),
         )
         .arg(
             Arg::with_name("len")
@@ -54,6 +57,7 @@ fn parse_args() -> Arguments {
                 .short('l')
                 .takes_value(true)
                 .required(true)
+                .help("minimum length of the words")
                 .allow_invalid_utf8(true),
         )
         .arg(
@@ -61,6 +65,7 @@ fn parse_args() -> Arguments {
                 .long("underscore")
                 .short('u')
                 .takes_value(false)
+                .help("should I find underscore words")
                 .required(false),
         )
         .arg(
@@ -68,6 +73,7 @@ fn parse_args() -> Arguments {
                 .long("stop")
                 .short('s')
                 .takes_value(false)
+                .help("stop after num words gathered")
                 .required(false),
         )
         .arg(
@@ -77,6 +83,7 @@ fn parse_args() -> Arguments {
                 .takes_value(true)
                 .required(false)
                 .default_value("0")
+                .help("Gather max words before genenrating random words")
                 .allow_invalid_utf8(true),
         )
         .arg(
@@ -86,6 +93,7 @@ fn parse_args() -> Arguments {
             .takes_value(true)
             .required(false)
             .default_value("<STDOUT>")
+            .help("output to filename")
             .allow_invalid_utf8(true)
         )
         .get_matches();
