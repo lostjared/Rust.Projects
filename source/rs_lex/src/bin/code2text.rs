@@ -16,9 +16,11 @@ use rand::Rng;
 use rs_lex::rlex::*;
 use std::collections::HashMap;
 use std::io::Read;
+use std::io::Write;
 
 struct Arguments {
     file: String,
+    ofile: String,
     num_words: usize,
     word_len: usize,
     under: bool,
@@ -77,17 +79,27 @@ fn parse_args() -> Arguments {
                 .default_value("0")
                 .allow_invalid_utf8(true),
         )
+        .arg(
+            Arg::with_name("output")
+            .long("output")
+            .short('o')
+            .takes_value(true)
+            .required(false)
+            .default_value("<STDOUT>")
+            .allow_invalid_utf8(true)
+        )
         .get_matches();
 
     let i = m.value_of_lossy("input").unwrap();
     let num = m.value_of_lossy("num").unwrap().parse().unwrap();
     let l = m.value_of_lossy("len").unwrap().parse().unwrap();
     let max_t = m.value_of_lossy("max").unwrap().parse().unwrap();
-
+    let outf = m.value_of_lossy("output").unwrap();
     let u = m.is_present("under");
     let s = m.is_present("stop");
     Arguments {
         file: i.to_string(),
+        ofile: outf.to_string(),
         num_words: num,
         word_len: l,
         under: u,
@@ -96,7 +108,7 @@ fn parse_args() -> Arguments {
     }
 }
 
-fn gen_words(input: &str, num: usize, num_len: usize, under: bool, stop: bool, max_t: usize) {
+fn gen_words(input: &str, num: usize, num_len: usize, under: bool, stop: bool, max_t: usize, ofile: &str) {
     let f = std::fs::File::open(input).expect("on file open");
     let mut r = std::io::BufReader::new(f);
     let mut s = String::new();
@@ -173,7 +185,13 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool, stop: bool, m
     if v.len() < num {
         panic!("Not enough words");
     }
-
+    let mut w : std::io::BufWriter<Box<dyn Write>>;
+    if ofile != "<STDOUT>" {
+        let f = std::fs::File::create(ofile).unwrap();
+        w = std::io::BufWriter::new(Box::new(f));
+    } else {
+        w = std::io::BufWriter::new(Box::new(std::io::stdout().lock()));
+    }
     let mut rng = rand::thread_rng();
     for _i in 0..num {
         if v.is_empty() {
@@ -181,10 +199,13 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool, stop: bool, m
         }
         let r = rng.gen_range(0..v.len());
         let value = v.get(r).unwrap();
-        print!("{} ", value);
+        write!(w, "{} ", value).expect("on write");
         v.remove(r);
     }
-    println!();
+    writeln!(w).expect("on write");
+    if ofile != "<STDOUT>" {
+        println!("code2text: wrote to file: {}", ofile);
+    }
 }
 
 fn main() -> std::io::Result<()> {
@@ -196,6 +217,7 @@ fn main() -> std::io::Result<()> {
         args.under,
         args.stop,
         args.max,
+        &args.ofile
     );
     Ok(())
 }
