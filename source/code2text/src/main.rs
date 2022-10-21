@@ -173,11 +173,11 @@ fn gen_words(
                     break;
                 }
                 ScanResult::Ok(val1) => {
-                    let mut v = data.lock().unwrap();
-                    let mut map = map_data.lock().unwrap();
-                    match val1 {
+                     match val1 {
                         Some(i) => {
                             if i.get_type() == TokenType::Identifier {
+                                let mut v = data.lock().unwrap();
+                                let mut map = map_data.lock().unwrap();            
                                 let s = i.get_string();
                                 if s.len() > num_len {
                                     if map.contains_key(&s.to_string()) {
@@ -220,7 +220,7 @@ fn gen_words(
     });
 
     let mut v = data.lock().unwrap();
-
+    
     println!(
         "code2text: scanning finished gathered {} tokens for pool out of {} lines, generating words...",
         v.len(),
