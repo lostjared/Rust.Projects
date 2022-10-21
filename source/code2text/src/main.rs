@@ -149,9 +149,6 @@ fn gen_words(
     let map_data = Arc::new(Mutex::new(map));
 
     lines.into_par_iter().for_each(|line| {
-        let mut v = data.lock().unwrap();
-        let mut map = map_data.lock().unwrap();
-
         let mut scan: Scanner = Scanner::new(&line);
         let mut counter = 0;
 
@@ -163,6 +160,11 @@ fn gen_words(
                     break;
                 }
                 ScanResult::Ok(val1) => {
+
+                    let mut v = data.lock().unwrap();
+                    let mut map = map_data.lock().unwrap();
+                        
+
                     if stop && v.len() > num {
                         break;
                     }
