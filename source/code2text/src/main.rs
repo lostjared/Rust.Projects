@@ -144,15 +144,13 @@ fn gen_words(
     let num_lines = lines.len();
     let v: Vec<String> = Vec::new();
     let map: HashMap<String, bool> = HashMap::new();
-   
+
     let data = Arc::new(Mutex::new(v));
     let map_data = Arc::new(Mutex::new(map));
 
     lines.into_par_iter().for_each(|line| {
         let mut scan: Scanner = Scanner::new(&line);
-        let mut counter = 0;
-
-       loop {
+        loop {
             let token_result = scan.scan_token();
             match token_result {
                 ScanResult::Error => {
@@ -160,10 +158,8 @@ fn gen_words(
                     break;
                 }
                 ScanResult::Ok(val1) => {
-
                     let mut v = data.lock().unwrap();
                     let mut map = map_data.lock().unwrap();
-                        
 
                     if stop && v.len() > num {
                         break;
@@ -175,19 +171,6 @@ fn gen_words(
 
                     match val1 {
                         Some(i) => {
-                            if counter % 1000 == 0 {
-                                /*let per: f64 = (scan.getpos() as f64 / slen as f64) * 100.0;
-
-                                println!(
-                                    "code2text: {} - ({}/{}) {:.2}% - found {} tokens processed...",
-                                    counter,
-                                    scan.getpos(),
-                                    slen,
-                                    per,
-                                    v.len()
-                                );*/
-                            }
-                            counter += 1;
                             if i.get_type() == TokenType::Identifier {
                                 let s = i.get_string();
                                 if s.len() > num_len {
