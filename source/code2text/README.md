@@ -1,5 +1,5 @@
 
-# code2text 
+# code2text - concurrent  version
  generate random words from text files or source code
 
 use:
