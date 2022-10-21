@@ -149,7 +149,7 @@ fn gen_words(
     for line in r.lines() {
         match line {
             Ok(l) => {
-                lines.push(remove_chars(l));
+                lines.push(l);
             }
             Err(e) => {
                 eprintln!("Error: {}", e);
@@ -164,7 +164,7 @@ fn gen_words(
     let map_data = Arc::new(Mutex::new(map));
 
     lines.into_par_iter().for_each(|line| {
-        let mut scan: Scanner = Scanner::new(&line);
+        let mut scan: Scanner = Scanner::new(&remove_chars(line));
         loop {
             let token_result = scan.scan_token();
             match token_result {
