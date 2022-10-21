@@ -124,7 +124,7 @@ fn remove_chars(input: String) -> String {
     for i in input.chars() {
         match i {
             '\'' | '\"' | '.' => {
-                continue;
+                new_value.push(' ');
             }
             _=> {
                 new_value.push(i);
