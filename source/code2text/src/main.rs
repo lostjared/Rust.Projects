@@ -126,7 +126,7 @@ fn remove_chars(input: String) -> String {
             '\'' | '\"' | '.' => {
                 new_value.push(' ');
             }
-            _=> {
+            _ => {
                 new_value.push(i);
             }
         }
@@ -175,8 +175,6 @@ fn gen_words(
                 ScanResult::Ok(val1) => {
                     let mut v = data.lock().unwrap();
                     let mut map = map_data.lock().unwrap();
-
-                    
                     match val1 {
                         Some(i) => {
                             if i.get_type() == TokenType::Identifier {
@@ -194,7 +192,7 @@ fn gen_words(
                                             if max_t != 0 && v.len() > max_t {
                                                 break;
                                             }
-                                            continue;                        
+                                            continue;
                                         }
                                         let f = s.find('_');
                                         if f != None {
@@ -206,7 +204,7 @@ fn gen_words(
                                             if max_t != 0 && v.len() > max_t {
                                                 break;
                                             }
-                                            continue;                        
+                                            continue;
                                         }
                                     }
                                 }
