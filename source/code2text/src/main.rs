@@ -176,14 +176,7 @@ fn gen_words(
                     let mut v = data.lock().unwrap();
                     let mut map = map_data.lock().unwrap();
 
-                    if stop && v.len() > num {
-                        break;
-                    }
-
-                    if max_t != 0 && v.len() > max_t {
-                        break;
-                    }
-
+                    
                     match val1 {
                         Some(i) => {
                             if i.get_type() == TokenType::Identifier {
@@ -193,15 +186,27 @@ fn gen_words(
                                         continue;
                                     } else {
                                         map.insert(s.to_string(), true);
-
                                         if !under {
                                             v.push(s.to_string());
-                                            continue;
+                                            if stop && v.len() > num {
+                                                break;
+                                            }
+                                            if max_t != 0 && v.len() > max_t {
+                                                break;
+                                            }
+                                            continue;                        
                                         }
                                         let f = s.find('_');
                                         if f != None {
                                             let value2 = &s[..f.unwrap()];
                                             v.push(value2.to_string());
+                                            if stop && v.len() > num {
+                                                break;
+                                            }
+                                            if max_t != 0 && v.len() > max_t {
+                                                break;
+                                            }
+                                            continue;                        
                                         }
                                     }
                                 }
