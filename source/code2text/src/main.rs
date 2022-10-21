@@ -119,6 +119,21 @@ fn parse_args() -> Arguments {
     }
 }
 
+fn remove_chars(input: String) -> String {
+    let mut new_value = String::new();
+    for i in input.chars() {
+        match i {
+            '\'' | '\"' | '.' => {
+                continue;
+            }
+            _=> {
+                new_value.push(i);
+            }
+        }
+    }
+    new_value
+}
+
 fn gen_words(
     input: &str,
     num: usize,
@@ -134,7 +149,7 @@ fn gen_words(
     for line in r.lines() {
         match line {
             Ok(l) => {
-                lines.push(l);
+                lines.push(remove_chars(l));
             }
             Err(e) => {
                 eprintln!("Error: {}", e);
