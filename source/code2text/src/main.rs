@@ -222,7 +222,7 @@ fn gen_words(
     let mut v = data.lock().unwrap();
 
     println!(
-        "code2text: scanning finished gathered {} tokens for pool out of {} lines, generating words...",
+        "code2text: scanning finished.\nGathered {} tokens for pool.\nText contained {} lines.\nNow generating words...",
         v.len(),
         num_lines
     );
