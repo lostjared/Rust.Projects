@@ -35,7 +35,8 @@ struct Arguments {
 fn parse_args() -> Arguments {
     let m = App::new("code2text")
         .help("code2text")
-        .about("jared bruni")
+        .about("code2text - generate random words from code/text")
+        .version("0.1.0")
         .arg(
             Arg::with_name("input")
                 .long("input")
