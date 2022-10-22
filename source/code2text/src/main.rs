@@ -37,7 +37,7 @@ fn parse_args() -> Arguments {
         .help("code2text")
         .about("code2text - generate random words from code/text")
         .version("0.1.0")
-        .author("Jared Bruni")
+        .author("Jared Bruni (jaredbruni@protonmail.com)")
         .arg(
             Arg::with_name("input")
                 .long("input")
