@@ -174,55 +174,53 @@ fn gen_words(
                     eprintln!("code2text: Scanner error");
                     break;
                 }
-                ScanResult::Ok(val1) => {
-                     match val1 {
-                        Some(i) => {
-                            if i.get_type() == TokenType::Identifier {
-                                let mut v = data.lock().unwrap();
-                                let mut map = map_data.lock().unwrap();            
-                                let s = i.get_string();
-                                if s.len() > num_len {
-                                    if map.contains_key(&s.to_string()) {
+                ScanResult::Ok(val1) => match val1 {
+                    Some(i) => {
+                        if i.get_type() == TokenType::Identifier {
+                            let mut v = data.lock().unwrap();
+                            let mut map = map_data.lock().unwrap();
+                            let s = i.get_string();
+                            if s.len() > num_len {
+                                if map.contains_key(&s.to_string()) {
+                                    continue;
+                                } else {
+                                    map.insert(s.to_string(), true);
+                                    if !under {
+                                        v.push(s.to_string());
+                                        if stop && v.len() > num {
+                                            break;
+                                        }
+                                        if max_t != 0 && v.len() > max_t {
+                                            break;
+                                        }
                                         continue;
-                                    } else {
-                                        map.insert(s.to_string(), true);
-                                        if !under {
-                                            v.push(s.to_string());
-                                            if stop && v.len() > num {
-                                                break;
-                                            }
-                                            if max_t != 0 && v.len() > max_t {
-                                                break;
-                                            }
-                                            continue;
+                                    }
+                                    let f = s.find('_');
+                                    if f != None {
+                                        let value2 = &s[..f.unwrap()];
+                                        v.push(value2.to_string());
+                                        if stop && v.len() > num {
+                                            break;
                                         }
-                                        let f = s.find('_');
-                                        if f != None {
-                                            let value2 = &s[..f.unwrap()];
-                                            v.push(value2.to_string());
-                                            if stop && v.len() > num {
-                                                break;
-                                            }
-                                            if max_t != 0 && v.len() > max_t {
-                                                break;
-                                            }
-                                            continue;
+                                        if max_t != 0 && v.len() > max_t {
+                                            break;
                                         }
+                                        continue;
                                     }
                                 }
                             }
                         }
-                        None => {
-                            break;
-                        }
                     }
-                }
+                    None => {
+                        break;
+                    }
+                },
             }
         }
     });
 
     let mut v = data.lock().unwrap();
-    
+
     println!(
         "code2text: scanning finished gathered {} tokens for pool out of {} lines, generating words...",
         v.len(),
