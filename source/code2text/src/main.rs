@@ -5,11 +5,9 @@ code2text - generate random words from text files or source code
 use:
 
     -i filename.txt
-    -s stop when found enough words
     -u only find underscore words
     -n how many words to find
     -l how long each word must be
-    -m collect at most max words
     -o output to filename
 
 */
@@ -28,8 +26,6 @@ struct Arguments {
     num_words: usize,
     word_len: usize,
     under: bool,
-    stop: bool,
-    max: usize,
 }
 
 fn parse_args() -> Arguments {
@@ -74,24 +70,6 @@ fn parse_args() -> Arguments {
                 .required(false),
         )
         .arg(
-            Arg::with_name("stop")
-                .long("stop")
-                .short('s')
-                .takes_value(false)
-                .help("stop after num words gathered")
-                .required(false),
-        )
-        .arg(
-            Arg::with_name("max")
-                .long("max")
-                .short('m')
-                .takes_value(true)
-                .required(false)
-                .default_value("0")
-                .help("Gather max words before genenrating random words")
-                .allow_invalid_utf8(true),
-        )
-        .arg(
             Arg::with_name("output")
                 .long("output")
                 .short('o')
@@ -106,18 +84,14 @@ fn parse_args() -> Arguments {
     let i = m.value_of_lossy("input").unwrap();
     let num = m.value_of_lossy("num").unwrap().parse().unwrap();
     let l = m.value_of_lossy("len").unwrap().parse().unwrap();
-    let max_t = m.value_of_lossy("max").unwrap().parse().unwrap();
     let outf = m.value_of_lossy("output").unwrap();
     let u = m.is_present("under");
-    let s = m.is_present("stop");
     Arguments {
         file: i.to_string(),
         ofile: outf.to_string(),
         num_words: num,
         word_len: l,
         under: u,
-        stop: s,
-        max: max_t,
     }
 }
 
@@ -141,8 +115,6 @@ fn gen_words(
     num: usize,
     num_len: usize,
     under: bool,
-    stop: bool,
-    max_t: usize,
     ofile: &str,
 ) {
     let f = std::fs::File::open(input).expect("on file open");
@@ -187,25 +159,13 @@ fn gen_words(
                                     map.insert(s.to_string(), true);
                                     if !under {
                                         v.push(s.to_string());
-                                        if stop && v.len() > num {
-                                            break;
-                                        }
-                                        if max_t != 0 && v.len() > max_t {
-                                            break;
-                                        }
                                         continue;
                                     }
                                     let f = s.find('_');
                                     if f != None {
                                         let value2 = &s[..f.unwrap()];
                                         v.push(value2.to_string());
-                                        if stop && v.len() > num {
-                                            break;
-                                        }
-                                        if max_t != 0 && v.len() > max_t {
-                                            break;
-                                        }
-                                        continue;
+                                          continue;
                                     }
                                 }
                             }
@@ -259,9 +219,7 @@ fn main() -> std::io::Result<()> {
         args.num_words,
         args.word_len,
         args.under,
-        args.stop,
-        args.max,
-        &args.ofile,
+        &args.ofile
     );
     Ok(())
 }
