@@ -17,7 +17,7 @@ fn main() {
     let sdl = sdl2::init().unwrap();
     let video = sdl.video().unwrap();
     let window = video
-        .window("LScript", width, height)
+        .window("Catch", width, height)
         .resizable()
         .opengl()
         .build()
