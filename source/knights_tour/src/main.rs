@@ -30,8 +30,8 @@ fn main() {
 
     let mut curcolor: sdl2::pixels::Color;
     let mut board: Box<[[u8; 8]; 8]> = Box::new([[0; 8]; 8]);
-    let mut rowx : i32 = 1;
-    let mut colx : i32 = 6;
+    let mut rowx: i32 = 1;
+    let mut colx: i32 = 6;
     let mut moves = 0;
     let htable = [
         [2, 3, 4, 4, 4, 4, 3, 2],
@@ -60,7 +60,7 @@ fn main() {
                     ..
                 } => {
                     let mut smallest = 100;
-                    let mut choice : i32 = -1;
+                    let mut choice: i32 = -1;
 
                     for i in 0..8 {
                         let mut row;
@@ -69,8 +69,15 @@ fn main() {
                         col = colx;
                         row += horizontal[i];
                         col += vertical[i];
-                        if row >= 0 && row < 8 && col >= 0 && col < 8 && board[row as usize][col as usize] == 0 {
-                            if htable[row as usize][col as usize] < smallest && htable[row as usize][col as usize] != 0 {
+                        if row >= 0
+                            && row < 8
+                            && col >= 0
+                            && col < 8
+                            && board[row as usize][col as usize] == 0
+                        {
+                            if htable[row as usize][col as usize] < smallest
+                                && htable[row as usize][col as usize] != 0
+                            {
                                 smallest = htable[row as usize][col as usize];
                                 choice = i as i32;
                             }
