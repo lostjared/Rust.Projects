@@ -10,7 +10,7 @@ fn main() {
     let sdl = sdl2::init().unwrap();
     let video = sdl.video().unwrap();
     let window = video
-        .window("App", width, height)
+        .window("Knights Tour - [Press Space to move, Return to Reset]", width, height)
         .resizable()
         .opengl()
         .build()
