@@ -56,6 +56,18 @@ fn main() {
                     ..
                 } => break 'main,
                 Event::KeyDown {
+                    keycode: Some(Keycode::Return),
+                    ..
+                } => {
+                    for i in 0..8 {
+                        for z in 0..8 {
+                            board[i][z] = 0;
+                            rowx = 1;
+                            colx = 6;
+                        }
+                    }
+                }
+                Event::KeyDown {
                     keycode: Some(Keycode::Space),
                     ..
                 } => {
@@ -89,7 +101,7 @@ fn main() {
                         rowx += horizontal[choice as usize] as i32;
                         colx += vertical[choice as usize] as i32;
                         moves += 1;
-                        if moves == 63 {
+                        if moves >= 63 {
                             moves += 1;
                             board[rowx as usize][colx as usize] = 1;
                         }
