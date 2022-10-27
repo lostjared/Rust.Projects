@@ -97,18 +97,14 @@ fn main() {
                         col = colx;
                         row += horizontal[i];
                         col += vertical[i];
-                        if row >= 0
-                            && row < 8
-                            && col >= 0
-                            && col < 8
+                        if (0..8).contains(&row)
+                            && (0..8).contains(&col)
                             && board[row as usize][col as usize] == 0
+                            && htable[row as usize][col as usize] < smallest
+                            && htable[row as usize][col as usize] != 0
                         {
-                            if htable[row as usize][col as usize] < smallest
-                                && htable[row as usize][col as usize] != 0
-                            {
-                                smallest = htable[row as usize][col as usize];
-                                choice = i as i32;
-                            }
+                            smallest = htable[row as usize][col as usize];
+                            choice = i as i32;
                         }
                     }
 
@@ -169,7 +165,7 @@ fn main() {
         let menu_string = format!("Knights Tour - Moves: {}", moves);
 
         let turn_surf = font
-            .render(&format!("{}", menu_string))
+            .render(&menu_string)
             .blended(sdl2::pixels::Color::RGB(255, 255, 255))
             .unwrap();
         let turn_surf_text = tc.create_texture_from_surface(&turn_surf).unwrap();
