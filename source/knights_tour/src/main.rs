@@ -1,8 +1,8 @@
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::rect::Rect;
-use sdl2::surface::Surface;
 use sdl2::render::TextureQuery;
+use sdl2::surface::Surface;
 
 fn main() {
     let width = 1280;
@@ -10,7 +10,11 @@ fn main() {
     let sdl = sdl2::init().unwrap();
     let video = sdl.video().unwrap();
     let window = video
-        .window("Knights Tour - [Press Space to move, Return to Reset]", width, height)
+        .window(
+            "Knights Tour - [Press Space to move, Return to Reset]",
+            width,
+            height,
+        )
         .resizable()
         .opengl()
         .build()
@@ -31,7 +35,7 @@ fn main() {
         .blended(sdl2::pixels::Color::RGB(255, 255, 255))
         .unwrap();
 
-     let mut ksurf = Surface::load_bmp("knight.bmp").unwrap();
+    let mut ksurf = Surface::load_bmp("knight.bmp").unwrap();
     ksurf
         .set_color_key(true, sdl2::pixels::Color::RGB(255, 255, 255))
         .expect("on color key");
@@ -165,9 +169,9 @@ fn main() {
         let menu_string = format!("Knights Tour - Moves: {}", moves);
 
         let turn_surf = font
-        .render(&format!("{}", menu_string))
-        .blended(sdl2::pixels::Color::RGB(255, 255, 255))
-        .unwrap();
+            .render(&format!("{}", menu_string))
+            .blended(sdl2::pixels::Color::RGB(255, 255, 255))
+            .unwrap();
         let turn_surf_text = tc.create_texture_from_surface(&turn_surf).unwrap();
 
         let TextureQuery {
@@ -176,10 +180,8 @@ fn main() {
             ..
         } = turn_surf_text.query();
 
-    can.copy(&turn_surf_text, None, Some(Rect::new(600, 250, wi, hi)))
-        .expect("on copy");
-
-
+        can.copy(&turn_surf_text, None, Some(Rect::new(600, 250, wi, hi)))
+            .expect("on copy");
 
         can.present();
     }
