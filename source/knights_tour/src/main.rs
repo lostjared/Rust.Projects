@@ -2,6 +2,7 @@ use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::rect::Rect;
 use sdl2::surface::Surface;
+use sdl2::render::TextureQuery;
 
 fn main() {
     let width = 1280;
@@ -29,7 +30,6 @@ fn main() {
         .render("Hello, World!")
         .blended(sdl2::pixels::Color::RGB(255, 255, 255))
         .unwrap();
-    
 
      let mut ksurf = Surface::load_bmp("knight.bmp").unwrap();
     ksurf
@@ -72,10 +72,12 @@ fn main() {
                     for i in 0..8 {
                         for z in 0..8 {
                             board[i][z] = 0;
-                            rowx = 1;
-                            colx = 6;
                         }
                     }
+
+                    rowx = 1;
+                    colx = 6;
+                    moves = 0;
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Space),
@@ -159,6 +161,25 @@ fn main() {
                 }
             }
         }
+
+        let menu_string = format!("Knights Tour - Moves: {}", moves);
+
+        let turn_surf = font
+        .render(&format!("{}", menu_string))
+        .blended(sdl2::pixels::Color::RGB(255, 255, 255))
+        .unwrap();
+        let turn_surf_text = tc.create_texture_from_surface(&turn_surf).unwrap();
+
+        let TextureQuery {
+            width: wi,
+            height: hi,
+            ..
+        } = turn_surf_text.query();
+
+    can.copy(&turn_surf_text, None, Some(Rect::new(600, 250, wi, hi)))
+        .expect("on copy");
+
+
 
         can.present();
     }
