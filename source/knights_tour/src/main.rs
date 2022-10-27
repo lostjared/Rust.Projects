@@ -19,8 +19,19 @@ fn main() {
         .build()
         .map_err(|e| e.to_string())
         .expect("Error on canvas");
+
+    let ttf_context = sdl2::ttf::init().map_err(|e| e.to_string()).unwrap();
     let tc = can.texture_creator();
-    let mut ksurf = Surface::load_bmp("knight.bmp").unwrap();
+    let font = ttf_context
+        .load_font("./font.ttf", 18)
+        .expect("error loading font");
+    let _text_surf = font
+        .render("Hello, World!")
+        .blended(sdl2::pixels::Color::RGB(255, 255, 255))
+        .unwrap();
+    
+
+     let mut ksurf = Surface::load_bmp("knight.bmp").unwrap();
     ksurf
         .set_color_key(true, sdl2::pixels::Color::RGB(255, 255, 255))
         .expect("on color key");
