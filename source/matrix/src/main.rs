@@ -1,3 +1,4 @@
+// Looks kind of like a Matrix code emulator not there 100% yet.
 // cargo run --release
 
 use rand::Rng;
