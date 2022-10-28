@@ -7,8 +7,9 @@ use sdl2::pixels::PixelFormatEnum;
 use sdl2::rect::Rect;
 use sdl2::render::TextureQuery;
 
-const LETTER_MAX: usize = 24;
-const LETTER_NUM: usize = 38;
+const LETTER_MAX: usize = 21;
+const LETTER_NUM: usize = 36;
+const LETTER_SIZE: i32 = 32;
 
 #[derive(Copy, Clone, Debug)]
 struct Letter {
@@ -34,15 +35,15 @@ impl LetterGen {
                     ypos: 0,
                 }; LETTER_MAX],
             );
-            let mut y = 0;
+            let mut y = -LETTER_SIZE;
             for z in 0..LETTER_MAX {
                 l[z].ch = rng.gen_range('A'..='Z');
                 l[z].xpos = x;
                 l[z].ypos = y;
-                y += 32;
+                y += LETTER_SIZE+4;
             }
             v.push(l);
-            x += 34;
+            x += LETTER_SIZE+4;
         }
 
         LetterGen { letters: v }
@@ -95,7 +96,7 @@ fn main() {
             for z in 0..LETTER_MAX {
                 let ch = letters_st.letters[i][z].ch;
                 let x = letters_st.letters[i][z].xpos;
-                let y = letters_st.letters[i][z].ypos;
+                let y = &mut letters_st.letters[i][z].ypos;
 
                 let text_surf = font
                     .render(&format!("{}", ch))
@@ -110,8 +111,13 @@ fn main() {
                     ..
                 } = tex.query();
 
-                can.copy(&tex, None, Some(sdl2::rect::Rect::new(x, y, wi, hi)))
+                can.copy(&tex, None, Some(sdl2::rect::Rect::new(x, *y, wi, hi)))
                     .expect("on copy");
+                *y -= LETTER_SIZE/4;
+                if *y <= -LETTER_SIZE {
+                    *y = 720;
+                    letters_st.letters[i][z].ch = rng.gen_range('A'..='Z');
+                }
             }
         }
         can.present();
