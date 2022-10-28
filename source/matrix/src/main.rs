@@ -4,6 +4,7 @@ use rand::Rng;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::render::TextureQuery;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 const LETTER_MAX: usize = 21;
 const LETTER_NUM: usize = 40;
@@ -15,7 +16,6 @@ struct Letter {
     xpos: i32,
     ypos: i32,
 }
-
 
 struct LetterGen {
     letters: Vec<Box<[Letter; LETTER_MAX]>>,
@@ -41,13 +41,16 @@ impl LetterGen {
                 l[z].ch = rng.gen_range('a'..='z');
                 l[z].xpos = x;
                 l[z].ypos = y;
-                y += LETTER_SIZE+4;
+                y += LETTER_SIZE + 4;
             }
             v.push(l);
             r.push(rng.gen_range(24..32));
             x += LETTER_SIZE;
         }
-        LetterGen { letters: v, letter_row: r }
+        LetterGen {
+            letters: v,
+            letter_row: r,
+        }
     }
 }
 
@@ -78,7 +81,8 @@ fn main() {
     let mut e = sdl.event_pump().unwrap();
     let mut rng = rand::thread_rng();
     let mut letters_st = LetterGen::new();
-
+    let mut prev_tick: u64 = 0;
+    let mut tick_count = 0;
     'main: loop {
         for _event in e.poll_iter() {
             match _event {
@@ -92,13 +96,20 @@ fn main() {
         }
         can.clear();
 
+        let start = SystemTime::now();
+        let se = start.duration_since(UNIX_EPOCH).expect("error on time");
+        let tick = se.as_secs() * 1000 + se.subsec_nanos() as u64 / 1_000_000;
+        let ptick = tick - prev_tick;
+        prev_tick = tick;
+        tick_count += ptick;
+
         for i in 0..letters_st.letters.len() {
             for z in 0..LETTER_MAX {
                 let ch = letters_st.letters[i][z].ch;
                 let x = letters_st.letters[i][z].xpos;
                 let speed = letters_st.letter_row[i];
                 let y = &mut letters_st.letters[i][z].ypos;
-                 let text_surf = font
+                let text_surf = font
                     .render(&format!("{}", ch))
                     .blended(sdl2::pixels::Color::RGB(0, 255, 0))
                     .unwrap();
@@ -113,13 +124,21 @@ fn main() {
 
                 can.copy(&tex, None, Some(sdl2::rect::Rect::new(x, *y, wi, hi)))
                     .expect("on copy");
-                *y -= speed;
-                if *y <= -LETTER_SIZE {
-                    *y = 720;
-                    letters_st.letters[i][z].ch = rng.gen_range('a'..='z');
+
+                if tick_count > 75 {
+                    *y -= speed;
+                    if *y <= -LETTER_SIZE {
+                        *y = 720;
+                        letters_st.letters[i][z].ch = rng.gen_range('a'..='z');
+                    }
                 }
             }
         }
+
+        if tick_count > 75 {
+            tick_count = 0;
+        }
+
         can.present();
     }
 }
