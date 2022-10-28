@@ -3,8 +3,6 @@
 use rand::Rng;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
-use sdl2::pixels::PixelFormatEnum;
-use sdl2::rect::Rect;
 use sdl2::render::TextureQuery;
 
 const LETTER_MAX: usize = 21;
@@ -18,8 +16,10 @@ struct Letter {
     ypos: i32,
 }
 
+
 struct LetterGen {
     letters: Vec<Box<[Letter; LETTER_MAX]>>,
+    letter_row: Vec<i32>,
 }
 
 impl LetterGen {
@@ -27,7 +27,8 @@ impl LetterGen {
         let mut rng = rand::thread_rng();
         let mut x = 0;
         let mut v = Vec::new();
-        for i in 0..LETTER_NUM {
+        let mut r = Vec::new();
+        for _i in 0..LETTER_NUM {
             let mut l = Box::new(
                 [Letter {
                     ch: '0',
@@ -43,10 +44,10 @@ impl LetterGen {
                 y += LETTER_SIZE+4;
             }
             v.push(l);
+            r.push(rng.gen_range(24..32));
             x += LETTER_SIZE+4;
         }
-
-        LetterGen { letters: v }
+        LetterGen { letters: v, letter_row: r }
     }
 }
 
@@ -96,9 +97,9 @@ fn main() {
             for z in 0..LETTER_MAX {
                 let ch = letters_st.letters[i][z].ch;
                 let x = letters_st.letters[i][z].xpos;
+                let speed = letters_st.letter_row[i];
                 let y = &mut letters_st.letters[i][z].ypos;
-
-                let text_surf = font
+                 let text_surf = font
                     .render(&format!("{}", ch))
                     .blended(sdl2::pixels::Color::RGB(0, 255, 0))
                     .unwrap();
@@ -113,7 +114,7 @@ fn main() {
 
                 can.copy(&tex, None, Some(sdl2::rect::Rect::new(x, *y, wi, hi)))
                     .expect("on copy");
-                *y -= LETTER_SIZE/4;
+                *y -= speed;
                 if *y <= -LETTER_SIZE {
                     *y = 720;
                     letters_st.letters[i][z].ch = rng.gen_range('A'..='Z');
