@@ -6,7 +6,7 @@ use sdl2::keyboard::Keycode;
 use sdl2::render::TextureQuery;
 
 const LETTER_MAX: usize = 21;
-const LETTER_NUM: usize = 36;
+const LETTER_NUM: usize = 40;
 const LETTER_SIZE: i32 = 32;
 
 #[derive(Copy, Clone, Debug)]
@@ -38,14 +38,14 @@ impl LetterGen {
             );
             let mut y = -LETTER_SIZE;
             for z in 0..LETTER_MAX {
-                l[z].ch = rng.gen_range('A'..='Z');
+                l[z].ch = rng.gen_range('a'..='z');
                 l[z].xpos = x;
                 l[z].ypos = y;
                 y += LETTER_SIZE+4;
             }
             v.push(l);
             r.push(rng.gen_range(24..32));
-            x += LETTER_SIZE+4;
+            x += LETTER_SIZE;
         }
         LetterGen { letters: v, letter_row: r }
     }
@@ -57,8 +57,7 @@ fn main() {
     let sdl = sdl2::init().unwrap();
     let video = sdl.video().unwrap();
     let window = video
-        .window("App", width, height)
-        .resizable()
+        .window("[Code Matrix]", width, height)
         .opengl()
         .build()
         .unwrap();
@@ -117,7 +116,7 @@ fn main() {
                 *y -= speed;
                 if *y <= -LETTER_SIZE {
                     *y = 720;
-                    letters_st.letters[i][z].ch = rng.gen_range('A'..='Z');
+                    letters_st.letters[i][z].ch = rng.gen_range('a'..='z');
                 }
             }
         }
