@@ -78,7 +78,9 @@ fn parse_color(input: String) -> (u8, u8, u8) {
 
 fn parse_args() -> Arguments {
     let m = App::new("matrix")
-        .help("matrix")
+        .help("matrix code emulator")
+        .author("Jared Bruni jared@protonmail.com")
+        .version("0.1.0")
         .arg(
             Arg::new("color")
                 .help("color of characters 0,0,0")
