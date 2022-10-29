@@ -1,6 +1,7 @@
 // Looks kind of like a Matrix code emulator not there 100% yet.
 // cargo run --release
 
+use clap::{App, Arg};
 use rand::Rng;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
@@ -55,7 +56,42 @@ impl LetterGen {
     }
 }
 
+struct Arguments {
+    color: (u8, u8, u8),
+}
+
+fn parse_color(input: &str) -> (u8, u8, u8) {
+    let s = input.find(",");
+    let sp = s.unwrap();
+    let r = &input[..sp];
+    let right = &input[sp+1..];
+    let gp = right.find(",");
+    let gv = gp.unwrap();
+    let g = &right[..gv];
+    let b = &right[gv+1..];
+    (r.parse().unwrap(),g.parse().unwrap(),b.parse().unwrap())
+}
+
+fn parse_args() -> Arguments {
+    let m = App::new("matrix")
+        .help("matrix")
+        .arg(
+            Arg::new("color")
+                .required(false)
+                .default_value("0,255,0")
+                .short('c')
+                .long("color")
+                .allow_invalid_utf8(true),
+        )
+        .get_matches();
+        let col = parse_color(&m.value_of_lossy("color").unwrap().to_string());
+
+    Arguments { color: col }
+}
+
 fn main() {
+    let args = parse_args();
+    let color = sdl2::pixels::Color::RGB(args.color.0, args.color.1, args.color.2);
     let width = 1280;
     let height = 720;
     let sdl = sdl2::init().unwrap();
@@ -112,7 +148,7 @@ fn main() {
                 let y = &mut letters_st.letters[i][z].ypos;
                 let text_surf = font
                     .render(&format!("{}", ch))
-                    .blended(sdl2::pixels::Color::RGB(0, 255, 0))
+                    .blended(color)
                     .unwrap();
 
                 let tex = tc.create_texture_from_surface(text_surf).unwrap();
