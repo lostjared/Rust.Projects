@@ -102,7 +102,10 @@ fn parse_args() -> Arguments {
         .get_matches();
     let col = parse_color(m.value_of_lossy("color").unwrap().to_string());
     let t = m.value_of_lossy("timeout").unwrap().parse().unwrap();
-    Arguments { color: col, timeout: t }
+    Arguments {
+        color: col,
+        timeout: t,
+    }
 }
 
 fn main() {
