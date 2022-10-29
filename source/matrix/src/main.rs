@@ -1,5 +1,7 @@
 // Looks kind of like a Matrix code emulator not there 100% yet.
 // cargo run --release
+// --timeout timeout delay (how fast it moves)
+// --color the color of the characters in format r,g,b ex: 0,255,0
 
 use clap::{App, Arg};
 use rand::Rng;
@@ -59,6 +61,7 @@ impl LetterGen {
 
 struct Arguments {
     color: (u8, u8, u8),
+    timeout: u64,
 }
 
 fn parse_color(input: String) -> (u8, u8, u8) {
@@ -78,15 +81,28 @@ fn parse_args() -> Arguments {
         .help("matrix")
         .arg(
             Arg::new("color")
+                .help("color of characters 0,0,0")
                 .required(false)
+                .takes_value(true)
                 .default_value("0,255,0")
                 .short('c')
                 .long("color")
                 .allow_invalid_utf8(true),
         )
+        .arg(
+            Arg::new("timeout")
+                .help("timeout delay")
+                .required(false)
+                .default_value("75")
+                .short('t')
+                .long("timeout")
+                .allow_invalid_utf8(true)
+                .takes_value(true),
+        )
         .get_matches();
     let col = parse_color(m.value_of_lossy("color").unwrap().to_string());
-    Arguments { color: col }
+    let t = m.value_of_lossy("timeout").unwrap().parse().unwrap();
+    Arguments { color: col, timeout: t }
 }
 
 fn main() {
@@ -158,7 +174,7 @@ fn main() {
                 } = tex.query();
                 can.copy(&tex, None, Some(sdl2::rect::Rect::new(x, *y, wi, hi)))
                     .expect("on copy");
-                if tick_count > 75 {
+                if tick_count > args.timeout {
                     *y -= speed;
                     if *y <= -LETTER_SIZE {
                         *y = 720;
@@ -167,7 +183,7 @@ fn main() {
                 }
             }
         }
-        if tick_count > 75 {
+        if tick_count > args.timeout {
             tick_count = 0;
         }
         can.present();
