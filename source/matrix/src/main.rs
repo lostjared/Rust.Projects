@@ -11,12 +11,10 @@ use sdl2::render::TextureQuery;
 use std::collections::HashMap;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-
 /// program constants
 const LETTER_MAX: usize = 21;
 const LETTER_NUM: usize = 40;
 const LETTER_SIZE: i32 = 32;
-
 
 /// on screen letter structure
 #[derive(Copy, Clone, Debug)]
@@ -33,7 +31,6 @@ struct LetterGen {
 }
 
 impl LetterGen {
-
     /// create new letter generator
     fn new() -> Self {
         let mut rng = rand::thread_rng();
