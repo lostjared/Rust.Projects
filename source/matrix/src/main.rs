@@ -11,10 +11,14 @@ use sdl2::render::TextureQuery;
 use std::collections::HashMap;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+
+/// program constants
 const LETTER_MAX: usize = 21;
 const LETTER_NUM: usize = 40;
 const LETTER_SIZE: i32 = 32;
 
+
+/// on screen letter structure
 #[derive(Copy, Clone, Debug)]
 struct Letter {
     ch: char,
@@ -22,12 +26,15 @@ struct Letter {
     ypos: i32,
 }
 
+// letter generator
 struct LetterGen {
     letters: Vec<Box<[Letter; LETTER_MAX]>>,
     letter_row: Vec<i32>,
 }
 
 impl LetterGen {
+
+    /// create new letter generator
     fn new() -> Self {
         let mut rng = rand::thread_rng();
         let mut x = 0;
@@ -59,11 +66,13 @@ impl LetterGen {
     }
 }
 
+/// command line arguments structure
 struct Arguments {
     color: (u8, u8, u8),
     timeout: u64,
 }
 
+/// parse a color from a string
 fn parse_color(input: String) -> (u8, u8, u8) {
     let s = input.find(",");
     let sp = s.unwrap();
@@ -76,6 +85,7 @@ fn parse_color(input: String) -> (u8, u8, u8) {
     (r.parse().unwrap(), g.parse().unwrap(), b.parse().unwrap())
 }
 
+/// parse command line arguments
 fn parse_args() -> Arguments {
     let m = App::new("matrix")
         .help("matrix code emulator")
@@ -83,7 +93,7 @@ fn parse_args() -> Arguments {
         .version("0.1.0")
         .arg(
             Arg::new("color")
-                .help("color of characters 0,0,0")
+                .help("color of characters in format 0,0,0")
                 .required(false)
                 .takes_value(true)
                 .default_value("0,255,0")
@@ -110,6 +120,7 @@ fn parse_args() -> Arguments {
     }
 }
 
+/// main function
 fn main() {
     let args = parse_args();
     let color = sdl2::pixels::Color::RGB(args.color.0, args.color.1, args.color.2);
