@@ -6,8 +6,8 @@ use rand::Rng;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::render::TextureQuery;
-use std::time::{SystemTime, UNIX_EPOCH};
 use std::collections::HashMap;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 const LETTER_MAX: usize = 21;
 const LETTER_NUM: usize = 40;
@@ -61,16 +61,16 @@ struct Arguments {
     color: (u8, u8, u8),
 }
 
-fn parse_color(input: &str) -> (u8, u8, u8) {
+fn parse_color(input: String) -> (u8, u8, u8) {
     let s = input.find(",");
     let sp = s.unwrap();
     let r = &input[..sp];
-    let right = &input[sp+1..];
+    let right = &input[sp + 1..];
     let gp = right.find(",");
     let gv = gp.unwrap();
     let g = &right[..gv];
-    let b = &right[gv+1..];
-    (r.parse().unwrap(),g.parse().unwrap(),b.parse().unwrap())
+    let b = &right[gv + 1..];
+    (r.parse().unwrap(), g.parse().unwrap(), b.parse().unwrap())
 }
 
 fn parse_args() -> Arguments {
@@ -85,8 +85,7 @@ fn parse_args() -> Arguments {
                 .allow_invalid_utf8(true),
         )
         .get_matches();
-        let col = parse_color(&m.value_of_lossy("color").unwrap().to_string());
-
+    let col = parse_color(m.value_of_lossy("color").unwrap().to_string());
     Arguments { color: col }
 }
 
@@ -116,17 +115,12 @@ fn main() {
         .render("Hello, World!")
         .blended(sdl2::pixels::Color::RGB(255, 255, 255))
         .unwrap();
-
-    let mut tex_map : HashMap<char, sdl2::render::Texture> = HashMap::new();
-    for i in 'a' ..= 'z' {
-        let text_surf = font
-        .render(&format!("{}", i))
-        .blended(color)
-        .unwrap();
+    let mut tex_map: HashMap<char, sdl2::render::Texture> = HashMap::new();
+    for i in 'a'..='z' {
+        let text_surf = font.render(&format!("{}", i)).blended(color).unwrap();
         let tex = tc.create_texture_from_surface(text_surf).unwrap();
         tex_map.insert(i, tex);
     }
-
     let mut e = sdl.event_pump().unwrap();
     let mut rng = rand::thread_rng();
     let mut letters_st = LetterGen::new();
@@ -144,14 +138,12 @@ fn main() {
             }
         }
         can.clear();
-
         let start = SystemTime::now();
         let se = start.duration_since(UNIX_EPOCH).expect("error on time");
         let tick = se.as_secs() * 1000 + se.subsec_nanos() as u64 / 1_000_000;
         let ptick = tick - prev_tick;
         prev_tick = tick;
         tick_count += ptick;
-
         for i in 0..letters_st.letters.len() {
             for z in 0..LETTER_MAX {
                 let ch = letters_st.letters[i][z].ch;
@@ -175,11 +167,9 @@ fn main() {
                 }
             }
         }
-
         if tick_count > 75 {
             tick_count = 0;
         }
-
         can.present();
     }
 }
