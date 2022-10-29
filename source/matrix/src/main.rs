@@ -7,6 +7,7 @@ use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::render::TextureQuery;
 use std::time::{SystemTime, UNIX_EPOCH};
+use std::collections::HashMap;
 
 const LETTER_MAX: usize = 21;
 const LETTER_NUM: usize = 40;
@@ -115,6 +116,17 @@ fn main() {
         .render("Hello, World!")
         .blended(sdl2::pixels::Color::RGB(255, 255, 255))
         .unwrap();
+
+    let mut tex_map : HashMap<char, sdl2::render::Texture> = HashMap::new();
+    for i in 'a' ..= 'z' {
+        let text_surf = font
+        .render(&format!("{}", i))
+        .blended(color)
+        .unwrap();
+        let tex = tc.create_texture_from_surface(text_surf).unwrap();
+        tex_map.insert(i, tex);
+    }
+
     let mut e = sdl.event_pump().unwrap();
     let mut rng = rand::thread_rng();
     let mut letters_st = LetterGen::new();
@@ -146,22 +158,14 @@ fn main() {
                 let x = letters_st.letters[i][z].xpos;
                 let speed = letters_st.letter_row[i];
                 let y = &mut letters_st.letters[i][z].ypos;
-                let text_surf = font
-                    .render(&format!("{}", ch))
-                    .blended(color)
-                    .unwrap();
-
-                let tex = tc.create_texture_from_surface(text_surf).unwrap();
-
+                let tex = tex_map.get(&ch).unwrap();
                 let TextureQuery {
                     width: wi,
                     height: hi,
                     ..
                 } = tex.query();
-
                 can.copy(&tex, None, Some(sdl2::rect::Rect::new(x, *y, wi, hi)))
                     .expect("on copy");
-
                 if tick_count > 75 {
                     *y -= speed;
                     if *y <= -LETTER_SIZE {
