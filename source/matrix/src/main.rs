@@ -67,6 +67,7 @@ impl LetterGen {
 struct Arguments {
     color: (u8, u8, u8),
     timeout: u64,
+    font: String,
 }
 
 /// parse a color from a string
@@ -108,12 +109,24 @@ fn parse_args() -> Arguments {
                 .allow_invalid_utf8(true)
                 .takes_value(true),
         )
+        .arg(
+            Arg::new("font")
+                .help("font")
+                .required(false)
+                .short('f')
+                .long("font")
+                .takes_value(true)
+                .default_value("font.ttf")
+                .allow_invalid_utf8(true),
+        )
         .get_matches();
     let col = parse_color(m.value_of_lossy("color").unwrap().to_string());
     let t = m.value_of_lossy("timeout").unwrap().parse().unwrap();
+    let f = m.value_of_lossy("font").unwrap();
     Arguments {
         color: col,
         timeout: t,
+        font: f.to_string(),
     }
 }
 
@@ -138,7 +151,7 @@ fn main() {
     let ttf_context = sdl2::ttf::init().map_err(|e| e.to_string()).unwrap();
     let tc = can.texture_creator();
     let font = ttf_context
-        .load_font("./font.ttf", 32)
+        .load_font(args.font, 32)
         .expect("error loading font");
     let _text_surf = font
         .render("Hello, World!")
