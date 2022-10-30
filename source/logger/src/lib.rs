@@ -56,20 +56,29 @@ pub mod log {
 
         pub fn log(&mut self, data: String, level: String) {
             let t = the_time();
-            write!(self.out_stream, "{}: {} - {} {}\n", self.program_name, t,  level, data).expect("On log write");
+            write!(
+                self.out_stream,
+                "{}: {} - {} {}\n",
+                self.program_name, t, level, data
+            )
+            .expect("On log write");
             if self.echo {
-                println!("{}: {} - {} {}", self.program_name,t,  level, data)
+                println!("{}: {} - {} {}", self.program_name, t, level, data)
             }
         }
 
         /// fatal
         pub fn f(&mut self, data: String) {
-             panic!("{}: {} - Fatal: Error: {}\n", self.program_name, the_time(), data);
+            panic!(
+                "{}: {} - Fatal: Error: {}\n",
+                self.program_name,
+                the_time(),
+                data
+            );
         }
 
         pub fn fd(&mut self) -> &mut Box<dyn std::io::Write> {
             &mut self.out_stream
         }
-        
     }
 }
