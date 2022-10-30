@@ -3,6 +3,9 @@
 // --timeout timeout delay (how fast it moves)
 // --color the color of the characters in format r,g,b ex: 0,255,0
 // --font true type font file.
+// press Up arrow to scroll up
+// press Down arrow to scroll down
+
 use clap::{App, Arg};
 use rand::Rng;
 use sdl2::event::Event;
@@ -168,6 +171,8 @@ fn main() {
     let mut letters_st = LetterGen::new();
     let mut prev_tick: u64 = 0;
     let mut tick_count = 0;
+    let mut dir: bool = true;
+
     'main: loop {
         for _event in e.poll_iter() {
             match _event {
@@ -176,6 +181,14 @@ fn main() {
                     keycode: Some(Keycode::Escape),
                     ..
                 } => break 'main,
+                | Event::KeyDown {
+                    keycode: Some(Keycode::Up),
+                    ..
+                } => dir = true,
+                | Event::KeyDown {
+                    keycode: Some(Keycode::Down),
+                    ..
+                } => dir = false,
                 _ => {}
             }
         }
@@ -201,10 +214,18 @@ fn main() {
                 can.copy(&tex, None, Some(sdl2::rect::Rect::new(x, *y, wi, hi)))
                     .expect("on copy");
                 if tick_count > args.timeout {
-                    *y -= speed;
-                    if *y <= -LETTER_SIZE {
-                        *y = 720;
-                        letters_st.letters[i][z].ch = rng.gen_range('a'..='z');
+                    if dir == true {
+                        *y -= speed;
+                        if *y <= -LETTER_SIZE {
+                            *y = 720;
+                            letters_st.letters[i][z].ch = rng.gen_range('a'..='z');
+                        }
+                    } else {
+                        *y += speed;
+                        if *y >= 720+LETTER_SIZE {
+                            *y = -LETTER_SIZE;
+                            letters_st.letters[i][z].ch = rng.gen_range('a'..='z');
+                        }
                     }
                 }
             }
