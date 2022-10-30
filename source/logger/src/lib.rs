@@ -29,7 +29,7 @@ pub mod log {
             }
         }
         /// new log output file
-        pub fn new_log_file(name: &str, output: &str, echo_value: bool) -> Self {
+        pub fn new_file_log(name: &str, output: &str, echo_value: bool) -> Self {
             let f = std::fs::File::create(output).expect("on create of file ");
             Self {
                 program_name: name.to_string(),

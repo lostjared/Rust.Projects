@@ -15,7 +15,7 @@ fn main() -> std::io::Result<()> {
     std::io::stdin().lock().read_line(&mut s).expect("on read");
     let sv = s.trim();
     let mut log = match sv {
-        "1" => Log::new_log_file("Example", "log.txt", true),
+        "1" => Log::new_file_log("Example", "log.txt", true),
         "2" => Log::new_stdout_log("Example"),
         "3" => Log::new_stdout_log("Example"),
         _ => Log::new_stderr_log("Example"),
