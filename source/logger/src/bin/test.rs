@@ -2,7 +2,7 @@ use logger::log::*;
 use std::io::BufRead;
 
 fn log_output(log: &mut Log) {
-    log.i(format!("Logging to file"));
+    log.i(format!("Info Logging"));
     log.e(format!("logging an error"));
     log.o(format!("standard log"));
     write!(log.fd(), "Wrote directly so stream\n").expect("on write");
