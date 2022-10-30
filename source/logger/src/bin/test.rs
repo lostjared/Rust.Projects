@@ -1,6 +1,5 @@
 use logger::log::*;
 
-
 fn main() -> std::io::Result<()> {
     let mut log = Log::new_log_file("log.txt");
     log.i(&format!("Logging to file\n"));
