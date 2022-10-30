@@ -12,13 +12,16 @@ fn log_output(log: &mut Log) {
 
 fn main() -> std::io::Result<()> {
     let mut s = String::new();
-    println!("Write to: enter 1 for file, 2 for stdout");
+    println!("Write to: enter 1 for file, 2 for stdout, 3 for fatal");
     std::io::stdin().lock().read_line(&mut s).expect("on read");
     let sv = s.trim();
     if sv == "1" {
         log_output(&mut Log::new_log_file("log.txt"));
     } else if sv == "2" {
         log_output(&mut Log::new_stdout_log());
+    } else if sv == "3" {
+        let mut log = Log::new_stderr_log();
+        log.f(format!("Fatal Error\n"));
     } else {
         log_output(&mut Log::new_stderr_log());
     }

@@ -41,6 +41,10 @@ pub mod log {
         pub fn o(&mut self, data: String) {
             write!(self.out_stream, "{} - {}\n", the_time(), data).expect("On log write");
         }
+        /// fatal
+        pub fn f(&mut self, data: String) {
+             panic!("{}- Fatal: Error: {}", the_time(), data);
+        }
 
         pub fn fd(&mut self) -> &mut Box<dyn std::io::Write> {
             &mut self.out_stream
