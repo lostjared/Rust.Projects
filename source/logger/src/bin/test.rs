@@ -16,15 +16,15 @@ fn main() -> std::io::Result<()> {
     std::io::stdin().lock().read_line(&mut s).expect("on read");
     let sv = s.trim();
     if sv == "1" {
-        log_output(&mut Log::new_log_file("log.txt"));
+        log_output(&mut Log::new_log_file("Example", "log.txt"));
     } else if sv == "2" {
-        log_output(&mut Log::new_stdout_log());
+        log_output(&mut Log::new_stdout_log("Example"));
     } else if sv == "3" {
-        let mut log = Log::new_stdout_log();
+        let mut log = Log::new_stdout_log("Example");
         log.i(format!("program running...."));
         log.f(format!("Fatal Error\n"));
     } else {
-        log_output(&mut Log::new_stderr_log());
+        log_output(&mut Log::new_stderr_log("Example"));
     }
     Ok(())
 }
