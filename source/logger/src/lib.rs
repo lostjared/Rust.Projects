@@ -43,7 +43,7 @@ pub mod log {
         }
         /// fatal
         pub fn f(&mut self, data: String) {
-             panic!("{}- Fatal: Error: {}", the_time(), data);
+             panic!("{} - Fatal: Error: {}", the_time(), data);
         }
 
         pub fn fd(&mut self) -> &mut Box<dyn std::io::Write> {
