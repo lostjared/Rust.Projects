@@ -20,7 +20,8 @@ fn main() -> std::io::Result<()> {
     } else if sv == "2" {
         log_output(&mut Log::new_stdout_log());
     } else if sv == "3" {
-        let mut log = Log::new_stderr_log();
+        let mut log = Log::new_stdout_log();
+        log.i(format!("program running...."));
         log.f(format!("Fatal Error\n"));
     } else {
         log_output(&mut Log::new_stderr_log());
