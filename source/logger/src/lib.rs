@@ -25,22 +25,22 @@ pub mod log {
             }
         }
         /// information log
-        pub fn i(&mut self, data: &str) {
+        pub fn i(&mut self, data: String) {
             let date = chrono::Local::now();
             let t = date.format("%Y-%m-%d][%H:%M:%S");
-            write!(self.out_stream, "Info [{}]: {}", t, data).expect("On log write");
+            write!(self.out_stream, "Info [{}]: {}\n", t, data).expect("On log write");
         }
         /// error log
-        pub fn e(&mut self, data: &str) {
+        pub fn e(&mut self, data: String) {
             let date = chrono::Local::now();
             let t = date.format("%Y-%m-%d][%H:%M:%S");
-            write!(self.out_stream, "Error [{}]: {}", t, data).expect("On log write");
+            write!(self.out_stream, "Error [{}]: {}\n", t, data).expect("On log write");
         }
         /// standard log
-        pub fn o(&mut self, data: &str) {
+        pub fn o(&mut self, data: String) {
             let date = chrono::Local::now();
             let t = date.format("%Y-%m-%d][%H:%M:%S");
-            write!(self.out_stream, "[{}]: {}", t, data).expect("On log write");
+            write!(self.out_stream, "[{}]: {}\n", t, data).expect("On log write");
         }
     }
 }
