@@ -55,9 +55,10 @@ pub mod log {
         }
 
         pub fn log(&mut self, data: String, level: String) {
-            write!(self.out_stream, "{}: {} - {} {}\n", self.program_name, the_time(),  level, data).expect("On log write");
+            let t = the_time();
+            write!(self.out_stream, "{}: {} - {} {}\n", self.program_name, t,  level, data).expect("On log write");
             if self.echo {
-                println!("{}: {} - {} {}", self.program_name, the_time(),  level, data)
+                println!("{}: {} - {} {}", self.program_name,t,  level, data)
             }
         }
 
