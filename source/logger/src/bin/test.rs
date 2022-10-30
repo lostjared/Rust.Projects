@@ -15,16 +15,16 @@ fn main() -> std::io::Result<()> {
     println!("Write to: enter 1 for file, 2 for stdout, 3 for fatal");
     std::io::stdin().lock().read_line(&mut s).expect("on read");
     let sv = s.trim();
-    if sv == "1" {
-        log_output(&mut Log::new_log_file("Example", "log.txt"));
-    } else if sv == "2" {
-        log_output(&mut Log::new_stdout_log("Example"));
-    } else if sv == "3" {
-        let mut log = Log::new_stdout_log("Example");
-        log.i(format!("program running...."));
-        log.f(format!("Fatal Error\n"));
-    } else {
-        log_output(&mut Log::new_stderr_log("Example"));
+    let mut log = match sv {
+        "1" => Log::new_log_file("Example", "log.txt"), 
+        "2" => Log::new_stdout_log("Example"),
+        "3" => Log::new_stdout_log("Example"),
+        _=> Log::new_stderr_log("Example")
+    };
+    log.i(format!("Program running"));
+    log_output(&mut log);
+    if sv == "3" {
+        log.f(format!("Fatal"));
     }
     Ok(())
 }
