@@ -6,6 +6,7 @@ fn log_output(log: &mut Log) {
     log.e(format!("logging an error"));
     log.o(format!("standard log"));
     write!(log.fd(), "Wrote directly so stream\n").expect("on write");
+    write!(log.fd(), "Wrote at: {}", the_time()).expect("on write");
 }
 
 

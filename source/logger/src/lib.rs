@@ -4,6 +4,11 @@ pub mod log {
         out_stream: Box<dyn std::io::Write>,
     }
 
+    pub fn the_time() -> String {
+        let date = chrono::Local::now();
+        date.format("%Y-%m-%d - %H:%M:%S").to_string()
+    }
+
     impl Log {
         /// new standard output log
         pub fn new_stdout_log() -> Self {
@@ -46,5 +51,6 @@ pub mod log {
         pub fn fd(&mut self) -> &mut Box<dyn std::io::Write> {
             &mut self.out_stream
         }
+        
     }
 }
