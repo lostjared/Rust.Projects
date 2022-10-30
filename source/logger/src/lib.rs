@@ -5,19 +5,19 @@ pub mod log {
     }
 
     impl Log {
-        // new standard output log
+        /// new standard output log
         pub fn new_stdout_log() -> Self {
             Self {
                 out_stream: Box::new(std::io::BufWriter::new(std::io::stdout().lock())),
             }
         }
-        // new standard error log
+        /// new standard error log
         pub fn new_stderr_log() -> Self {
             Self {
                 out_stream: Box::new(std::io::BufWriter::new(std::io::stderr().lock())),
             }
         }
-        // new log output file
+        /// new log output file
         pub fn new_log_file(output: &str) -> Self {
             let f = std::fs::File::create(output).expect("on create of file ");
             Self {
