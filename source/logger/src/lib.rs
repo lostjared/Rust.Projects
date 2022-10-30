@@ -35,16 +35,25 @@ pub mod log {
         }
         /// information log
         pub fn i(&mut self, data: String) {
-            write!(self.out_stream, "{}: {} - Info: {}\n", self.program_name, the_time(), data).expect("On log write");
+            self.log(data, "Information".to_string())
         }
         /// error log
         pub fn e(&mut self, data: String) {
-            write!(self.out_stream, "{}: {} - Error: {}\n", self.program_name, the_time(), data).expect("On log write");
+            self.log(data, "Error".to_string())
         }
         /// standard log
         pub fn o(&mut self, data: String) {
             write!(self.out_stream, "{}: {} - {}\n", self.program_name, the_time(), data).expect("On log write");
         }
+
+        pub fn w(&mut self, data: String) {
+            self.log(data, "Warning".to_string());
+        }
+
+        pub fn log(&mut self, data: String, level: String) {
+            write!(self.out_stream, "{}: {} - {} {}\n", self.program_name, the_time(),  level, data).expect("On log write");
+        }
+
         /// fatal
         pub fn f(&mut self, data: String) {
              panic!("{}: {} - Fatal: Error: {}\n", self.program_name, the_time(), data);
