@@ -186,7 +186,7 @@ fn gen_words(
     let mut v = data.lock().unwrap();
 
     log.o(format!(
-        "scanning finished.\n{{\n\tGathered {} tokens for pool.\n\tText contained {} lines.\n\tNow generating words...\n}}\n",
+        "Scanning finished.\n{{\n\tGathered {} tokens for pool.\n\tText contained {} lines.\n\tNow generating words...\n}}\n",
         v.len(),
         num_lines
     ));
