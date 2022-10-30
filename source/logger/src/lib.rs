@@ -42,5 +42,9 @@ pub mod log {
             let t = date.format("%Y-%m-%d - %H:%M:%S");
             write!(self.out_stream, "{} - {}\n", t, data).expect("On log write");
         }
+
+        pub fn fd(&mut self) -> &mut Box<dyn std::io::Write> {
+            &mut self.out_stream
+        }
     }
 }
