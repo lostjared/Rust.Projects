@@ -2,7 +2,7 @@
 // cargo run --release
 // --timeout timeout delay (how fast it moves)
 // --color the color of the characters in format r,g,b ex: 0,255,0
-
+// --font true type font file.
 use clap::{App, Arg};
 use rand::Rng;
 use sdl2::event::Event;
