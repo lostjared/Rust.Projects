@@ -3,6 +3,7 @@ pub mod log {
     pub struct Log {
         program_name: String,
         out_stream: Box<dyn std::io::Write>,
+        echo: bool,
     }
 
     pub fn the_time() -> String {
@@ -16,6 +17,7 @@ pub mod log {
             Self {
                 program_name: name.to_string(),
                 out_stream: Box::new(std::io::BufWriter::new(std::io::stdout().lock())),
+                echo: false,
             }
         }
         /// new standard error log
@@ -23,14 +25,16 @@ pub mod log {
             Self {
                 program_name: name.to_string(),
                 out_stream: Box::new(std::io::BufWriter::new(std::io::stderr().lock())),
+                echo: false,
             }
         }
         /// new log output file
-        pub fn new_log_file(name: &str, output: &str) -> Self {
+        pub fn new_log_file(name: &str, output: &str, echo_value: bool) -> Self {
             let f = std::fs::File::create(output).expect("on create of file ");
             Self {
                 program_name: name.to_string(),
                 out_stream: Box::new(std::io::BufWriter::new(f)),
+                echo: echo_value,
             }
         }
         /// information log
@@ -52,6 +56,9 @@ pub mod log {
 
         pub fn log(&mut self, data: String, level: String) {
             write!(self.out_stream, "{}: {} - {} {}\n", self.program_name, the_time(),  level, data).expect("On log write");
+            if self.echo {
+                println!("{}: {} - {} {}", self.program_name, the_time(),  level, data)
+            }
         }
 
         /// fatal
