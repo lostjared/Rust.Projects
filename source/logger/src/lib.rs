@@ -39,11 +39,11 @@ pub mod log {
         }
         /// information log
         pub fn i(&mut self, data: String) {
-            self.log(data, "Information:".to_string())
+            self.log(data, "Information: ".to_string())
         }
         /// error log
         pub fn e(&mut self, data: String) {
-            self.log(data, "Error:".to_string())
+            self.log(data, "Error: ".to_string())
         }
         /// standard log
         pub fn o(&mut self, data: String) {
@@ -51,19 +51,19 @@ pub mod log {
         }
 
         pub fn w(&mut self, data: String) {
-            self.log(data, "Warning:".to_string());
+            self.log(data, "Warning: ".to_string());
         }
 
         pub fn log(&mut self, data: String, level: String) {
             let t = the_time();
             write!(
                 self.out_stream,
-                "{}: {} - {} {}\n",
+                "{}: ({}) - {} {}\n",
                 self.program_name, t, level, data
             )
             .expect("On log write");
             if self.echo {
-                println!("{}: {} - {} {}", self.program_name, t, level, data)
+                println!("{}: ({}) - {}{}", self.program_name, t, level, data)
             }
         }
 
