@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 rs_lex = { path = "../rs_lex" }
+logger = { path = "../logger" }
 clap = "3.2.21"
 rand = "0.8.5"
 rayon = "1"

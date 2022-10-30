@@ -19,6 +19,7 @@ use rs_lex::rlex::*;
 use std::collections::HashMap;
 use std::io::{BufRead, Write};
 use std::sync::{Arc, Mutex};
+use logger::log::*;
 
 struct Arguments {
     file: String,
@@ -120,6 +121,7 @@ fn gen_words(
     let f = std::fs::File::open(input).expect("on file open");
     let r = std::io::BufReader::new(f);
     let mut lines: Vec<String> = Vec::new();
+    let mut log = Log::new_file_log("code2text", "log.txt", true);
     for line in r.lines() {
         match line {
             Ok(l) => {
@@ -136,6 +138,8 @@ fn gen_words(
 
     let data = Arc::new(Mutex::new(v));
     let map_data = Arc::new(Mutex::new(map));
+
+    log.o(format!("Scanning started"));
 
     lines.into_par_iter().for_each(|line| {
         let mut scan: Scanner = Scanner::new(&remove_chars(line));
@@ -181,13 +185,14 @@ fn gen_words(
 
     let mut v = data.lock().unwrap();
 
-    println!(
-        "code2text: scanning finished.\nGathered {} tokens for pool.\nText contained {} lines.\nNow generating words...",
+    log.o(format!(
+        "scanning finished.\n{{\n\tGathered {} tokens for pool.\n\tText contained {} lines.\n\tNow generating words...\n}}\n",
         v.len(),
         num_lines
-    );
+    ));
+    
     if v.len() < num {
-        panic!("Not enough words");
+        log.f(format!("Not enough words"));
     }
     let mut w: std::io::BufWriter<Box<dyn Write>>;
     if ofile != "<STDOUT>" {
@@ -208,7 +213,7 @@ fn gen_words(
     }
     writeln!(w).expect("on write");
     if ofile != "<STDOUT>" {
-        println!("code2text: wrote to file: {}", ofile);
+        log.o(format!("code2text: wrote to file: {}", ofile));
     }
 }
 
