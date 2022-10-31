@@ -222,7 +222,7 @@ fn main() {
                         }
                     } else {
                         *y += speed;
-                        if *y >= 720+LETTER_SIZE {
+                        if *y >= 720 {
                             *y = -LETTER_SIZE;
                             letters_st.letters[i][z].ch = rng.gen_range('a'..='z');
                         }
