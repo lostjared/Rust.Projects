@@ -121,7 +121,7 @@ fn gen_words(
     let f = std::fs::File::open(input).expect("on file open");
     let r = std::io::BufReader::new(f);
     let mut lines: Vec<String> = Vec::new();
-    let mut log = Log::new_file_log("code2text", "log.txt", true);
+    let mut log = Log::new_file_log("code2text", "log.txt", true, true);
     for line in r.lines() {
         match line {
             Ok(l) => {
