@@ -29,8 +29,18 @@ pub mod log {
             }
         }
         /// new log output file
-        pub fn new_file_log(name: &str, output: &str, echo_value: bool) -> Self {
-            let f = std::fs::File::create(output).expect("on create of file ");
+        pub fn new_file_log(name: &str, output: &str, append_: bool, echo_value: bool) -> Self {
+            let f;
+            if append_ {
+                f = std::fs::OpenOptions::new()
+                    .read(false)
+                    .append(true)
+                    .create(true)
+                    .open(output)
+                    .expect("on open");
+            } else {
+                f = std::fs::File::create(output).expect("on create of file ");
+            }
             Self {
                 program_name: name.to_string(),
                 out_stream: Box::new(std::io::BufWriter::new(f)),
