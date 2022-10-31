@@ -181,11 +181,11 @@ fn main() {
                     keycode: Some(Keycode::Escape),
                     ..
                 } => break 'main,
-                | Event::KeyDown {
+                Event::KeyDown {
                     keycode: Some(Keycode::Up),
                     ..
                 } => dir = true,
-                | Event::KeyDown {
+                Event::KeyDown {
                     keycode: Some(Keycode::Down),
                     ..
                 } => dir = false,
