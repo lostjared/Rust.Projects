@@ -69,27 +69,26 @@ impl LetterGen {
 struct StringData {
     data: String,
     index: usize,
-    alphabet: Vec<char>
+    alphabet: Vec<char>,
 }
 
 impl StringData {
-
     fn new(input: &str) -> Self {
         if input.is_empty() {
             panic!("String is empty!");
         }
-        let mut alpha : Vec<char> = Vec::new();
-        for i in 'a' ..= 'z' {
+        let mut alpha: Vec<char> = Vec::new();
+        for i in 'a'..='z' {
             alpha.push(i);
         }
-        for i in 'A' ..= 'Z' {
+        for i in 'A'..='Z' {
             alpha.push(i);
         }
         let symbols = String::from("~!@#$%^&*()-+=[]{}<>.,|\\/?;:`");
         for i in symbols.chars() {
             alpha.push(i);
         }
-        for i in '0' ..= '9' {
+        for i in '0'..='9' {
             alpha.push(i);
         }
         let mut dat = String::new();
@@ -111,13 +110,11 @@ impl StringData {
     fn getchar(&mut self) -> char {
         let ch;
         if self.index < self.data.len() {
-             ch = self.data.chars().nth(self.index).unwrap();
+            ch = self.data.chars().nth(self.index).unwrap();
             self.index += 1;
-
         } else {
             self.index = 0;
-         ch = self.data.chars().nth(self.index).unwrap();
-    
+            ch = self.data.chars().nth(self.index).unwrap();
         }
         ch
     }
@@ -182,12 +179,12 @@ fn parse_args() -> Arguments {
         )
         .arg(
             Arg::new("input")
-            .help("input file")
-            .required(true)
-            .short('i')
-            .long("input")
-            .takes_value(true)
-            .allow_invalid_utf8(true)
+                .help("input file")
+                .required(true)
+                .short('i')
+                .long("input")
+                .takes_value(true)
+                .allow_invalid_utf8(true),
         )
         .get_matches();
     let col = parse_color(m.value_of_lossy("color").unwrap().to_string());
@@ -234,7 +231,7 @@ fn main() {
         .unwrap();
     let mut tex_map: HashMap<char, sdl2::render::Texture> = HashMap::new();
 
-    for i in &data.alphabet  {
+    for i in &data.alphabet {
         let ch = *i;
         let text_surf = font.render(&format!("{}", ch)).blended(color).unwrap();
         let tex = tc.create_texture_from_surface(text_surf).unwrap();
