@@ -92,13 +92,15 @@ impl StringData {
         for i in '0' ..= '9' {
             alpha.push(i);
         }
-
         let mut dat = String::new();
         for i in input.chars() {
             let ch = alpha.iter().find(|&x| *x == i);
             if ch != None {
                 dat.push(i);
             }
+        }
+        if dat.is_empty() {
+            panic!("Input string is empty");
         }
         Self {
             data: dat,
