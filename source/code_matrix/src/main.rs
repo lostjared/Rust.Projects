@@ -1,5 +1,6 @@
-// Looks kind of like a Matrix code emulator not there 100% yet.
-// cargo run --release
+// Looks kind of like a Matrix code emulator
+// this version allows you to supply the string data to use
+// cargo run --release -- --input src/main.rs
 // --input text file with string data to use (required)
 // --timeout timeout delay (how fast it moves)
 // --color the color of the characters in format r,g,b ex: 0,255,0
