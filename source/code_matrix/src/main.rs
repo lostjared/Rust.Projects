@@ -35,7 +35,7 @@ struct LetterGen {
 
 impl LetterGen {
     /// create new letter generator
-    fn new() -> Self {
+    fn new(data: &mut StringData) -> Self {
         let mut rng = rand::thread_rng();
         let mut x = 0;
         let mut v = Vec::new();
@@ -50,7 +50,7 @@ impl LetterGen {
             );
             let mut y = -LETTER_SIZE;
             for z in 0..LETTER_MAX {
-                l[z].ch = rng.gen_range('a'..='z');
+                l[z].ch = data.getchar();
                 l[z].xpos = x;
                 l[z].ypos = y;
                 y += LETTER_SIZE + 4;
@@ -69,6 +69,7 @@ impl LetterGen {
 struct StringData {
     data: String,
     index: usize,
+    alphabet: Vec<char>
 }
 
 impl StringData {
@@ -77,9 +78,32 @@ impl StringData {
         if input.is_empty() {
             panic!("String is empty!");
         }
+        let mut alpha : Vec<char> = Vec::new();
+        for i in 'a' ..= 'z' {
+            alpha.push(i);
+        }
+        for i in 'A' ..= 'Z' {
+            alpha.push(i);
+        }
+        let symbols = String::from("~!@#$%^&*()-+=[]{}<>.,|\\/?;:`");
+        for i in symbols.chars() {
+            alpha.push(i);
+        }
+        for i in '0' ..= '9' {
+            alpha.push(i);
+        }
+
+        let mut dat = String::new();
+        for i in input.chars() {
+            let ch = alpha.iter().find(|&x| *x == i);
+            if ch != None {
+                dat.push(i);
+            }
+        }
         Self {
-            data: input.to_string(),
-            index: 0
+            data: dat,
+            index: 0,
+            alphabet: alpha,
         }
     }
     fn getchar(&mut self) -> char {
@@ -87,6 +111,7 @@ impl StringData {
         if self.index < self.data.len() {
              ch = self.data.chars().nth(self.index).unwrap();
             self.index += 1;
+
         } else {
             self.index = 0;
          ch = self.data.chars().nth(self.index).unwrap();
@@ -180,6 +205,7 @@ fn parse_args() -> Arguments {
 /// main function
 fn main() {
     let args = parse_args();
+    let mut data = StringData::new(&args.data);
     let color = sdl2::pixels::Color::RGB(args.color.0, args.color.1, args.color.2);
     let width = 1280;
     let height = 720;
@@ -205,14 +231,15 @@ fn main() {
         .blended(sdl2::pixels::Color::RGB(255, 255, 255))
         .unwrap();
     let mut tex_map: HashMap<char, sdl2::render::Texture> = HashMap::new();
-    for i in 'a'..='z' {
-        let text_surf = font.render(&format!("{}", i)).blended(color).unwrap();
+
+    for i in &data.alphabet  {
+        let ch = *i;
+        let text_surf = font.render(&format!("{}", ch)).blended(color).unwrap();
         let tex = tc.create_texture_from_surface(text_surf).unwrap();
-        tex_map.insert(i, tex);
+        tex_map.insert(ch, tex);
     }
     let mut e = sdl.event_pump().unwrap();
-    let mut rng = rand::thread_rng();
-    let mut letters_st = LetterGen::new();
+    let mut letters_st = LetterGen::new(&mut data);
     let mut prev_tick: u64 = 0;
     let mut tick_count = 0;
     let mut dir: bool = true;
@@ -262,13 +289,13 @@ fn main() {
                         *y -= speed;
                         if *y <= -LETTER_SIZE {
                             *y = 720;
-                            letters_st.letters[i][z].ch = rng.gen_range('a'..='z');
+                            letters_st.letters[i][z].ch = data.getchar();
                         }
                     } else {
                         *y += speed;
                         if *y >= 720 {
                             *y = -LETTER_SIZE;
-                            letters_st.letters[i][z].ch = rng.gen_range('a'..='z');
+                            letters_st.letters[i][z].ch = data.getchar();
                         }
                     }
                 }
