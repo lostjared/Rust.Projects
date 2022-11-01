@@ -66,11 +66,42 @@ impl LetterGen {
     }
 }
 
+struct StringData {
+    data: String,
+    index: usize,
+}
+
+impl StringData {
+
+    fn new(input: &str) -> Self {
+        if input.is_empty() {
+            panic!("String is empty!");
+        }
+        Self {
+            data: input.to_string(),
+            index: 0
+        }
+    }
+    fn getchar(&mut self) -> char {
+        let ch;
+        if self.index < self.data.len() {
+             ch = self.data.chars().nth(self.index).unwrap();
+            self.index += 1;
+        } else {
+            self.index = 0;
+         ch = self.data.chars().nth(self.index).unwrap();
+    
+        }
+        ch
+    }
+}
+
 /// command line arguments structure
 struct Arguments {
     color: (u8, u8, u8),
     timeout: u64,
     font: String,
+    data: String,
 }
 
 /// parse a color from a string
@@ -122,14 +153,27 @@ fn parse_args() -> Arguments {
                 .default_value("font.ttf")
                 .allow_invalid_utf8(true),
         )
+        .arg(
+            Arg::new("input")
+            .help("input file")
+            .required(true)
+            .short('i')
+            .long("input")
+            .takes_value(true)
+            .allow_invalid_utf8(true)
+        )
         .get_matches();
     let col = parse_color(m.value_of_lossy("color").unwrap().to_string());
     let t = m.value_of_lossy("timeout").unwrap().parse().unwrap();
     let f = m.value_of_lossy("font").unwrap();
+    let input = m.value_of_lossy("input").unwrap();
+    let s = std::fs::read_to_string(&input.to_string()).expect("on read to string");
+
     Arguments {
         color: col,
         timeout: t,
         font: f.to_string(),
+        data: s,
     }
 }
 
