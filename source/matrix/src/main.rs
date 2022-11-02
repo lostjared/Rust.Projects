@@ -41,12 +41,11 @@ impl LetterGen {
         let mut v = Vec::new();
         let mut r = Vec::new();
         for _i in 0..LETTER_NUM {
-            let mut l =
-                [Letter {
-                    ch: '0',
-                    xpos: x,
-                    ypos: 0,
-                }; LETTER_MAX];
+            let mut l = [Letter {
+                ch: '0',
+                xpos: x,
+                ypos: 0,
+            }; LETTER_MAX];
             let mut y = -LETTER_SIZE;
             for l in l.iter_mut().take(LETTER_MAX) {
                 l.ch = rng.gen_range('a'..='z');
