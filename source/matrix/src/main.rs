@@ -29,7 +29,7 @@ struct Letter {
 
 // letter generator
 struct LetterGen {
-    letters: Vec<Box<[Letter; LETTER_MAX]>>,
+    letters: Vec<[Letter; LETTER_MAX]>,
     letter_row: Vec<i32>,
 }
 
@@ -41,18 +41,17 @@ impl LetterGen {
         let mut v = Vec::new();
         let mut r = Vec::new();
         for _i in 0..LETTER_NUM {
-            let mut l = Box::new(
+            let mut l =
                 [Letter {
                     ch: '0',
                     xpos: x,
                     ypos: 0,
-                }; LETTER_MAX],
-            );
+                }; LETTER_MAX];
             let mut y = -LETTER_SIZE;
-            for z in 0..LETTER_MAX {
-                l[z].ch = rng.gen_range('a'..='z');
-                l[z].xpos = x;
-                l[z].ypos = y;
+            for l in l.iter_mut().take(LETTER_MAX) {
+                l.ch = rng.gen_range('a'..='z');
+                l.xpos = x;
+                l.ypos = y;
                 y += LETTER_SIZE + 4;
             }
             v.push(l);
@@ -200,11 +199,11 @@ fn main() {
         prev_tick = tick;
         tick_count += ptick;
         for i in 0..letters_st.letters.len() {
-            for z in 0..LETTER_MAX {
-                let ch = letters_st.letters[i][z].ch;
-                let x = letters_st.letters[i][z].xpos;
+            for letter in letters_st.letters[i].iter_mut().take(LETTER_MAX) {
+                let ch = letter.ch;
+                let x = letter.xpos;
                 let speed = letters_st.letter_row[i];
-                let y = &mut letters_st.letters[i][z].ypos;
+                let y = &mut letter.ypos;
                 let tex = tex_map.get(&ch).unwrap();
                 let TextureQuery {
                     width: wi,
@@ -218,13 +217,13 @@ fn main() {
                         *y -= speed;
                         if *y <= -LETTER_SIZE {
                             *y = 720;
-                            letters_st.letters[i][z].ch = rng.gen_range('a'..='z');
+                            letter.ch = rng.gen_range('a'..='z');
                         }
                     } else {
                         *y += speed;
                         if *y >= 720 {
                             *y = -LETTER_SIZE;
-                            letters_st.letters[i][z].ch = rng.gen_range('a'..='z');
+                            letter.ch = rng.gen_range('a'..='z');
                         }
                     }
                 }
