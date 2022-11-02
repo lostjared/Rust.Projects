@@ -171,7 +171,7 @@ fn main() {
     let mut letters_st = LetterGen::new();
     let mut prev_tick: u64 = 0;
     let mut tick_count = 0;
-    let mut dir: bool = true;
+    let mut dir: bool = false;
 
     'main: loop {
         for _event in e.poll_iter() {
