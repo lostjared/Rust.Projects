@@ -132,11 +132,11 @@ struct Arguments {
 
 /// parse a color from a string
 fn parse_color(input: String) -> (u8, u8, u8) {
-    let s = input.find(",");
+    let s = input.find(',');
     let sp = s.unwrap();
     let r = &input[..sp];
     let right = &input[sp + 1..];
-    let gp = right.find(",");
+    let gp = right.find(',');
     let gv = gp.unwrap();
     let g = &right[..gv];
     let b = &right[gv + 1..];
@@ -283,10 +283,10 @@ fn main() {
                     height: hi,
                     ..
                 } = tex.query();
-                can.copy(&tex, None, Some(sdl2::rect::Rect::new(x, *y, wi, hi)))
+                can.copy(tex, None, Some(sdl2::rect::Rect::new(x, *y, wi, hi)))
                     .expect("on copy");
                 if tick_count > args.timeout {
-                    if dir == true {
+                    if dir {
                         *y -= speed;
                         if *y <= -LETTER_SIZE {
                             *y = 720;
