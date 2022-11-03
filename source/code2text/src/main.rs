@@ -139,7 +139,7 @@ fn gen_words(
     let data = Arc::new(Mutex::new(v));
     let map_data = Arc::new(Mutex::new(map));
 
-    log.o(format!("Scanning started"));
+    log.o("Scanning started");
 
     lines.into_par_iter().for_each(|line| {
         let mut scan: Scanner = Scanner::new(&remove_chars(line));
@@ -185,14 +185,14 @@ fn gen_words(
 
     let mut v = data.lock().unwrap();
 
-    log.o(format!(
+    log.o(&format!(
         "Scanning finished.\n{{\n\tGathered {} tokens for pool.\n\tText contained {} lines.\n\tNow generating words...\n}}\n",
         v.len(),
         num_lines
     ));
     
     if v.len() < num {
-        log.f(format!("Not enough words"));
+        log.f("Not enough words");
     }
     let mut w: std::io::BufWriter<Box<dyn Write>>;
     if ofile != "<STDOUT>" {
@@ -213,7 +213,7 @@ fn gen_words(
     }
     writeln!(w).expect("on write");
     if ofile != "<STDOUT>" {
-        log.o(format!("code2text: wrote to file: {}", ofile));
+        log.o(&format!("code2text: wrote to file: {}", ofile));
     }
 }
 
