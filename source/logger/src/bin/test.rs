@@ -2,11 +2,11 @@ use logger::log::*;
 use std::io::BufRead;
 
 fn log_output(log: &mut Log) {
-    log.i(format!("Info Logging"));
-    log.e(format!("logging an error"));
-    log.o(format!("standard log"));
-    write!(log.fd(), "Wrote directly so stream\n").expect("on write");
-    write!(log.fd(), "Wrote at: {}\n", the_time()).expect("on write");
+    log.i("Info Logging".to_string());
+    log.e("logging an error".to_string());
+    log.o("standard log".to_string());
+    writeln!(log.fd(), "Wrote directly so stream").expect("on write");
+    writeln!(log.fd(), "Wrote at: {}", the_time()).expect("on write");
 }
 
 fn main() -> std::io::Result<()> {
@@ -20,10 +20,10 @@ fn main() -> std::io::Result<()> {
         "3" => Log::new_stdout_log("Example"),
         _ => Log::new_stderr_log("Example"),
     };
-    log.i(format!("Program running"));
+    log.i("Program running".to_string());
     log_output(&mut log);
     if sv == "3" {
-        log.f(format!("Fatal"));
+        log.f("Fatal".to_string());
     }
     Ok(())
 }

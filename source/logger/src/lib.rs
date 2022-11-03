@@ -30,17 +30,16 @@ pub mod log {
         }
         /// new log output file
         pub fn new_file_log(name: &str, output: &str, append_: bool, echo_value: bool) -> Self {
-            let f;
-            if append_ {
-                f = std::fs::OpenOptions::new()
+            let f = if append_ {
+                std::fs::OpenOptions::new()
                     .read(false)
                     .append(true)
                     .create(true)
                     .open(output)
-                    .expect("on open");
+                    .expect("on open")
             } else {
-                f = std::fs::File::create(output).expect("on create of file ");
-            }
+                 std::fs::File::create(output).expect("on create of file ")
+            };
             Self {
                 program_name: name.to_string(),
                 out_stream: Box::new(std::io::BufWriter::new(f)),
@@ -66,9 +65,9 @@ pub mod log {
 
         pub fn log(&mut self, data: String, level: String) {
             let t = the_time();
-            write!(
+            writeln!(
                 self.out_stream,
-                "{}: ({}) - {} {}\n",
+                "{}: ({}) - {} {}",
                 self.program_name, t, level, data
             )
             .expect("On log write");
