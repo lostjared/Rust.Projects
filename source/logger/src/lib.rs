@@ -47,23 +47,23 @@ pub mod log {
             }
         }
         /// information log
-        pub fn i(&mut self, data: String) {
+        pub fn i(&mut self, data: &str) {
             self.log(data, "Information: ".to_string())
         }
         /// error log
-        pub fn e(&mut self, data: String) {
+        pub fn e(&mut self, data: &str) {
             self.log(data, "Error: ".to_string())
         }
         /// standard log
-        pub fn o(&mut self, data: String) {
+        pub fn o(&mut self, data: &str) {
             self.log(data, "".to_string());
         }
 
-        pub fn w(&mut self, data: String) {
+        pub fn w(&mut self, data: &str) {
             self.log(data, "Warning: ".to_string());
         }
 
-        pub fn log(&mut self, data: String, level: String) {
+        pub fn log(&mut self, data: &str, level: String) {
             let t = the_time();
             writeln!(
                 self.out_stream,
@@ -77,7 +77,7 @@ pub mod log {
         }
 
         /// fatal
-        pub fn f(&mut self, data: String) {
+        pub fn f(&mut self, data: &str) {
             panic!(
                 "{}: {} - Fatal: Error: {}\n",
                 self.program_name,
