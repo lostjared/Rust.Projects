@@ -20,7 +20,7 @@ fn main() -> std::io::Result<()> {
         "3" => Log::new_stdout_log("Example"),
         _ => Log::new_stderr_log("Example"),
     };
-    log.i("Program running");
+    log.i(&format!("Program running: time {}", the_time()));
     log_output(&mut log);
     if sv == "3" {
         log.f("Fatal");
