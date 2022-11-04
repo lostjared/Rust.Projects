@@ -13,17 +13,18 @@ use:
 */
 
 use clap::{App, Arg};
+use logger::log::*;
 use rand::Rng;
 use rayon::prelude::*;
 use rs_lex::rlex::*;
 use std::collections::HashMap;
 use std::io::{BufRead, Write};
 use std::sync::{Arc, Mutex};
-use logger::log::*;
 
 struct Arguments {
     file: String,
     ofile: String,
+    log: String,
     num_words: usize,
     word_len: usize,
     under: bool,
@@ -80,6 +81,15 @@ fn parse_args() -> Arguments {
                 .help("output to filename")
                 .allow_invalid_utf8(true),
         )
+        .arg(
+            Arg::with_name("log")
+                .long("log")
+                .short('l')
+                .takes_value(true)
+                .required(false)
+                .default_value("log.txt")
+                .allow_invalid_utf8(true),
+        )
         .get_matches();
 
     let i = m.value_of_lossy("input").unwrap();
@@ -87,9 +97,11 @@ fn parse_args() -> Arguments {
     let l = m.value_of_lossy("len").unwrap().parse().unwrap();
     let outf = m.value_of_lossy("output").unwrap();
     let u = m.is_present("under");
+    let log_file = m.value_of_lossy("log").unwrap();
     Arguments {
         file: i.to_string(),
         ofile: outf.to_string(),
+        log: log_file.to_string(),
         num_words: num,
         word_len: l,
         under: u,
@@ -111,17 +123,11 @@ fn remove_chars(input: String) -> String {
     new_value
 }
 
-fn gen_words(
-    input: &str,
-    num: usize,
-    num_len: usize,
-    under: bool,
-    ofile: &str,
-) {
+fn gen_words(input: &str, num: usize, num_len: usize, under: bool, ofile: &str, log_file: &str) {
     let f = std::fs::File::open(input).expect("on file open");
     let r = std::io::BufReader::new(f);
     let mut lines: Vec<String> = Vec::new();
-    let mut log = Log::new_file_log("code2text", "log.txt", true, true);
+    let mut log = Log::new_file_log("code2text", log_file, true, true);
     for line in r.lines() {
         match line {
             Ok(l) => {
@@ -169,7 +175,7 @@ fn gen_words(
                                     if f != None {
                                         let value2 = &s[..f.unwrap()];
                                         v.push(value2.to_string());
-                                          continue;
+                                        continue;
                                     }
                                 }
                             }
@@ -190,7 +196,7 @@ fn gen_words(
         v.len(),
         num_lines
     ));
-    
+
     if v.len() < num {
         log.f("Not enough words");
     }
@@ -224,7 +230,8 @@ fn main() -> std::io::Result<()> {
         args.num_words,
         args.word_len,
         args.under,
-        &args.ofile
+        &args.ofile,
+        &args.log,
     );
     Ok(())
 }
