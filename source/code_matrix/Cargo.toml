@@ -8,7 +8,7 @@ edition = "2021"
 [dependencies]
 rand = "0.8.5"
 clap = "3.2.17"
-
+logger = { path = "../logger" }
 [dependencies.sdl2]
 version = "0.35.1"
 features = ["ttf"]
