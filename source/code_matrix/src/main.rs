@@ -9,13 +9,13 @@
 // press Down arrow to scroll down
 
 use clap::{App, Arg};
+use logger::log::*;
 use rand::Rng;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::render::TextureQuery;
 use std::collections::HashMap;
 use std::time::{SystemTime, UNIX_EPOCH};
-
 /// program constants
 const LETTER_MAX: usize = 21;
 const LETTER_NUM: usize = 40;
@@ -143,7 +143,7 @@ fn parse_color(input: String) -> (u8, u8, u8) {
 }
 
 /// parse command line arguments
-fn parse_args() -> Arguments {
+fn parse_args(log: &mut Log) -> Arguments {
     let m = App::new("code_matrix")
         .help("matrix code emulator")
         .author("Jared Bruni jaredbruni@protonmail.com")
@@ -193,7 +193,7 @@ fn parse_args() -> Arguments {
     let f = m.value_of_lossy("font").unwrap();
     let input = m.value_of_lossy("input").unwrap();
     let s = std::fs::read_to_string(&input.to_string()).expect("on read to string");
-
+    log.i(&format!("Loaded input file: {}", input));
     Arguments {
         color: col,
         timeout: t,
@@ -204,7 +204,8 @@ fn parse_args() -> Arguments {
 
 /// main function
 fn main() {
-    let args = parse_args();
+    let mut log = Log::new_file_log("code_matrix", "log.txt", false, true);
+    let args = parse_args(&mut log);
     let mut data = StringData::new(&args.data);
     let color = sdl2::pixels::Color::RGB(args.color.0, args.color.1, args.color.2);
     let width = 1280;
@@ -224,12 +225,14 @@ fn main() {
     let ttf_context = sdl2::ttf::init().map_err(|e| e.to_string()).unwrap();
     let tc = can.texture_creator();
     let font = ttf_context
-        .load_font(args.font, 32)
+        .load_font(&args.font, 32)
         .expect("error loading font");
     let _text_surf = font
         .render("Hello, World!")
         .blended(sdl2::pixels::Color::RGB(255, 255, 255))
         .unwrap();
+
+    log.i(&format!("Font {} loaded", &args.font));
     let mut tex_map: HashMap<char, sdl2::render::Texture> = HashMap::new();
 
     for i in &data.alphabet {
