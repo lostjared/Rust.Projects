@@ -194,6 +194,9 @@ fn parse_args(log: &mut Log) -> Arguments {
     let input = m.value_of_lossy("input").unwrap();
     let s = std::fs::read_to_string(&input.to_string()).expect("on read to string");
     log.i(&format!("Loaded input file: {}", input));
+    if s.len() < 100 {
+        log.w(&format!("Input file is only {} bytes should be larger", s.len()));
+    }
     Arguments {
         color: col,
         timeout: t,
