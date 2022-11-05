@@ -247,6 +247,8 @@ fn main() {
     let mut tick_count = 0;
     let mut dir: bool = false;
 
+    log.o("Program Loaded....");
+
     'main: loop {
         for _event in e.poll_iter() {
             match _event {
@@ -309,4 +311,5 @@ fn main() {
         }
         can.present();
     }
+    log.o("Program Exited");
 }
