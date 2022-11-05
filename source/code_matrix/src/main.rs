@@ -260,11 +260,17 @@ fn main() {
                 Event::KeyDown {
                     keycode: Some(Keycode::Up),
                     ..
-                } => dir = true,
+                } => { 
+                    dir = true;
+                    log.i("Direction changed to up");
+                }
                 Event::KeyDown {
                     keycode: Some(Keycode::Down),
                     ..
-                } => dir = false,
+                } => {
+                    dir = false;
+                    log.i("Direction changed to down");
+                }
                 _ => {}
             }
         }
