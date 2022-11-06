@@ -143,7 +143,7 @@ fn parse_color(input: String) -> (u8, u8, u8) {
 }
 
 /// parse command line arguments
-fn parse_args(log: &mut Log) -> Arguments {
+fn parse_args() -> (Arguments, Log) {
     let m = App::new("code_matrix")
         .help("matrix code emulator")
         .author("Jared Bruni jaredbruni@protonmail.com")
@@ -187,7 +187,12 @@ fn parse_args(log: &mut Log) -> Arguments {
                 .takes_value(true)
                 .allow_invalid_utf8(true),
         )
+        .arg(Arg::new("output").help("log file").required(false).short('o').long("output").takes_value(true).default_value("log.txt").allow_invalid_utf8(true))
         .get_matches();
+
+    let log_file = m.value_of_lossy("output").unwrap();
+    let mut log = Log::new_file_log("code_matrix", &log_file, false, true);
+
     let col = parse_color(m.value_of_lossy("color").unwrap().to_string());
     let t = m.value_of_lossy("timeout").unwrap().parse().unwrap();
     let f = m.value_of_lossy("font").unwrap();
@@ -197,18 +202,19 @@ fn parse_args(log: &mut Log) -> Arguments {
     if s.len() < 100 {
         log.w(&format!("Input file is only {} bytes should be larger", s.len()));
     }
-    Arguments {
+    (Arguments {
         color: col,
         timeout: t,
         font: f.to_string(),
         data: s,
-    }
+    }, log)
 }
 
 /// main function
 fn main() {
-    let mut log = Log::new_file_log("code_matrix", "log.txt", false, true);
-    let args = parse_args(&mut log);
+    let rt = parse_args();
+    let args = rt.0;
+    let mut log = rt.1;
     let mut data = StringData::new(&args.data);
     let color = sdl2::pixels::Color::RGB(args.color.0, args.color.1, args.color.2);
     let width = 1280;
