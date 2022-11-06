@@ -187,7 +187,16 @@ fn parse_args() -> (Arguments, Log) {
                 .takes_value(true)
                 .allow_invalid_utf8(true),
         )
-        .arg(Arg::new("output").help("log file").required(false).short('o').long("output").takes_value(true).default_value("log.txt").allow_invalid_utf8(true))
+        .arg(
+            Arg::new("output")
+                .help("log file")
+                .required(false)
+                .short('o')
+                .long("output")
+                .takes_value(true)
+                .default_value("log.txt")
+                .allow_invalid_utf8(true),
+        )
         .get_matches();
 
     let log_file = m.value_of_lossy("output").unwrap();
@@ -200,14 +209,20 @@ fn parse_args() -> (Arguments, Log) {
     let s = std::fs::read_to_string(&input.to_string()).expect("on read to string");
     log.i(&format!("Loaded input file: {}", input));
     if s.len() < 100 {
-        log.w(&format!("Input file is only {} bytes should be larger", s.len()));
+        log.w(&format!(
+            "Input file is only {} bytes should be larger",
+            s.len()
+        ));
     }
-    (Arguments {
-        color: col,
-        timeout: t,
-        font: f.to_string(),
-        data: s,
-    }, log)
+    (
+        Arguments {
+            color: col,
+            timeout: t,
+            font: f.to_string(),
+            data: s,
+        },
+        log,
+    )
 }
 
 /// main function
@@ -269,7 +284,7 @@ fn main() {
                 Event::KeyDown {
                     keycode: Some(Keycode::Up),
                     ..
-                } => { 
+                } => {
                     dir = true;
                     log.i("Direction changed to up");
                 }
