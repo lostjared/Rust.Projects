@@ -1,4 +1,6 @@
 use clap::{App, Arg};
+use std::io::BufRead;
+use std::collections::HashMap;
 
 struct Arguments {
     input: String,
@@ -63,5 +65,25 @@ fn parse_args() -> Arguments {
 }
 
 fn main() -> std::io::Result<()> {
+
+    let args = parse_args();
+    let mut v : Vec<String> = Vec::new();
+    let r = std::io::BufReader::new(std::fs::File::open(args.input).unwrap());
+    let mut map : HashMap<String, String> = HashMap::new();
+    for line in r.lines() {
+        match line {
+            Ok(l) => {
+                if map.contains_key(&l) {
+                    continue;
+                }
+                if l.len() > args.len {
+                    v.push(l.to_owned());
+                    map.insert(l.to_owned(), l);
+                }
+            }
+            Err(e) => eprintln!("Error: {}", e)
+        }
+    }
+    
     Ok(())
 }
