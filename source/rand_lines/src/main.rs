@@ -1,6 +1,8 @@
 use clap::{App, Arg};
 use std::io::BufRead;
 use std::collections::HashMap;
+use rand::Rng;
+use std::io::Write;
 
 struct Arguments {
     input: String,
@@ -84,6 +86,25 @@ fn main() -> std::io::Result<()> {
             Err(e) => eprintln!("Error: {}", e)
         }
     }
-    
+    let mut rng = rand::thread_rng();
+    let mut count = 0;
+    let mut w: std::io::BufWriter<Box<dyn std::io::Write>>;
+    if args.output != "<STDOUT>" {
+        let f = std::fs::File::create(args.output).unwrap();
+        w = std::io::BufWriter::new(Box::new(f));
+    } else {
+        w = std::io::BufWriter::new(Box::new(std::io::stdout().lock()));
+    }
+    for _i in 0..v.len() {
+        let r = rng.gen_range(0..v.len());
+        let line = &v[r];
+        writeln!(w, "{}", line).expect("on write");
+        count += 1;
+        if count > args.num-1 {
+            break;
+        }
+        v.remove(r);
+    }
+    println!("Generated {} Line(s)\n", count-1);    
     Ok(())
 }
