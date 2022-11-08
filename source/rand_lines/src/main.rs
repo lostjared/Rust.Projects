@@ -19,6 +19,34 @@ fn parse_args() -> Arguments {
                 .required(true)
                 .allow_invalid_utf8(true),
         )
+        .arg(
+            Arg::new("output")
+                .short('o')
+                .long("output")
+                .help("output file")
+                .takes_value(true)
+                .required(false)
+                .default_value("<STDOUT>")
+                .allow_invalid_utf8(true),
+        )
+        .arg(
+            Arg::new("num")
+                .short('n')
+                .long("number")
+                .help("number of lines")
+                .takes_value(true)
+                .required(true)
+                .allow_invalid_utf8(true),
+        )
+        .arg(
+            Arg::new("len")
+                .short('l')
+                .long("len")
+                .help("length of lines")
+                .takes_value(true)
+                .required(true)
+                .allow_invalid_utf8(true),
+        )
         .get_matches();
 
     let input_ = m.value_of_lossy("input").unwrap();
