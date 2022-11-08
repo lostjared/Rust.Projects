@@ -1,7 +1,7 @@
 use clap::{App, Arg};
-use std::io::BufRead;
-use std::collections::HashMap;
 use rand::Rng;
+use std::collections::HashMap;
+use std::io::BufRead;
 use std::io::Write;
 
 struct Arguments {
@@ -67,11 +67,10 @@ fn parse_args() -> Arguments {
 }
 
 fn main() -> std::io::Result<()> {
-
     let args = parse_args();
-    let mut v : Vec<String> = Vec::new();
+    let mut v: Vec<String> = Vec::new();
     let r = std::io::BufReader::new(std::fs::File::open(args.input).unwrap());
-    let mut map : HashMap<String, String> = HashMap::new();
+    let mut map: HashMap<String, String> = HashMap::new();
     for line in r.lines() {
         match line {
             Ok(l) => {
@@ -83,7 +82,7 @@ fn main() -> std::io::Result<()> {
                     map.insert(l.to_owned(), l);
                 }
             }
-            Err(e) => eprintln!("Error: {}", e)
+            Err(e) => eprintln!("Error: {}", e),
         }
     }
     let mut rng = rand::thread_rng();
@@ -100,11 +99,11 @@ fn main() -> std::io::Result<()> {
         let line = &v[r];
         writeln!(w, "{}", line).expect("on write");
         count += 1;
-        if count > args.num-1 {
+        if count > args.num - 1 {
             break;
         }
         v.remove(r);
     }
-    println!("Generated {} Line(s)\n", count-1);    
+    println!("Generated {} Line(s)\n", count - 1);
     Ok(())
 }
