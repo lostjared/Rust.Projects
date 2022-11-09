@@ -94,7 +94,7 @@ fn main() -> std::io::Result<()> {
     } else {
         w = std::io::BufWriter::new(Box::new(std::io::stdout().lock()));
     }
-    for _i in 0..v.len() {
+    for _i in 0..args.num {
         let r = rng.gen_range(0..v.len());
         let line = &v[r];
         writeln!(w, "{}", line).expect("on write");
