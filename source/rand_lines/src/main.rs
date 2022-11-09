@@ -104,6 +104,7 @@ fn main() -> std::io::Result<()> {
         }
         v.remove(r);
     }
+    w.flush().expect("on flush");
     println!("Generated {} Line(s)\n", count - 1);
     Ok(())
 }
