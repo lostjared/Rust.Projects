@@ -86,7 +86,6 @@ fn main() -> std::io::Result<()> {
         }
     }
     let mut rng = rand::thread_rng();
-    let mut count = 0;
     let mut w: std::io::BufWriter<Box<dyn std::io::Write>>;
     if args.output != "<STDOUT>" {
         let f = std::fs::File::create(args.output).unwrap();
@@ -98,13 +97,9 @@ fn main() -> std::io::Result<()> {
         let r = rng.gen_range(0..v.len());
         let line = &v[r];
         writeln!(w, "{}", line).expect("on write");
-        count += 1;
-        if count > args.num - 1 {
-            break;
-        }
         v.remove(r);
     }
     w.flush().expect("on flush");
-    println!("\n\n\tGenerated {} Line(s)\n", count);
+    println!("\n\n\tGenerated {} Line(s)\n", args.num);
     Ok(())
 }
