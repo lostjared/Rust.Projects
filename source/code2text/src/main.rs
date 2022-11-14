@@ -41,7 +41,8 @@ fn parse_args() -> Arguments {
                 .long("input")
                 .short('i')
                 .takes_value(true)
-                .required(true)
+                .required(false)
+                .default_value("<STDIN>")
                 .allow_invalid_utf8(true)
                 .help("input filename"),
         )
@@ -84,7 +85,7 @@ fn parse_args() -> Arguments {
         .arg(
             Arg::with_name("log")
                 .long("log")
-                .short('l')
+                .short('g')
                 .takes_value(true)
                 .required(false)
                 .default_value("log.txt")
@@ -123,9 +124,9 @@ fn remove_chars(input: String) -> String {
     new_value
 }
 
-fn gen_words(input: &str, num: usize, num_len: usize, under: bool, ofile: &str, log_file: &str) {
-    let f = std::fs::File::open(input).expect("on file open");
-    let r = std::io::BufReader::new(f);
+fn gen_words<T>(r: T, num: usize, num_len: usize, under: bool, ofile: &str, log_file: &str) 
+where T: BufRead + Sized {
+    
     let mut lines: Vec<String> = Vec::new();
     let mut log = Log::new_file_log("code2text", log_file, true, true);
     for line in r.lines() {
@@ -225,13 +226,24 @@ fn gen_words(input: &str, num: usize, num_len: usize, under: bool, ofile: &str, 
 
 fn main() -> std::io::Result<()> {
     let args = parse_args();
+    if args.file != "<STDIN>" {
     gen_words(
-        &args.file,
+        std::io::BufReader::new(std::fs::File::open(&args.file).unwrap()),
         args.num_words,
         args.word_len,
         args.under,
         &args.ofile,
         &args.log,
     );
+   } else {
+    gen_words(
+        std::io::stdin().lock(),
+        args.num_words,
+        args.word_len,
+        args.under,
+        &args.ofile,
+        &args.log,
+    ); 
+   }
     Ok(())
 }
