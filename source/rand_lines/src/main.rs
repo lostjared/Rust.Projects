@@ -108,8 +108,10 @@ where
 fn main() -> std::io::Result<()> {
     let args = parse_args();
     if args.input != "<STDIN>" {
-        let r = std::io::BufReader::new(std::fs::File::open(args.input.to_owned()).unwrap());
-        gen_lines(&args, r);
+        gen_lines(
+            &args,
+            std::io::BufReader::new(std::fs::File::open(args.input.to_owned()).unwrap()),
+        );
     } else {
         gen_lines(&args, std::io::stdin().lock());
     }
