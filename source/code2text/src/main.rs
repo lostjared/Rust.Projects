@@ -124,9 +124,10 @@ fn remove_chars(input: String) -> String {
     new_value
 }
 
-fn gen_words<T>(r: T, num: usize, num_len: usize, under: bool, ofile: &str, log_file: &str) 
-where T: BufRead + Sized {
-    
+fn gen_words<T>(r: T, num: usize, num_len: usize, under: bool, ofile: &str, log_file: &str)
+where
+    T: BufRead + Sized,
+{
     let mut lines: Vec<String> = Vec::new();
     let mut log = Log::new_file_log("code2text", log_file, true, true);
     for line in r.lines() {
@@ -227,23 +228,23 @@ where T: BufRead + Sized {
 fn main() -> std::io::Result<()> {
     let args = parse_args();
     if args.file != "<STDIN>" {
-    gen_words(
-        std::io::BufReader::new(std::fs::File::open(&args.file).unwrap()),
-        args.num_words,
-        args.word_len,
-        args.under,
-        &args.ofile,
-        &args.log,
-    );
-   } else {
-    gen_words(
-        std::io::stdin().lock(),
-        args.num_words,
-        args.word_len,
-        args.under,
-        &args.ofile,
-        &args.log,
-    ); 
-   }
+        gen_words(
+            std::io::BufReader::new(std::fs::File::open(&args.file).unwrap()),
+            args.num_words,
+            args.word_len,
+            args.under,
+            &args.ofile,
+            &args.log,
+        );
+    } else {
+        gen_words(
+            std::io::stdin().lock(),
+            args.num_words,
+            args.word_len,
+            args.under,
+            &args.ofile,
+            &args.log,
+        );
+    }
     Ok(())
 }
