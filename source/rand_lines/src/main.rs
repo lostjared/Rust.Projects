@@ -20,7 +20,8 @@ fn parse_args() -> Arguments {
                 .long("input")
                 .help("input file")
                 .takes_value(true)
-                .required(true)
+                .required(false)
+                .default_value("<STDIN>")
                 .allow_invalid_utf8(true),
         )
         .arg(
@@ -66,10 +67,11 @@ fn parse_args() -> Arguments {
     }
 }
 
-fn main() -> std::io::Result<()> {
-    let args = parse_args();
+fn gen_lines<T>(args: &Arguments, r: T)
+where
+    T: BufRead + Sized,
+{
     let mut v: Vec<String> = Vec::new();
-    let r = std::io::BufReader::new(std::fs::File::open(args.input).unwrap());
     let mut map: HashMap<String, String> = HashMap::new();
     for line in r.lines() {
         match line {
@@ -88,7 +90,7 @@ fn main() -> std::io::Result<()> {
     let mut rng = rand::thread_rng();
     let mut w: std::io::BufWriter<Box<dyn std::io::Write>>;
     if args.output != "<STDOUT>" {
-        let f = std::fs::File::create(args.output).unwrap();
+        let f = std::fs::File::create(args.output.to_owned()).unwrap();
         w = std::io::BufWriter::new(Box::new(f));
     } else {
         w = std::io::BufWriter::new(Box::new(std::io::stdout().lock()));
@@ -101,5 +103,15 @@ fn main() -> std::io::Result<()> {
     }
     w.flush().expect("on flush");
     println!("\n\n\tGenerated {} Line(s)\n", args.num);
+}
+
+fn main() -> std::io::Result<()> {
+    let args = parse_args();
+    if args.input != "<STDIN>" {
+        let r = std::io::BufReader::new(std::fs::File::open(args.input.to_owned()).unwrap());
+        gen_lines(&args, r);
+    } else {
+        gen_lines(&args, std::io::stdin().lock());
+    }
     Ok(())
 }
