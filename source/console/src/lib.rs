@@ -128,7 +128,7 @@ pub mod console_system {
                 }
             }
 
-            let mut log_ = Log::new_file_log("console", "log.txt", false, true);
+            let mut log_ = Log::new_file_log("console", "log.txt", true, true);
             log_.i("Console started up");
 
             Console {
