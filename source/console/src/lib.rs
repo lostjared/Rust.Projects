@@ -4,6 +4,8 @@ pub mod console_system {
     use sdl2::render::TextureQuery;
     use std::process::Command;
     use std::process::Stdio;
+    use logger::log::*;
+
     /// Console struct containing information for console
     pub struct Console {
         x: i32,
@@ -15,6 +17,7 @@ pub mod console_system {
         line_height: usize,
         color: sdl2::pixels::Color,
         visible: bool,
+        log: Log,
     }
 
     /// printtext function for printing text to the screen
@@ -124,6 +127,10 @@ pub mod console_system {
                     println!("no home directory");
                 }
             }
+
+            let mut log_ = Log::new_file_log("console", "log.txt", false, true);
+            log_.i("Console started up");
+
             Console {
                 x: xx,
                 y: yx,
@@ -134,6 +141,7 @@ pub mod console_system {
                 line_height: 27,
                 color: sdl2::pixels::Color::RGB(255, 255, 255),
                 visible: true,
+                log: log_
             }
         }
 
@@ -359,6 +367,7 @@ pub mod console_system {
                 return;
             }
             self.proc_command(v, &input);
+            self.log.i(&format!("command: {}", input));
         }
 
         /// draw the console
