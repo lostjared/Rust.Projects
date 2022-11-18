@@ -59,7 +59,7 @@ fn main() {
     let args: Vec<String> = std::env::args().collect();
     let mut movement = MovementObject::load_from_file(args.get(1).unwrap());
     movement.print_movement();
-    let mut log = Log::new_file_log("lscript", "log.txt", true, true);
+    let mut log = Log::new_file_log("lscript", "log.txt", false, true);
     let mut grid: PixelGrid = PixelGrid::new();
 
     let width = 1280;
