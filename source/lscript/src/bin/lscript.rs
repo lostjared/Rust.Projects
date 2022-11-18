@@ -122,7 +122,7 @@ fn main() {
         if tick_count > 75 {
             tick_count = 0;
             let m = movement.get_pos();
-            println!("{}", m);
+            log.i(&format!("{}", m));
             match m.direction {
                 Direction::Left => cur_pos.0 -= m.steps,
                 Direction::Right => cur_pos.0 += m.steps,
