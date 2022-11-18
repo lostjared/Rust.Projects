@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-
+logger = { path = "../logger" }
 [dependencies.sdl2]
 version = "0.35.1"
 features = ["bundled"]

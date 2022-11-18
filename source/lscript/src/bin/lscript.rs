@@ -3,7 +3,7 @@ use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 use std::time::{SystemTime, UNIX_EPOCH};
-
+use logger::log::*;
 use lscript::scr::Direction;
 use lscript::scr::MovementObject;
 
@@ -59,7 +59,7 @@ fn main() {
     let args: Vec<String> = std::env::args().collect();
     let mut movement = MovementObject::load_from_file(args.get(1).unwrap());
     movement.print_movement();
-
+    let mut log = Log::new_file_log("lscript", "log.txt", true, true);
     let mut grid: PixelGrid = PixelGrid::new();
 
     let width = 1280;
@@ -83,7 +83,7 @@ fn main() {
 
     let mut cur_pos = ((1280 / 32) / 2, (720 / 32) / 2);
     let mut cur_color = (255, 255, 255);
-
+    log.i("initalized");
     'main: loop {
         for _event in e.poll_iter() {
             match _event {
@@ -154,6 +154,7 @@ fn main() {
 
             if movement.index == 0 {
                 grid.clear();
+                log.i("clear");
             }
         }
     }
