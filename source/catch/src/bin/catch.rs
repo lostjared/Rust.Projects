@@ -4,12 +4,14 @@ use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 use sdl2::render::TextureQuery;
 use std::time::{SystemTime, UNIX_EPOCH};
+use logger::log::*;
 
 use catch::game::Game;
 use catch::game::Movement;
 
 /// main function - entry point
 fn main() {
+    let mut log = Log::new_file_log("catch", "log.txt", false, true);
     let mut game: Game = Game::new(1280i32, 720i32);
     game.new_game();
     let width = 1280;
@@ -38,6 +40,8 @@ fn main() {
         .blended(Color::RGB(255, 255, 255))
         .unwrap();
 
+    log.i("Initalized");
+
     let mut e = sdl.event_pump().unwrap();
     let mut prev_tick: u64 = 0;
     let mut tick_count = 0;
@@ -53,12 +57,14 @@ fn main() {
                     keycode: Some(Keycode::Left),
                     ..
                 } => {
+                    log.i("KeyLeft");
                     game.keypress(Movement::Left);
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Right),
                     ..
                 } => {
+                    log.i("KeyRight");
                     game.keypress(Movement::Right);
                 }
                 _ => {}
