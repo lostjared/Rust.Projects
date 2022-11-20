@@ -14,18 +14,18 @@ fn main() -> std::io::Result<()> {
         let sep = sep.unwrap();
         let num1 = &val[0..sep];
         let num2 = &val[sep + 1..];
-        let start_pos: usize;
-        let stop_pos: usize;
-        if num1 == "$" {
-            start_pos = 0;
+        let start_pos: usize = if num1 == "$" {
+            0
         } else {
-            start_pos = num1.parse().unwrap();
-        }
-        if num2 == "$" {
-            stop_pos = string_value.len();
+            num1.parse().unwrap()
+        };
+
+        let stop_pos: usize = if num2 == "$" {
+            string_value.len()
         } else {
-            stop_pos = num2.parse().unwrap();
-        }
+            num2.parse().unwrap()
+        };
+
         if start_pos < string_value.len() && stop_pos > start_pos {
             let cut_value = &string_value[start_pos..stop_pos];
             println!("{}", cut_value);
