@@ -6,12 +6,11 @@ fn main() -> std::io::Result<()> {
         let val = &args[1];
         let sep = val.find(',');
         if sep == None {
-            panic!("Missing required , ");
+            panic!("Missing required argument , ");
         }
         let mut string_value: String = String::new();
         let mut reader = std::io::stdin().lock();
         reader.read_to_string(&mut string_value).expect("on read");
-
         let sep = sep.unwrap();
         let num1 = &val[0..sep];
         let num2 = &val[sep + 1..];
