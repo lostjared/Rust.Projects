@@ -13,8 +13,7 @@ fn parse_args() -> Arguments {
                 .long("mid")
                 .short('m')
                 .takes_value(false)
-                .required(false)
-                .default_value("0"),
+                .required(false),
         )
         .arg(
             Arg::new("r")
@@ -26,10 +25,10 @@ fn parse_args() -> Arguments {
         )
         .get_matches();
     let mid_ = m.is_present("mid");
-    let reg = m.value_of_lossy("r").unwrap();
+    let dist = m.value_of_lossy("r").unwrap();
     Arguments {
         mid: mid_,
-        r: reg.to_string(),
+        r: dist.to_string(),
     }
 }
 
@@ -63,8 +62,13 @@ fn main() -> std::io::Result<()> {
         };
 
         if start_pos < string_value.len() && stop_pos > start_pos {
-            let cut_value = &string_value[start_pos..stop_pos];
-            println!("{}", cut_value);
+            if !args.mid  {
+                let cut_value = &string_value[start_pos..stop_pos];
+                println!("{}", cut_value);
+            } else {
+                let cut_value = &string_value[start_pos..start_pos+stop_pos];
+                println!("{}", cut_value);
+            }
         }
        Ok(())
 }
