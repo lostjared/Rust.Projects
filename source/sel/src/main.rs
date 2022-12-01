@@ -3,6 +3,7 @@ use std::io::Read;
 
 struct Arguments {
     mid: bool,
+    r: String,
 }
 
 fn parse_args() -> Arguments {
@@ -15,15 +16,26 @@ fn parse_args() -> Arguments {
                 .required(false)
                 .default_value("0"),
         )
+        .arg(
+            Arg::new("r")
+                .long("regex")
+                .short('r')
+                .takes_value(true)
+                .required(true)
+                .allow_invalid_utf8(true),
+        )
         .get_matches();
     let mid_ = m.is_present("mid");
-    Arguments { mid: mid_ }
+    let reg = m.value_of_lossy("r").unwrap();
+    Arguments {
+        mid: mid_,
+        r: reg.to_string(),
+    }
 }
 
 fn main() -> std::io::Result<()> {
-    let args: Vec<String> = std::env::args().collect();
-    if args.len() == 2 {
-        let val = &args[1];
+        let args = parse_args();
+        let val = args.r;
         let sep = val.find(',');
 
         if sep == None {
@@ -54,6 +66,5 @@ fn main() -> std::io::Result<()> {
             let cut_value = &string_value[start_pos..stop_pos];
             println!("{}", cut_value);
         }
-    }
-    Ok(())
+       Ok(())
 }
