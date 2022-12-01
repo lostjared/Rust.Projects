@@ -1,23 +1,28 @@
-use std::io::Read;
 use clap::{App, Arg};
+use std::io::Read;
 
 struct Arguments {
     mid: bool,
 }
 
 fn parse_args() -> Arguments {
-    let m = App::new("sel").arg(Arg::new("mid").long("mid").short('m').takes_value(false).required(false).default_value("0")).get_matches();
+    let m = App::new("sel")
+        .arg(
+            Arg::new("mid")
+                .long("mid")
+                .short('m')
+                .takes_value(false)
+                .required(false)
+                .default_value("0"),
+        )
+        .get_matches();
     let mid_ = m.is_present("mid");
-    Arguments {
-        mid: mid_,
-    }   
+    Arguments { mid: mid_ }
 }
-
 
 fn main() -> std::io::Result<()> {
     let args: Vec<String> = std::env::args().collect();
     if args.len() == 2 {
-
         let val = &args[1];
         let sep = val.find(',');
 
