@@ -8,6 +8,8 @@ struct Arguments {
 
 fn parse_args() -> Arguments {
     let m = App::new("sel")
+        .help("cut text")
+        .about("cut text")
         .arg(
             Arg::new("mid")
                 .long("mid")
