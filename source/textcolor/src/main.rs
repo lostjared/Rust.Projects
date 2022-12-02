@@ -1,3 +1,7 @@
+use colored::Colorize;
+
 fn main() {
-    println!("Hello, world!");
+
+    println!("{}: is red", "Color".red());
+
 }
