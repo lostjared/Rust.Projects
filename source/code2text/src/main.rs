@@ -20,7 +20,7 @@ use rs_lex::rlex::*;
 use std::collections::HashMap;
 use std::io::{BufRead, Write};
 use std::sync::{Arc, Mutex};
-
+use colored::Colorize;
 struct Arguments {
     file: String,
     ofile: String,
@@ -192,6 +192,8 @@ where
     });
 
     let mut v = data.lock().unwrap();
+
+    println!("{}", "output: ".red());
 
     log.o(&format!(
         "Scanning finished.\n{{\n\tGathered {} tokens for pool.\n\tText contained {} lines.\n\tNow generating words...\n}}\n",
