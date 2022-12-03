@@ -1,10 +1,11 @@
 use std::env;
 use std::fs::File;
 use std::io::Read;
+use colored::Colorize;
 
 fn bin2c(infile: &str) -> std::io::Result<()> {
     let mut f = File::open(infile).expect("could not open file");
-    println!("unsigned char bytes[] = {{");
+    println!("{} {}", "unsigned char".blue(), " bytes[] = {{");
     let mut len: usize = 0;
     loop {
         let mut buf: [u8; 256] = [0; 256];
@@ -21,12 +22,12 @@ fn bin2c(infile: &str) -> std::io::Result<()> {
         }
     }
     println!("0x0}};\n");
-    println!("unsigned long length = {:#04x};", len);
+    println!("{} length = {:#04x};", "unsigned long".blue(), len);
     Ok(())
 }
 
 fn bin2c_stdin() -> std::io::Result<()> {
-    println!("unsigned char bytes[] = {{");
+    println!("{} bytes[] = {{", "unsigned char".blue());
     let mut len: usize = 0;
     loop {
         let mut buf: [u8; 256] = [0; 256];
@@ -41,7 +42,7 @@ fn bin2c_stdin() -> std::io::Result<()> {
         }
     }
     println!("0x0}};\n");
-    println!("unsigned long length = {:#04x};", len);
+    println!("{} length = {:#04x};", "unsigned long".blue(), len);
     Ok(())
 }
 
