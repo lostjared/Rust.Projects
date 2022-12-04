@@ -1,5 +1,7 @@
 use std::env;
 use std::fs;
+use colored::Colorize;
+
 
 fn count_lines(inputfile: &str) -> (usize, usize, usize) {
     let contents = fs::read_to_string(inputfile).expect("Error reading the file");
@@ -14,8 +16,9 @@ fn count_lines(inputfile: &str) -> (usize, usize, usize) {
         }
     }
     println!(
-        "{} contains {} blank lines, lines: {}, total lines: {}",
+        "{} {} {} blank lines, lines: {}, total lines: {}",
         inputfile,
+        "Contains".blue(),
         blanks,
         index,
         blanks + index
