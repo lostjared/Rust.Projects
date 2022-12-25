@@ -96,9 +96,7 @@ fn main() {
         };
         println!("{}", s);
     } else {
-
         let mut index = 0;
-
         for i in arg_m.filename {
             index += 1;
             let f = std::fs::File::open(i).unwrap();
