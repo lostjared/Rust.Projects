@@ -1,5 +1,6 @@
 pub mod log {
 
+    use colored::Colorize;
     pub struct Log {
         program_name: String,
         out_stream: Box<dyn std::io::Write>,
@@ -46,6 +47,7 @@ pub mod log {
                 echo: echo_value,
             }
         }
+
         /// information log
         pub fn i(&mut self, data: &str) {
             self.log(data, "Information: ".to_string())
@@ -68,11 +70,11 @@ pub mod log {
             writeln!(
                 self.out_stream,
                 "{}: ({}) - {} {}",
-                self.program_name, t, level, data
+                self.program_name.red(), t.green(), level.blue(), data
             )
             .expect("On log write");
             if self.echo {
-                println!("{}: ({}) - {}{}", self.program_name, t, level, data)
+                println!("{}: ({}) - {}{}", self.program_name.red(), t.green(), level.blue(), data)
             }
         }
 
