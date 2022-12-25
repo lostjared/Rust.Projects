@@ -14,9 +14,9 @@ fn slash_seq(input: &str) -> String {
     value
 }
 
-fn convert_to_rs<T: std::io::BufRead + Sized>(mut reader: T) -> String {
+fn convert_to_rs<T: std::io::BufRead + Sized>(mut reader: T, name: &str) -> String {
     let mut value: String = String::new();
-    value.push_str("let v = vec![");
+    value.push_str(&format!("let {} = vec![", name));
     loop {
         let mut input_text: String = String::new();
         let val = reader.read_line(&mut input_text).expect("on read");
@@ -90,7 +90,7 @@ fn main() {
         let r = i.lock();
 
         let s: String = if !arg_m.cxx {
-            convert_to_rs(r)
+            convert_to_rs(r, "v")
         } else {
             convert_to_cxx(r, "v")
         };
@@ -104,7 +104,7 @@ fn main() {
             let f = std::fs::File::open(i).unwrap();
             let r = std::io::BufReader::new(f);
             let s: String = if !arg_m.cxx {
-                convert_to_rs(r)
+                convert_to_rs(r, &format!("v{}", index))
             } else {
                 convert_to_cxx(r, &format!("v{}", index))
             };
