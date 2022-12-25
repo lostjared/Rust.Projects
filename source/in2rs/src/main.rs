@@ -32,9 +32,9 @@ fn convert_to_rs<T: std::io::BufRead + Sized>(mut reader: T) -> String {
     value
 }
 
-fn convert_to_cxx<T: std::io::BufRead + Sized>(mut reader: T) -> String {
+fn convert_to_cxx<T: std::io::BufRead + Sized>(mut reader: T, name: &str) -> String {
     let mut value: String = String::new();
-    value.push_str("std::vector<std::string> v = {");
+    value.push_str(&format!("std::vector<std::string> {} = {{", name));
     loop {
         let mut input_text: String = String::new();
         let val = reader.read_line(&mut input_text).expect("on read");
@@ -92,17 +92,21 @@ fn main() {
         let s: String = if !arg_m.cxx {
             convert_to_rs(r)
         } else {
-            convert_to_cxx(r)
+            convert_to_cxx(r, "v")
         };
         println!("{}", s);
     } else {
+
+        let mut index = 0;
+
         for i in arg_m.filename {
+            index += 1;
             let f = std::fs::File::open(i).unwrap();
             let r = std::io::BufReader::new(f);
             let s: String = if !arg_m.cxx {
                 convert_to_rs(r)
             } else {
-                convert_to_cxx(r)
+                convert_to_cxx(r, &format!("v{}", index))
             };
             println!("{}", s);
         }
