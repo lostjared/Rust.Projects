@@ -34,7 +34,7 @@ fn convert_to_rs<T: std::io::BufRead + Sized>(mut reader: T) -> String {
 
 fn convert_to_cxx<T: std::io::BufRead + Sized>(mut reader: T) -> String {
     let mut value: String = String::new();
-    value.push_str("std::string data[] = {");
+    value.push_str("std::vector<std::string> v = {");
     loop {
         let mut input_text: String = String::new();
         let val = reader.read_line(&mut input_text).expect("on read");
@@ -52,6 +52,7 @@ fn convert_to_cxx<T: std::io::BufRead + Sized>(mut reader: T) -> String {
 
 struct Arguments {
     cxx: bool,
+    filename: Vec<String>,
 }
 
 fn parse_args() -> Arguments {
@@ -64,16 +65,27 @@ fn parse_args() -> Arguments {
                 .takes_value(false)
                 .required(false),
         )
+        .arg(
+            Arg::new("file")
+                .takes_value(true)
+                .multiple(true)
+                .required(false)
+                .default_value("<STDIN>")
+                .allow_invalid_utf8(true),
+        )
         .get_matches();
     let c = m.is_present("cxx");
-    Arguments { cxx: c }
+    let filen = m.values_of_lossy("file").unwrap();
+    Arguments {
+        cxx: c,
+        filename: filen,
+    }
 }
 
 fn main() {
-    let args: Vec<String> = std::env::args().collect();
     let arg_m = parse_args();
-
-    if args.len() <= 1 {
+    let f1 = arg_m.filename.get(0).unwrap();
+    if f1 == "<STDIN>" {
         let i = std::io::stdin();
         let r = i.lock();
 
@@ -84,7 +96,7 @@ fn main() {
         };
         println!("{}", s);
     } else {
-        for i in args.iter().skip(1) {
+        for i in arg_m.filename {
             let f = std::fs::File::open(i).unwrap();
             let r = std::io::BufReader::new(f);
             let s: String = if !arg_m.cxx {
