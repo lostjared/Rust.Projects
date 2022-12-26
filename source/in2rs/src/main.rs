@@ -96,7 +96,7 @@ fn main() {
         } else {
             convert_to_cxx(r, "v")
         };
-        println!("{}", s);
+        println!("{}:\n{}", "Output".red(), s);
     } else {
         let mut index = 0;
         for i in arg_m.filename {
@@ -108,7 +108,7 @@ fn main() {
             } else {
                 convert_to_cxx(r, &format!("v{}", index))
             };
-            println!("{}", s);
+            println!("{}:\n{}", "Output".red(), s);
         }
     }
 }
