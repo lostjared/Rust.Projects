@@ -1,4 +1,5 @@
 use clap::{App, Arg};
+use std::fmt::Write;
 
 fn slash_seq(input: &str) -> String {
     let mut value: String = String::new();
@@ -16,12 +17,12 @@ fn slash_seq(input: &str) -> String {
 
 fn convert_to_rs<T: std::io::BufRead + Sized>(mut reader: T, name: &str) -> String {
     let mut value: String = String::new();
-    value.push_str(&format!("let {} = vec![", name));
+    write!(&mut value, "let {} = vec![", name).expect("on write");
     loop {
         let mut input_text: String = String::new();
         let val = reader.read_line(&mut input_text).expect("on read");
         input_text.pop();
-        value.push_str(&format!("\n\"{}\"", &slash_seq(&input_text)));
+        write!(&mut value, "\n\"{}\"", &slash_seq(&input_text)).expect("on write");
         if val == 0 {
             break;
         } else {
@@ -34,12 +35,12 @@ fn convert_to_rs<T: std::io::BufRead + Sized>(mut reader: T, name: &str) -> Stri
 
 fn convert_to_cxx<T: std::io::BufRead + Sized>(mut reader: T, name: &str) -> String {
     let mut value: String = String::new();
-    value.push_str(&format!("std::vector<std::string> {} = {{", name));
+    write!(&mut value, "std::vector<std::string> {} = {{", name).expect("on write");
     loop {
         let mut input_text: String = String::new();
         let val = reader.read_line(&mut input_text).expect("on read");
         input_text.pop();
-        value.push_str(&format!("\n\"{}\"", &slash_seq(&input_text)));
+        write!(&mut value, "\n\"{}\"", &slash_seq(&input_text)).expect("on write");
         if val == 0 {
             break;
         } else {
