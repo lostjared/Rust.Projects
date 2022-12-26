@@ -1,5 +1,6 @@
 use clap::{App, Arg};
 use std::fmt::Write;
+use colored::Colorize;
 
 fn slash_seq(input: &str) -> String {
     let mut value: String = String::new();
@@ -17,7 +18,7 @@ fn slash_seq(input: &str) -> String {
 
 fn convert_to_rs<T: std::io::BufRead + Sized>(mut reader: T, name: &str) -> String {
     let mut value: String = String::new();
-    write!(&mut value, "let {} = vec![", name).expect("on write");
+    write!(&mut value, "{} {} = vec![", "let".blue(), name).expect("on write");
     loop {
         let mut input_text: String = String::new();
         let val = reader.read_line(&mut input_text).expect("on read");
