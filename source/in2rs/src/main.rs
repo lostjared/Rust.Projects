@@ -1,6 +1,6 @@
 use clap::{App, Arg};
-use std::fmt::Write;
 use colored::Colorize;
+use std::fmt::Write;
 
 fn slash_seq(input: &str) -> String {
     let mut value: String = String::new();
@@ -55,6 +55,7 @@ fn convert_to_cxx<T: std::io::BufRead + Sized>(mut reader: T, name: &str) -> Str
 struct Arguments {
     cxx: bool,
     filename: Vec<String>,
+    output: String,
 }
 
 fn parse_args() -> Arguments {
@@ -75,12 +76,25 @@ fn parse_args() -> Arguments {
                 .default_value("<STDIN>")
                 .allow_invalid_utf8(true),
         )
+        .arg(
+            Arg::new("output")
+                .short('o')
+                .long("output")
+                .takes_value(true)
+                .multiple(false)
+                .required(false)
+                .default_value("<NONE>")
+                .allow_invalid_utf8(true),
+        )
         .get_matches();
     let c = m.is_present("cxx");
     let filen = m.values_of_lossy("file").unwrap();
+    let out = m.value_of_lossy("output").unwrap();
+
     Arguments {
         cxx: c,
         filename: filen,
+        output: out.to_string(),
     }
 }
 
