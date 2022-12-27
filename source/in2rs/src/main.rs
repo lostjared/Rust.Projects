@@ -1,6 +1,7 @@
 use clap::{App, Arg};
 use colored::Colorize;
-use std::fmt::Write;
+use std::io::Write;
+
 
 fn slash_seq(input: &str) -> String {
     let mut value: String = String::new();
@@ -17,6 +18,7 @@ fn slash_seq(input: &str) -> String {
 }
 
 fn convert_to_rs<T: std::io::BufRead + Sized>(mut reader: T, name: &str) -> String {
+    use std::fmt::Write;
     let mut value: String = String::new();
     write!(&mut value, "{} {} = vec![", "let".blue(), name).expect("on write");
     loop {
@@ -35,6 +37,7 @@ fn convert_to_rs<T: std::io::BufRead + Sized>(mut reader: T, name: &str) -> Stri
 }
 
 fn convert_to_cxx<T: std::io::BufRead + Sized>(mut reader: T, name: &str) -> String {
+    use std::fmt::Write;
     let mut value: String = String::new();
     write!(&mut value, "std::vector<std::string> {} = {{", name).expect("on write");
     loop {
@@ -98,6 +101,20 @@ fn parse_args() -> Arguments {
     }
 }
 
+
+fn output_code_header(name: &str, filen: &Vec<String>) {
+    let name_hxx = format!("{}.hpp", name);
+    let f = std::fs::File::create(name_hxx).expect("on create");
+    let mut w = std::io::BufWriter::new(f);
+    writeln!(&mut w, "#ifndef SOURCE_CXX_{}_H", name).expect("on write");
+    writeln!(&mut w, "#define SOURCE_CXX_{}_H", name).expect("on write");
+    writeln!(&mut w, "#include<string>\n#include<vector>\n").expect("on write");
+    for index in 0..filen.len() {
+        writeln!(&mut w, "extern std::vector<std::string> v{};\n", index+1).expect("on write");    
+    }
+    writeln!(&mut w, "#endif").expect("on write");
+}
+
 fn main() {
     let arg_m = parse_args();
     let f1 = arg_m.filename.get(0).unwrap();
@@ -113,6 +130,12 @@ fn main() {
         println!("{}:\n{}", "Output".red(), s);
     } else {
         let mut index = 0;
+
+        if arg_m.output != "<NONE>" && arg_m.cxx {
+            output_code_header(&arg_m.output, &arg_m.filename );
+            println!("header file: {}.hpp", arg_m.output);
+        }
+
         for i in arg_m.filename {
             index += 1;
             let f = std::fs::File::open(i).unwrap();
