@@ -68,7 +68,8 @@ fn parse_args() -> Arguments {
                 .short('c')
                 .long("cxx")
                 .takes_value(false)
-                .required(false),
+                .required(false)
+                .help("output as C++"),
         )
         .arg(
             Arg::new("file")
@@ -76,7 +77,8 @@ fn parse_args() -> Arguments {
                 .multiple(true)
                 .required(false)
                 .default_value("<STDIN>")
-                .allow_invalid_utf8(true),
+                .allow_invalid_utf8(true)
+                .help("input file(s)"),
         )
         .arg(
             Arg::new("output")
@@ -85,6 +87,7 @@ fn parse_args() -> Arguments {
                 .takes_value(true)
                 .multiple(false)
                 .required(false)
+                .help("Output to C++ file")
                 .default_value("<NONE>")
                 .allow_invalid_utf8(true),
         )
