@@ -2,7 +2,6 @@ use clap::{App, Arg};
 use colored::Colorize;
 use std::io::Write;
 
-
 fn slash_seq(input: &str) -> String {
     let mut value: String = String::new();
     for i in input.chars() {
@@ -101,7 +100,6 @@ fn parse_args() -> Arguments {
     }
 }
 
-
 fn output_code_header(name: &str, filen: &Vec<String>) {
     let name_hxx = format!("{}.hpp", name);
     let f = std::fs::File::create(name_hxx).expect("on create");
@@ -110,7 +108,7 @@ fn output_code_header(name: &str, filen: &Vec<String>) {
     writeln!(&mut w, "#define SOURCE_CXX_{}_H", name).expect("on write");
     writeln!(&mut w, "#include<string>\n#include<vector>\n").expect("on write");
     for index in 0..filen.len() {
-        writeln!(&mut w, "extern std::vector<std::string> v{};\n", index+1).expect("on write");    
+        writeln!(&mut w, "extern std::vector<std::string> v{};\n", index + 1).expect("on write");
     }
     writeln!(&mut w, "#endif").expect("on write");
 }
@@ -121,7 +119,6 @@ fn main() {
     if f1 == "<STDIN>" {
         let i = std::io::stdin();
         let r = i.lock();
-
         let s: String = if !arg_m.cxx {
             convert_to_rs(r, "v")
         } else {
@@ -130,22 +127,38 @@ fn main() {
         println!("{}:\n{}", "Output".red(), s);
     } else {
         let mut index = 0;
-
         if arg_m.output != "<NONE>" && arg_m.cxx {
-            output_code_header(&arg_m.output, &arg_m.filename );
+            output_code_header(&arg_m.output, &arg_m.filename);
             println!("header file: {}.hpp", arg_m.output);
-        }
-
-        for i in arg_m.filename {
-            index += 1;
-            let f = std::fs::File::open(i).unwrap();
-            let r = std::io::BufReader::new(f);
-            let s: String = if !arg_m.cxx {
-                convert_to_rs(r, &format!("v{}", index))
-            } else {
-                convert_to_cxx(r, &format!("v{}", index))
-            };
-            println!("{}:\n{}", "Output".red(), s);
+            let name_cxx = format!("{}.cpp", arg_m.output);
+            let name_hxx = format!("{}.hpp", arg_m.output);
+            let f = std::fs::File::create(name_cxx).expect("on create");
+            let mut w = std::io::BufWriter::new(f);
+            writeln!(&mut w, "#include \"{}\"\n", name_hxx).expect("on write");
+            for i in arg_m.filename {
+                index += 1;
+                let f = std::fs::File::open(i).unwrap();
+                let r = std::io::BufReader::new(f);
+                let s: String = if !arg_m.cxx {
+                    convert_to_rs(r, &format!("v{}", index))
+                } else {
+                    convert_to_cxx(r, &format!("v{}", index))
+                };
+                writeln!(&mut w, "{}", s).expect("on write");
+            }
+            println!("source file: {}.cpp", arg_m.output);
+        } else {
+            for i in arg_m.filename {
+                index += 1;
+                let f = std::fs::File::open(i).unwrap();
+                let r = std::io::BufReader::new(f);
+                let s: String = if !arg_m.cxx {
+                    convert_to_rs(r, &format!("v{}", index))
+                } else {
+                    convert_to_cxx(r, &format!("v{}", index))
+                };
+                println!("{}:\n{}", "Output".red(), s);
+            }
         }
     }
 }
