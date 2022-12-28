@@ -144,7 +144,6 @@ fn main() {
         };
         println!("{}:\n{}", "Output".red(), s);
     } else {
-        let mut index = 0;
         if arg_m.output != "<NONE>" && arg_m.cxx {
             output_code_header(&arg_m.output, &arg_m.filename);
             println!("header file: {}.hpp", arg_m.output);
@@ -156,17 +155,8 @@ fn main() {
             output_code_to_stream(w, &arg_m.filename, arg_m.cxx);
             println!("source file: {}.cpp", arg_m.output);
         } else {
-            for i in arg_m.filename {
-                index += 1;
-                let f = std::fs::File::open(i).unwrap();
-                let r = std::io::BufReader::new(f);
-                let s: String = if !arg_m.cxx {
-                    convert_to_rs(r, &format!("v{}", index))
-                } else {
-                    convert_to_cxx(r, &format!("v{}", index))
-                };
-                println!("{}:\n{}", "Output".red(), s);
-            }
+            println!("{}:", "Output".red());
+            output_code_to_stream(std::io::stdout().lock(), &arg_m.filename, arg_m.cxx);
         }
     }
 }
