@@ -54,6 +54,21 @@ fn convert_to_cxx<T: std::io::BufRead + Sized>(mut reader: T, name: &str) -> Str
     value
 }
 
+fn output_code_to_stream<T: std::io::Write + Sized>(mut writer: T, files: &Vec<String>, cxx: bool) {
+    let mut index = 0;
+    for i in files {
+        index += 1;
+        let f = std::fs::File::open(i).unwrap();
+        let r = std::io::BufReader::new(f);
+        let s: String = if !cxx {
+            convert_to_rs(r, &format!("v{}", index))
+        } else {
+            convert_to_cxx(r, &format!("v{}", index))
+        };
+        writeln!(&mut writer, "{}", s).expect("on write");
+    }
+}
+
 struct Arguments {
     cxx: bool,
     filename: Vec<String>,
@@ -138,17 +153,7 @@ fn main() {
             let f = std::fs::File::create(name_cxx).expect("on create");
             let mut w = std::io::BufWriter::new(f);
             writeln!(&mut w, "#include \"{}\"\n", name_hxx).expect("on write");
-            for i in arg_m.filename {
-                index += 1;
-                let f = std::fs::File::open(i).unwrap();
-                let r = std::io::BufReader::new(f);
-                let s: String = if !arg_m.cxx {
-                    convert_to_rs(r, &format!("v{}", index))
-                } else {
-                    convert_to_cxx(r, &format!("v{}", index))
-                };
-                writeln!(&mut w, "{}", s).expect("on write");
-            }
+            output_code_to_stream(w, &arg_m.filename, arg_m.cxx);
             println!("source file: {}.cpp", arg_m.output);
         } else {
             for i in arg_m.filename {
