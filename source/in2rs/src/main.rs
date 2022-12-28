@@ -54,21 +54,6 @@ fn convert_to_cxx<T: std::io::BufRead + Sized>(mut reader: T, name: &str) -> Str
     value
 }
 
-fn output_code_to_stream<T: std::io::Write + Sized>(mut writer: T, files: &Vec<String>, cxx: bool) {
-    let mut index = 0;
-    for i in files {
-        index += 1;
-        let f = std::fs::File::open(i).unwrap();
-        let r = std::io::BufReader::new(f);
-        let s: String = if !cxx {
-            convert_to_rs(r, &format!("v{}", index))
-        } else {
-            convert_to_cxx(r, &format!("v{}", index))
-        };
-        writeln!(&mut writer, "{}", s).expect("on write");
-    }
-}
-
 struct Arguments {
     cxx: bool,
     filename: Vec<String>,
@@ -129,6 +114,21 @@ fn output_code_header(name: &str, filen: &Vec<String>) {
         writeln!(&mut w, "extern std::vector<std::string> v{};\n", index + 1).expect("on write");
     }
     writeln!(&mut w, "#endif").expect("on write");
+}
+
+fn output_code_to_stream<T: std::io::Write + Sized>(mut writer: T, files: &Vec<String>, cxx: bool) {
+    let mut index = 0;
+    for i in files {
+        index += 1;
+        let f = std::fs::File::open(i).unwrap();
+        let r = std::io::BufReader::new(f);
+        let s: String = if !cxx {
+            convert_to_rs(r, &format!("v{}", index))
+        } else {
+            convert_to_cxx(r, &format!("v{}", index))
+        };
+        writeln!(&mut writer, "{}", s).expect("on write");
+    }
 }
 
 fn main() {
