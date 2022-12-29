@@ -1,7 +1,7 @@
 use clap::{App, Arg};
 use colored::Colorize;
-use std::io::Write;
 use regex::Regex;
+use std::io::Write;
 
 fn slash_seq(input: &str) -> String {
     let mut value: String = String::new();
@@ -146,12 +146,10 @@ fn main() {
         println!("{}:\n{}", "Output".red(), s);
     } else {
         if arg_m.output != "<NONE>" && arg_m.cxx {
-
             let re = Regex::new(r"[A-Za-z][A-Za-z0-9]*").unwrap();
             if !re.is_match(&arg_m.output) {
                 panic!("Error invalid output variable name");
             }
-
             output_code_header(&arg_m.output, &arg_m.filename);
             println!("header file: {}.hpp", arg_m.output);
             let name_cxx = format!("{}.cpp", arg_m.output);
