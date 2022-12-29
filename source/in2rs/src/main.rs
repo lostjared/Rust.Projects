@@ -150,10 +150,10 @@ fn main() {
             if !re.is_match(&arg_m.output) {
                 panic!("Error invalid output variable name");
             }
-            output_code_header(&arg_m.output, &arg_m.filename);
-            println!("header file: {}.hpp", arg_m.output);
             let name_cxx = format!("{}.cpp", arg_m.output);
             let name_hxx = format!("{}.hpp", arg_m.output);
+            output_code_header(&arg_m.output, &arg_m.filename);
+            println!("header file: {}", name_hxx);
             let f = std::fs::File::create(name_cxx).expect("on create");
             let mut w = std::io::BufWriter::new(f);
             writeln!(&mut w, "#include \"{}\"\n", name_hxx).expect("on write");
