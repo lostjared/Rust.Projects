@@ -20,7 +20,7 @@ fn slash_seq(input: &str) -> String {
 fn convert_to_rs<T: std::io::BufRead + Sized>(mut reader: T, name: &str) -> String {
     use std::fmt::Write;
     let mut value: String = String::new();
-    write!(&mut value, "{} {} = vec![", "let".blue(), name).expect("on write");
+    write!(&mut value, "{} {} = vec![", "let", name).expect("on write");
     loop {
         let mut input_text: String = String::new();
         let val = reader.read_line(&mut input_text).expect("on read");
@@ -132,6 +132,17 @@ fn output_code_to_stream<T: std::io::Write + Sized>(mut writer: T, files: &Vec<S
     }
 }
 
+fn output_rs_code_to_stream<T: std::io::Write + Sized>(mut writer: T, files: &Vec<String>) {
+    let mut index = 0;
+    for i in files {
+        index += 1;
+        let f = std::fs::File::open(i).unwrap();
+        let r = std::io::BufReader::new(f);
+        let s =convert_to_rs(r, &format!("v{}", index));
+        writeln!(&mut writer, "fn init_v{}() -> Vec<&\'static str>\n{{\n{}\nv{}\n}}\n", index, s, index).expect("on write");   
+    }    
+}
+
 fn main() {
     let arg_m = parse_args();
     let f1 = arg_m.filename.get(0).unwrap();
@@ -159,9 +170,21 @@ fn main() {
             writeln!(&mut w, "#include \"{}\"\n", name_hxx).expect("on write");
             output_code_to_stream(w, &arg_m.filename, arg_m.cxx);
             println!("source file: {}.cpp", arg_m.output);
-        } else {
+        } else if arg_m.output != "<NONE>" && !arg_m.cxx {
+            let re = Regex::new(r"[A-Za-z][A-Za-z0-9]*").unwrap();
+            if !re.is_match(&arg_m.output) {
+                panic!("Error invalid output variable name");
+            }
+            let name_rs = format!("{}.rs", arg_m.output);
+            let f = std::fs::File::create(name_rs).expect("on create");
+            let mut w = std::io::BufWriter::new(f);
+            output_rs_code_to_stream(&mut w, &arg_m.filename);
+            println!("source file: {}.rs", arg_m.output);
+        }
+        else {
             println!("{}:", "Output".red());
             output_code_to_stream(std::io::stdout().lock(), &arg_m.filename, arg_m.cxx);
         }
     }
+
 }
