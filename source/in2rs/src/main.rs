@@ -20,7 +20,7 @@ fn slash_seq(input: &str) -> String {
 fn convert_to_rs<T: std::io::BufRead + Sized>(mut reader: T, name: &str) -> String {
     use std::fmt::Write;
     let mut value: String = String::new();
-    write!(&mut value, "{} {} = vec![", "let", name).expect("on write");
+    write!(&mut value, "let {} = vec![", name).expect("on write");
     loop {
         let mut input_text: String = String::new();
         let val = reader.read_line(&mut input_text).expect("on read");
@@ -161,11 +161,11 @@ fn main() {
         };
         println!("{}:\n{}", "Output".red(), s);
     } else {
+        let re = Regex::new(r"[A-Za-z][A-Za-z0-9]*").unwrap();
+        if !re.is_match(&arg_m.output) {
+            panic!("Error invalid output variable name");
+        }
         if arg_m.output != "<NONE>" && arg_m.cxx {
-            let re = Regex::new(r"[A-Za-z][A-Za-z0-9]*").unwrap();
-            if !re.is_match(&arg_m.output) {
-                panic!("Error invalid output variable name");
-            }
             let name_cxx = format!("{}.cpp", arg_m.output);
             let name_hxx = format!("{}.hpp", arg_m.output);
             output_code_header(&arg_m.output, &arg_m.filename);
