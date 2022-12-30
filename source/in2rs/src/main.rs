@@ -176,10 +176,6 @@ fn main() {
             output_code_to_stream(w, &arg_m.filename, arg_m.cxx);
             println!("source file: {}.cpp", arg_m.output);
         } else if arg_m.output != "<NONE>" && !arg_m.cxx {
-            let re = Regex::new(r"[A-Za-z][A-Za-z0-9]*").unwrap();
-            if !re.is_match(&arg_m.output) {
-                panic!("Error invalid output variable name");
-            }
             let name_rs = format!("{}.rs", arg_m.output);
             let f = std::fs::File::create(name_rs).expect("on create");
             let mut w = std::io::BufWriter::new(f);
