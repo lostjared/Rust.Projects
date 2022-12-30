@@ -161,9 +161,11 @@ fn main() {
         };
         println!("{}:\n{}", "Output".red(), s);
     } else {
-        let re = Regex::new(r"[A-Za-z][A-Za-z0-9]*").unwrap();
-        if !re.is_match(&arg_m.output) {
-            panic!("Error invalid output variable name");
+        if arg_m.output != "<NONE>" {
+            let re = Regex::new(r"[A-Za-z][A-Za-z0-9]*").unwrap();
+            if !re.is_match(&arg_m.output) {
+                panic!("Error invalid output variable name");
+            }
         }
         if arg_m.output != "<NONE>" && arg_m.cxx {
             let name_cxx = format!("{}.cpp", arg_m.output);
