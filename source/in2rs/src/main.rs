@@ -138,9 +138,14 @@ fn output_rs_code_to_stream<T: std::io::Write + Sized>(mut writer: T, files: &Ve
         index += 1;
         let f = std::fs::File::open(i).unwrap();
         let r = std::io::BufReader::new(f);
-        let s =convert_to_rs(r, &format!("v{}", index));
-        writeln!(&mut writer, "fn init_v{}() -> Vec<&\'static str>\n{{\n{}\nv{}\n}}\n", index, s, index).expect("on write");   
-    }    
+        let s = convert_to_rs(r, &format!("v{}", index));
+        writeln!(
+            &mut writer,
+            "fn init_v{}() -> Vec<&\'static str>\n{{\n{}\nv{}\n}}\n",
+            index, s, index
+        )
+        .expect("on write");
+    }
 }
 
 fn main() {
@@ -180,11 +185,9 @@ fn main() {
             let mut w = std::io::BufWriter::new(f);
             output_rs_code_to_stream(&mut w, &arg_m.filename);
             println!("source file: {}.rs", arg_m.output);
-        }
-        else {
+        } else {
             println!("{}:", "Output".red());
             output_code_to_stream(std::io::stdout().lock(), &arg_m.filename, arg_m.cxx);
         }
     }
-
 }
