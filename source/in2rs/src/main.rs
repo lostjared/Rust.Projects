@@ -1,8 +1,14 @@
+
+// practice project:
+// in2rs - command line tool convert text to Rust/C++
+
+
 use clap::{App, Arg};
 use colored::Colorize;
 use regex::Regex;
 use std::io::Write;
 
+/// slash sequence convert slashes
 fn slash_seq(input: &str) -> String {
     let mut value: String = String::new();
     for i in input.chars() {
@@ -17,6 +23,7 @@ fn slash_seq(input: &str) -> String {
     value
 }
 
+/// convert steam to Rust
 fn convert_to_rs<T: std::io::BufRead + Sized>(mut reader: T, name: &str) -> String {
     use std::fmt::Write;
     let mut value: String = String::new();
@@ -36,6 +43,7 @@ fn convert_to_rs<T: std::io::BufRead + Sized>(mut reader: T, name: &str) -> Stri
     value
 }
 
+/// convert stream tO C++
 fn convert_to_cxx<T: std::io::BufRead + Sized>(mut reader: T, name: &str) -> String {
     use std::fmt::Write;
     let mut value: String = String::new();
@@ -61,6 +69,7 @@ struct Arguments {
     output: String,
 }
 
+/// parse arguments return struct
 fn parse_args() -> Arguments {
     let m = App::new("in2rs")
         .help("in2rs")
@@ -106,6 +115,7 @@ fn parse_args() -> Arguments {
     }
 }
 
+/// output code header for C++
 fn output_code_header(name: &str, filen: &Vec<String>) {
     let name_hxx = format!("{}.hpp", name);
     let f = std::fs::File::create(name_hxx).expect("on create");
@@ -119,6 +129,7 @@ fn output_code_header(name: &str, filen: &Vec<String>) {
     writeln!(&mut w, "#endif").expect("on write");
 }
 
+/// output code to stream Rust/C++
 fn output_code_to_stream<T: std::io::Write + Sized>(mut writer: T, files: &Vec<String>, cxx: bool) {
     let mut index = 0;
     for i in files {
@@ -134,6 +145,7 @@ fn output_code_to_stream<T: std::io::Write + Sized>(mut writer: T, files: &Vec<S
     }
 }
 
+/// output Rust code to stream
 fn output_rs_code_to_stream<T: std::io::Write + Sized>(mut writer: T, files: &Vec<String>) {
     let mut index = 0;
     for i in files {
@@ -150,6 +162,7 @@ fn output_rs_code_to_stream<T: std::io::Write + Sized>(mut writer: T, files: &Ve
     }
 }
 
+/// main function
 fn main() {
     let arg_m = parse_args();
     let f1 = arg_m.filename.get(0).unwrap();
