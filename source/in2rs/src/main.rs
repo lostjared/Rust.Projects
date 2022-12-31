@@ -64,6 +64,8 @@ struct Arguments {
 fn parse_args() -> Arguments {
     let m = App::new("in2rs")
         .help("in2rs")
+        .author("Jared Bruni")
+        .version("0.1")
         .arg(
             Arg::new("cxx")
                 .short('c')
