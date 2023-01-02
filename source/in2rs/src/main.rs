@@ -22,13 +22,16 @@ fn slash_seq(input: &str) -> String {
 }
 
 /// convert steam to Rust
-fn convert_to_rs<T: std::io::BufRead + Sized>(mut reader: T, name: &str) -> String {
+fn convert_to_rs<T: std::io::BufRead + Sized>(mut reader: T, name: &str, blank: bool) -> String {
     use std::fmt::Write;
     let mut value: String = String::new();
     write!(&mut value, "let {} = vec![", name).expect("on write");
     loop {
         let mut input_text: String = String::new();
         let val = reader.read_line(&mut input_text).expect("on read");
+        if input_text == "\n" && blank == true {
+            continue;
+        }
         input_text.pop();
         write!(&mut value, "\n\"{}\"", &slash_seq(&input_text)).expect("on write");
         if val == 0 {
@@ -42,13 +45,16 @@ fn convert_to_rs<T: std::io::BufRead + Sized>(mut reader: T, name: &str) -> Stri
 }
 
 /// convert stream tO C++
-fn convert_to_cxx<T: std::io::BufRead + Sized>(mut reader: T, name: &str) -> String {
+fn convert_to_cxx<T: std::io::BufRead + Sized>(mut reader: T, name: &str, blank: bool) -> String {
     use std::fmt::Write;
     let mut value: String = String::new();
     write!(&mut value, "std::vector<std::string> {} = {{", name).expect("on write");
     loop {
         let mut input_text: String = String::new();
         let val = reader.read_line(&mut input_text).expect("on read");
+        if input_text == "\n" && blank == true {
+            continue;
+        }
         input_text.pop();
         write!(&mut value, "\n\"{}\"", &slash_seq(&input_text)).expect("on write");
         if val == 0 {
@@ -140,29 +146,29 @@ fn output_code_header(name: &str, filen: &Vec<String>) {
 }
 
 /// output code to stream Rust/C++
-fn output_code_to_stream<T: std::io::Write + Sized>(mut writer: T, files: &Vec<String>, cxx: bool) {
+fn output_code_to_stream<T: std::io::Write + Sized>(mut writer: T, files: &Vec<String>, cxx: bool, blank: bool) {
     let mut index = 0;
     for i in files {
         index += 1;
         let f = std::fs::File::open(i).unwrap();
         let r = std::io::BufReader::new(f);
         let s: String = if !cxx {
-            convert_to_rs(r, &format!("v{}", index))
+            convert_to_rs(r, &format!("v{}", index), blank)
         } else {
-            convert_to_cxx(r, &format!("v{}", index))
+            convert_to_cxx(r, &format!("v{}", index), blank)
         };
         writeln!(&mut writer, "{}", s).expect("on write");
     }
 }
 
 /// output Rust code to stream
-fn output_rs_code_to_stream<T: std::io::Write + Sized>(mut writer: T, files: &Vec<String>) {
+fn output_rs_code_to_stream<T: std::io::Write + Sized>(mut writer: T, files: &Vec<String>, blank: bool) {
     let mut index = 0;
     for i in files {
         index += 1;
         let f = std::fs::File::open(i).unwrap();
         let r = std::io::BufReader::new(f);
-        let s = convert_to_rs(r, &format!("v{}", index));
+        let s = convert_to_rs(r, &format!("v{}", index), blank);
         writeln!(
             &mut writer,
             "fn init_v{}() -> Vec<&\'static str>\n{{\n{}\nv{}\n}}\n",
@@ -180,9 +186,9 @@ fn main() {
         let i = std::io::stdin();
         let r = i.lock();
         let s: String = if !arg_m.cxx {
-            convert_to_rs(r, "v")
+            convert_to_rs(r, "v", arg_m.blank)
         } else {
-            convert_to_cxx(r, "v")
+            convert_to_cxx(r, "v", arg_m.blank)
         };
         println!("{}", s);
     } else {
@@ -200,17 +206,17 @@ fn main() {
             let f = std::fs::File::create(name_cxx).expect("on create");
             let mut w = std::io::BufWriter::new(f);
             writeln!(&mut w, "#include \"{}\"\n", name_hxx).expect("on write");
-            output_code_to_stream(w, &arg_m.filename, arg_m.cxx);
+            output_code_to_stream(w, &arg_m.filename, arg_m.cxx, arg_m.blank);
             println!("source file: {}.cpp", arg_m.output);
         } else if arg_m.output != "<NONE>" && !arg_m.cxx {
             let name_rs = format!("{}.rs", arg_m.output);
             let f = std::fs::File::create(name_rs).expect("on create");
             let mut w = std::io::BufWriter::new(f);
-            output_rs_code_to_stream(&mut w, &arg_m.filename);
+            output_rs_code_to_stream(&mut w, &arg_m.filename, arg_m.blank);
             println!("source file: {}.rs", arg_m.output);
         } else {
             println!("{}:", "Output".red());
-            output_code_to_stream(std::io::stdout().lock(), &arg_m.filename, arg_m.cxx);
+            output_code_to_stream(std::io::stdout().lock(), &arg_m.filename, arg_m.cxx, arg_m.blank);
         }
     }
 }
