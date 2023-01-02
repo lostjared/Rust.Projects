@@ -33,11 +33,17 @@ fn convert_to_rs<T: std::io::BufRead + Sized>(mut reader: T, name: &str, blank: 
             continue;
         }
         input_text.pop();
-        write!(&mut value, "\n\"{}\"", &slash_seq(&input_text)).expect("on write");
-        if val == 0 {
+
+        if input_text.len() > 0 || blank == false {
+            write!(&mut value, "\n\"{}\"", &slash_seq(&input_text)).expect("on write");
+            if val == 0 {
+                break;
+            } else {
+                value.push(',');
+            }
+        } else if val == 0 {
+            value.remove(value.len() - 1);
             break;
-        } else {
-            value.push(',');
         }
     }
     value.push_str("];\n");
@@ -56,11 +62,16 @@ fn convert_to_cxx<T: std::io::BufRead + Sized>(mut reader: T, name: &str, blank:
             continue;
         }
         input_text.pop();
-        write!(&mut value, "\n\"{}\"", &slash_seq(&input_text)).expect("on write");
-        if val == 0 {
+        if input_text.len() > 0 || blank == false {
+            write!(&mut value, "\n\"{}\"", &slash_seq(&input_text)).expect("on write");
+            if val == 0 {
+                break;
+            } else {
+                value.push(',');
+            }
+        } else if val == 0 {
+            value.remove(value.len() - 1);
             break;
-        } else {
-            value.push(',');
         }
     }
     value.push_str("};\n");
@@ -146,7 +157,12 @@ fn output_code_header(name: &str, filen: &Vec<String>) {
 }
 
 /// output code to stream Rust/C++
-fn output_code_to_stream<T: std::io::Write + Sized>(mut writer: T, files: &Vec<String>, cxx: bool, blank: bool) {
+fn output_code_to_stream<T: std::io::Write + Sized>(
+    mut writer: T,
+    files: &Vec<String>,
+    cxx: bool,
+    blank: bool,
+) {
     let mut index = 0;
     for i in files {
         index += 1;
@@ -162,7 +178,11 @@ fn output_code_to_stream<T: std::io::Write + Sized>(mut writer: T, files: &Vec<S
 }
 
 /// output Rust code to stream
-fn output_rs_code_to_stream<T: std::io::Write + Sized>(mut writer: T, files: &Vec<String>, blank: bool) {
+fn output_rs_code_to_stream<T: std::io::Write + Sized>(
+    mut writer: T,
+    files: &Vec<String>,
+    blank: bool,
+) {
     let mut index = 0;
     for i in files {
         index += 1;
@@ -216,7 +236,12 @@ fn main() {
             println!("source file: {}.rs", arg_m.output);
         } else {
             println!("{}:", "Output".red());
-            output_code_to_stream(std::io::stdout().lock(), &arg_m.filename, arg_m.cxx, arg_m.blank);
+            output_code_to_stream(
+                std::io::stdout().lock(),
+                &arg_m.filename,
+                arg_m.cxx,
+                arg_m.blank,
+            );
         }
     }
 }
