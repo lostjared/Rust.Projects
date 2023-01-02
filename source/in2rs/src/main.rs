@@ -1,7 +1,5 @@
-
 // practice project:
 // in2rs - command line tool convert text to Rust/C++
-
 
 use clap::{App, Arg};
 use colored::Colorize;
@@ -67,6 +65,7 @@ struct Arguments {
     cxx: bool,
     filename: Vec<String>,
     output: String,
+    blank: bool,
 }
 
 /// parse arguments return struct
@@ -103,15 +102,26 @@ fn parse_args() -> Arguments {
                 .default_value("<NONE>")
                 .allow_invalid_utf8(true),
         )
+        .arg(
+            Arg::new("no-blank")
+                .short('n')
+                .long("no-blank")
+                .takes_value(false)
+                .multiple(false)
+                .required(false)
+                .help("no blanks"),
+        )
         .get_matches();
     let c = m.is_present("cxx");
     let filen = m.values_of_lossy("file").unwrap();
     let out = m.value_of_lossy("output").unwrap();
+    let n = m.is_present("no-blank");
 
     Arguments {
         cxx: c,
         filename: filen,
         output: out.to_string(),
+        blank: n,
     }
 }
 
