@@ -2,7 +2,6 @@
 // in2rs - command line tool convert text to Rust/C++
 
 use clap::{App, Arg};
-use colored::Colorize;
 use regex::Regex;
 use std::io::Write;
 
@@ -235,7 +234,6 @@ fn main() {
             output_rs_code_to_stream(&mut w, &arg_m.filename, arg_m.blank);
             println!("source file: {}.rs", arg_m.output);
         } else {
-            println!("{}:", "Output".red());
             output_code_to_stream(
                 std::io::stdout().lock(),
                 &arg_m.filename,
