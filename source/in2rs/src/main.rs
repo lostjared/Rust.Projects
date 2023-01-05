@@ -53,7 +53,7 @@ fn convert_to_rs<T: std::io::BufRead + Sized>(mut reader: T, name: &str, blank: 
 fn convert_to_cxx<T: std::io::BufRead + Sized>(mut reader: T, name: &str, blank: bool) -> String {
     use std::fmt::Write;
     let mut value: String = String::new();
-    write!(&mut value, "std::vector<std::string> {} = {{", name).expect("on write");
+    write!(&mut value, "std::vector<std::string> {} {{", name).expect("on write");
     loop {
         let mut input_text: String = String::new();
         let val = reader.read_line(&mut input_text).expect("on read");
@@ -73,7 +73,7 @@ fn convert_to_cxx<T: std::io::BufRead + Sized>(mut reader: T, name: &str, blank:
             break;
         }
     }
-    value.push_str("};\n");
+    value.push_str("\n};\n");
     value
 }
 
