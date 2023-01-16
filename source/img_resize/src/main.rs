@@ -1,6 +1,6 @@
 /// use
 /// -i inputfile
-/// -o outputfil
+/// -o outputfile
 /// -r resoultion ex: 1920x1080
 
 use clap::{App, Arg};
@@ -12,7 +12,9 @@ struct Arguments {
 }
 /// parse arguments
 fn parse_args() -> Arguments {
-    let m = App::new("img_convert")
+    let m = App::new("img_resize")
+        .help("resize an image")
+        .author("Jared Bruni")
         .arg(
             Arg::new("input")
                 .short('i')
