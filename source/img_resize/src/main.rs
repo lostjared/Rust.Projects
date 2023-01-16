@@ -40,9 +40,9 @@ fn parse_args() -> Arguments {
 
     let f = res.find("x").unwrap();
     let sx = &res[..f];
-    let sy = &res[f+1..];
+    let sy = &res[f + 1..];
     let size_value = (sx.parse().unwrap(), sy.parse().unwrap());
-    
+
     Arguments {
         infile: input_value.to_string(),
         outfile: output_value.to_string(),
@@ -55,6 +55,9 @@ fn main() -> std::io::Result<()> {
     let i = image::open(args.infile.as_str()).unwrap();
     let resized = i.resize(args.size_val.0, args.size_val.1, image::imageops::Lanczos3);
     resized.save(&args.outfile).expect("Error on save");
-    println!("{} -> {} : {}x{}", args.infile, args.outfile,args.size_val.0, args.size_val.1);
+    println!(
+        "{} -> {} : {}x{}",
+        args.infile, args.outfile, args.size_val.0, args.size_val.1
+    );
     Ok(())
 }
