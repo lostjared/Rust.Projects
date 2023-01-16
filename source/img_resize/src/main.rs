@@ -67,7 +67,7 @@ fn main() -> std::io::Result<()> {
     resized.save(&args.outfile).expect("Error on save");
     println!(
         "{} -> {} : {}x{}",
-        args.infile, args.outfile, args.size_val.0, args.size_val.1
+        args.infile, args.outfile, resized.width(), resized.height()
     );
     Ok(())
 }
