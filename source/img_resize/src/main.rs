@@ -8,6 +8,7 @@ struct Arguments {
     infile: String,
     outfile: String,
     size_val: (u32, u32),
+    exact: bool,
 }
 /// parse arguments
 fn parse_args() -> Arguments {
@@ -41,6 +42,14 @@ fn parse_args() -> Arguments {
                 .required(true)
                 .allow_invalid_utf8(true),
         )
+        .arg(
+            Arg::new("exact")
+                .help("exact resize")
+                .short('e')
+                .long("exact")
+                .takes_value(false)
+                .required(false),
+        )
         .get_matches();
 
     let input_value = m.value_of_lossy("input").unwrap();
@@ -51,11 +60,12 @@ fn parse_args() -> Arguments {
     let sx = &res[..f];
     let sy = &res[f + 1..];
     let size_value = (sx.parse().unwrap(), sy.parse().unwrap());
-
+    let exact_value = m.is_present("exact");
     Arguments {
         infile: input_value.to_string(),
         outfile: output_value.to_string(),
         size_val: size_value,
+        exact: exact_value,
     }
 }
 
@@ -63,11 +73,19 @@ fn parse_args() -> Arguments {
 fn main() -> std::io::Result<()> {
     let args = parse_args();
     let i = image::open(&args.infile).unwrap();
-    let resized = i.resize(args.size_val.0, args.size_val.1, image::imageops::Lanczos3);
+    let resized = if args.exact {
+        i.resize_exact(args.size_val.0, args.size_val.1, image::imageops::Lanczos3)
+    } else {
+        i.resize(args.size_val.0, args.size_val.1, image::imageops::Lanczos3)
+    };
+
     resized.save(&args.outfile).expect("Error on save");
     println!(
         "{} -> {} : {}x{}",
-        args.infile, args.outfile, resized.width(), resized.height()
+        args.infile,
+        args.outfile,
+        resized.width(),
+        resized.height()
     );
     Ok(())
 }
