@@ -1,3 +1,8 @@
+/// use
+/// -i inputfile
+/// -o outputfil
+/// -r resoultion ex: 1920x1080
+
 use clap::{App, Arg};
 
 struct Arguments {
@@ -5,7 +10,7 @@ struct Arguments {
     outfile: String,
     size_val: (u32, u32),
 }
-
+/// parse arguments
 fn parse_args() -> Arguments {
     let m = App::new("img_convert")
         .arg(
@@ -50,6 +55,7 @@ fn parse_args() -> Arguments {
     }
 }
 
+/// main function
 fn main() -> std::io::Result<()> {
     let args = parse_args();
     let i = image::open(args.infile.as_str()).unwrap();
