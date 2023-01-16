@@ -2,7 +2,6 @@
 /// -i inputfile
 /// -o outputfile
 /// -r resoultion ex: 1920x1080
-
 use clap::{App, Arg};
 
 struct Arguments {
@@ -17,6 +16,7 @@ fn parse_args() -> Arguments {
         .author("Jared Bruni")
         .arg(
             Arg::new("input")
+                .help("input file")
                 .short('i')
                 .long("input")
                 .takes_value(true)
@@ -25,6 +25,7 @@ fn parse_args() -> Arguments {
         )
         .arg(
             Arg::new("output")
+                .help("output file")
                 .short('o')
                 .long("output")
                 .takes_value(true)
@@ -33,6 +34,7 @@ fn parse_args() -> Arguments {
         )
         .arg(
             Arg::new("res")
+                .help("Resolution WidthxHeight")
                 .short('r')
                 .long("res")
                 .takes_value(true)
