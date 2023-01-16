@@ -62,7 +62,7 @@ fn parse_args() -> Arguments {
 /// main function
 fn main() -> std::io::Result<()> {
     let args = parse_args();
-    let i = image::open(args.infile.as_str()).unwrap();
+    let i = image::open(&args.infile).unwrap();
     let resized = i.resize(args.size_val.0, args.size_val.1, image::imageops::Lanczos3);
     resized.save(&args.outfile).expect("Error on save");
     println!(
