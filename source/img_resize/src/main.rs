@@ -2,6 +2,8 @@
 /// -i inputfile
 /// -o outputfile
 /// -r resoultion ex: 1920x1080
+/// optional:
+/// -e for exact resize
 use clap::{App, Arg};
 
 struct Arguments {
