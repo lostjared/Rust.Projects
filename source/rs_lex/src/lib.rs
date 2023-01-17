@@ -289,7 +289,11 @@ pub mod rlex {
                 let ch_t = self.stream.getchar();
                 match ch_t {
                     Some(ch) => {
-                        let ch_type = self.type_from_char(ch).unwrap();
+                        let ch_type = self.type_from_char(ch);
+                        if ch_type == None {
+                            continue;
+                        }
+                        let ch_type = ch_type.unwrap();
                         match ch_type {
                             TokenType::Digits => {
                                 token_string.push(ch);
