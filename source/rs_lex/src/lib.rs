@@ -238,7 +238,7 @@ pub mod rlex {
             if self.token_map.contains_key(&c) {
                 return Some(self.token_map[&c]);
             }
-            println!("{} not found!", c);
+            //println!("{} not found!", c);
             None
         }
 
