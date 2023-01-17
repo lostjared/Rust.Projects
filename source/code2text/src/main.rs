@@ -13,6 +13,7 @@ use:
 */
 
 use clap::{App, Arg};
+use colored::Colorize;
 use logger::log::*;
 use rand::Rng;
 use rayon::prelude::*;
@@ -20,7 +21,6 @@ use rs_lex::rlex::*;
 use std::collections::HashMap;
 use std::io::{BufRead, Write};
 use std::sync::{Arc, Mutex};
-use colored::Colorize;
 struct Arguments {
     file: String,
     ofile: String,
@@ -28,6 +28,7 @@ struct Arguments {
     num_words: usize,
     word_len: usize,
     under: bool,
+    contains: String,
 }
 
 fn parse_args() -> Arguments {
@@ -91,6 +92,15 @@ fn parse_args() -> Arguments {
                 .default_value("log.txt")
                 .allow_invalid_utf8(true),
         )
+        .arg(
+            Arg::with_name("contains")
+                .long("contains")
+                .short('c')
+                .takes_value(true)
+                .required(false)
+                .default_value("<NULL>")
+                .allow_invalid_utf8(true),
+        )
         .get_matches();
 
     let i = m.value_of_lossy("input").unwrap();
@@ -99,6 +109,7 @@ fn parse_args() -> Arguments {
     let outf = m.value_of_lossy("output").unwrap();
     let u = m.is_present("under");
     let log_file = m.value_of_lossy("log").unwrap();
+    let cont = m.value_of_lossy("contains").unwrap();
     Arguments {
         file: i.to_string(),
         ofile: outf.to_string(),
@@ -106,6 +117,7 @@ fn parse_args() -> Arguments {
         num_words: num,
         word_len: l,
         under: u,
+        contains: cont.to_string(),
     }
 }
 
@@ -124,8 +136,15 @@ fn remove_chars(input: String) -> String {
     new_value
 }
 
-fn gen_words<T>(r: T, num: usize, num_len: usize, under: bool, ofile: &str, log_file: &str)
-where
+fn gen_words<T>(
+    r: T,
+    num: usize,
+    num_len: usize,
+    under: bool,
+    contains: &str,
+    ofile: &str,
+    log_file: &str,
+) where
     T: BufRead + Sized,
 {
     let mut lines: Vec<String> = Vec::new();
@@ -169,12 +188,16 @@ where
                                     continue;
                                 } else {
                                     map.insert(s.to_string(), true);
-                                    if !under {
-                                        v.push(s.to_string());
+                                    if !under 
+                                    {
+                                        if contains == "<NULL>" || s.find(&contains) != None {
+                                            v.push(s.to_string());
+                                        }
                                         continue;
                                     }
                                     let f = s.find('_');
-                                    if f != None {
+                                    if f != None
+                                    {
                                         let value2 = &s[..f.unwrap()];
                                         v.push(value2.to_string());
                                         continue;
@@ -235,6 +258,7 @@ fn main() -> std::io::Result<()> {
             args.num_words,
             args.word_len,
             args.under,
+            &args.contains,
             &args.ofile,
             &args.log,
         );
@@ -244,6 +268,7 @@ fn main() -> std::io::Result<()> {
             args.num_words,
             args.word_len,
             args.under,
+            &args.contains,
             &args.ofile,
             &args.log,
         );
