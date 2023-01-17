@@ -188,16 +188,14 @@ fn gen_words<T>(
                                     continue;
                                 } else {
                                     map.insert(s.to_string(), true);
-                                    if !under 
-                                    {
+                                    if !under {
                                         if contains == "<NULL>" || s.find(&contains) != None {
                                             v.push(s.to_string());
                                         }
                                         continue;
                                     }
                                     let f = s.find('_');
-                                    if f != None
-                                    {
+                                    if f != None {
                                         let value2 = &s[..f.unwrap()];
                                         v.push(value2.to_string());
                                         continue;
