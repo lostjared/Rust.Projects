@@ -5,6 +5,7 @@
 /// optional:
 /// -e for exact resize
 use clap::{App, Arg};
+use colored::Colorize;
 
 struct Arguments {
     infile: String,
@@ -80,12 +81,11 @@ fn main() -> std::io::Result<()> {
     } else {
         i.resize(args.size_val.0, args.size_val.1, image::imageops::Lanczos3)
     };
-
     resized.save(&args.outfile).expect("Error on save");
     println!(
         "{} -> {} : {}x{}",
-        args.infile,
-        args.outfile,
+        args.infile.red(),
+        args.outfile.blue(),
         resized.width(),
         resized.height()
     );
