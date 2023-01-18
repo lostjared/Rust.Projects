@@ -152,6 +152,7 @@ fn gen_words<T>(
     r: T,
     num: usize,
     num_len: usize,
+    num_max: i32,
     under: bool,
     contains: &str,
     ofile: &str,
@@ -195,7 +196,7 @@ fn gen_words<T>(
                             let mut v = data.lock().unwrap();
                             let mut map = map_data.lock().unwrap();
                             let s = i.get_string();
-                            if s.len() > num_len {
+                            if s.len() > num_len && (num_max != -1 && s.len() <= num_max as usize) {
                                 if map.contains_key(&s.to_string()) {
                                     continue;
                                 } else {
@@ -267,6 +268,7 @@ fn main() -> std::io::Result<()> {
             std::io::BufReader::new(std::fs::File::open(&args.file).unwrap()),
             args.num_words,
             args.word_len,
+            args.word_max,
             args.under,
             &args.contains,
             &args.ofile,
@@ -277,6 +279,7 @@ fn main() -> std::io::Result<()> {
             std::io::stdin().lock(),
             args.num_words,
             args.word_len,
+            args.word_max,
             args.under,
             &args.contains,
             &args.ofile,
