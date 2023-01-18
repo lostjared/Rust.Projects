@@ -27,6 +27,7 @@ struct Arguments {
     log: String,
     num_words: usize,
     word_len: usize,
+    word_max: i32,
     under: bool,
     contains: String,
 }
@@ -101,6 +102,15 @@ fn parse_args() -> Arguments {
                 .default_value("<NULL>")
                 .allow_invalid_utf8(true),
         )
+        .arg(
+            Arg::with_name("max")
+                .long("max")
+                .short('m')
+                .takes_value(true)
+                .required(false)
+                .default_value("-1")
+                .allow_invalid_utf8(true),
+        )
         .get_matches();
 
     let i = m.value_of_lossy("input").unwrap();
@@ -110,12 +120,14 @@ fn parse_args() -> Arguments {
     let u = m.is_present("under");
     let log_file = m.value_of_lossy("log").unwrap();
     let cont = m.value_of_lossy("contains").unwrap();
+    let max = m.value_of_lossy("max").unwrap().parse().unwrap();
     Arguments {
         file: i.to_string(),
         ofile: outf.to_string(),
         log: log_file.to_string(),
         num_words: num,
         word_len: l,
+        word_max: max,
         under: u,
         contains: cont.to_string(),
     }
