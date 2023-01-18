@@ -1,5 +1,4 @@
 /*
-
 code2text - generate random words from text files or source code
 
 use:
@@ -8,8 +7,8 @@ use:
     -u only find underscore words
     -n how many words to find
     -l how long each word must be
+    -m maximum length each word can be
     -o output to filename
-
 */
 
 use clap::{App, Arg};
