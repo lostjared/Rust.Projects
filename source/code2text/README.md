@@ -8,4 +8,5 @@ use:
     -u only find underscore words
     -n how many words to find
     -l how long each word must be
+    -m maximum length of each word (optional)
     -o output to filename
