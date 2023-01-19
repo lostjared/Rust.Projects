@@ -208,9 +208,9 @@ fn gen_words<T>(
                             let mut v = data.lock().unwrap();
                             let mut map = map_data.lock().unwrap();
                             let s = i.get_string();
-                            if (num_max == -1 && s.len() > num_len)
-                                || s.len() > num_len
-                                    && (num_max != -1 && s.len() > num_len && s.len() <= num_max as usize)
+                            if (num_max == -1 && s.len() >= num_len)
+                                || s.len() >= num_len
+                                    && (num_max != -1 && s.len() >= num_len && s.len() <= num_max as usize)
                             {
                                 if map.contains_key(&s.to_string()) {
                                     continue;
