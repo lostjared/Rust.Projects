@@ -10,3 +10,4 @@ use:
     -l how long each word must be
     -m maximum length of each word (optional)
     -o output to filename
+    -s sort output list of words

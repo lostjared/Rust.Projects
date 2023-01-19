@@ -9,6 +9,7 @@ use:
     -l how long each word must be
     -m maximum length each word can be
     -o output to filename
+    -s sort output list of words
 */
 
 use clap::{App, Arg};
@@ -207,7 +208,10 @@ fn gen_words<T>(
                             let mut v = data.lock().unwrap();
                             let mut map = map_data.lock().unwrap();
                             let s = i.get_string();
-                            if s.len() > num_len || s.len() > num_len && (num_max != -1 && s.len() <= num_max as usize) {
+                            if s.len() > num_len
+                                || s.len() > num_len
+                                    && (num_max != -1 && s.len() <= num_max as usize)
+                            {
                                 if map.contains_key(&s.to_string()) {
                                     continue;
                                 } else {
@@ -257,7 +261,7 @@ fn gen_words<T>(
         w = std::io::BufWriter::new(Box::new(std::io::stdout().lock()));
     }
     let mut rng = rand::thread_rng();
-    let mut words : Vec<String> = Vec::new();
+    let mut words: Vec<String> = Vec::new();
     for _i in 0..num {
         if v.is_empty() {
             break;
@@ -268,7 +272,7 @@ fn gen_words<T>(
         v.remove(r);
     }
     if sorted {
-        words.sort();        
+        words.sort();
     }
 
     for word in &words {
