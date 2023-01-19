@@ -110,6 +110,13 @@ fn parse_args() -> Arguments {
                 .default_value("-1")
                 .allow_invalid_utf8(true),
         )
+        .arg(
+            Arg::with_name("sort")
+                .long("sort")
+                .short('s')
+                .takes_value(false)
+                .required(false),
+        )
         .get_matches();
 
     let i = m.value_of_lossy("input").unwrap();
