@@ -29,6 +29,7 @@ struct Arguments {
     word_max: i32,
     under: bool,
     contains: String,
+    sort_list: bool,
 }
 
 fn parse_args() -> Arguments {
@@ -127,6 +128,8 @@ fn parse_args() -> Arguments {
     let log_file = m.value_of_lossy("log").unwrap();
     let cont = m.value_of_lossy("contains").unwrap();
     let max = m.value_of_lossy("max").unwrap().parse().unwrap();
+    let sort_v = m.is_present("sort");
+
     Arguments {
         file: i.to_string(),
         ofile: outf.to_string(),
@@ -136,6 +139,7 @@ fn parse_args() -> Arguments {
         word_max: max,
         under: u,
         contains: cont.to_string(),
+        sort_list: sort_v,
     }
 }
 
@@ -163,6 +167,7 @@ fn gen_words<T>(
     contains: &str,
     ofile: &str,
     log_file: &str,
+    sorted: bool,
 ) where
     T: BufRead + Sized,
 {
@@ -202,7 +207,7 @@ fn gen_words<T>(
                             let mut v = data.lock().unwrap();
                             let mut map = map_data.lock().unwrap();
                             let s = i.get_string();
-                            if s.len() > num_len && (num_max != -1 && s.len() <= num_max as usize) {
+                            if s.len() > num_len || s.len() > num_len && (num_max != -1 && s.len() <= num_max as usize) {
                                 if map.contains_key(&s.to_string()) {
                                     continue;
                                 } else {
@@ -252,14 +257,18 @@ fn gen_words<T>(
         w = std::io::BufWriter::new(Box::new(std::io::stdout().lock()));
     }
     let mut rng = rand::thread_rng();
+    let mut words : Vec<String> = Vec::new();
     for _i in 0..num {
         if v.is_empty() {
             break;
         }
         let r = rng.gen_range(0..v.len());
         let value = v.get(r).unwrap();
-        write!(w, "{} ", value).expect("on write");
+        words.push(value.to_owned());
         v.remove(r);
+    }
+    for word in &words {
+        write!(w, "{} ", word).expect("on write");
     }
     writeln!(w).expect("on write");
     if ofile != "<STDOUT>" {
@@ -279,6 +288,7 @@ fn main() -> std::io::Result<()> {
             &args.contains,
             &args.ofile,
             &args.log,
+            args.sort_list,
         );
     } else {
         gen_words(
@@ -290,6 +300,7 @@ fn main() -> std::io::Result<()> {
             &args.contains,
             &args.ofile,
             &args.log,
+            args.sort_list,
         );
     }
     Ok(())
