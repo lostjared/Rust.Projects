@@ -267,6 +267,10 @@ fn gen_words<T>(
         words.push(value.to_owned());
         v.remove(r);
     }
+    if sorted {
+        words.sort();        
+    }
+
     for word in &words {
         write!(w, "{} ", word).expect("on write");
     }
