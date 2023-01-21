@@ -291,13 +291,10 @@ where
     if args.sort_list {
         words.sort();
     }
-
     writeln!(w, "{}: {{", "generated words".green()).expect("on write");
-
     for word in &words {
         write!(w, "{} ", word).expect("on write");
     }
-
     writeln!(w, "\n}}").expect("on write");
     writeln!(w).expect("on write");
     if args.ofile != "<STDOUT>" {
