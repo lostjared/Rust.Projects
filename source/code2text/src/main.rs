@@ -123,7 +123,7 @@ fn parse_args() -> Arguments {
         .arg(
             Arg::with_name("words")
                 .long("words")
-                .short('l')
+                .short('w')
                 .takes_value(false)
                 .required(false),
         )
@@ -264,8 +264,19 @@ where
     } else {
         w = std::io::BufWriter::new(Box::new(std::io::stdout().lock()));
     }
+
+    if args.list_words {
+        writeln!(w, "list collected words: {{").expect("write error");
+        for index in 0..v.len() {
+            let wordv = v.get(index).unwrap();
+            write!(w, "{} ", wordv).expect("write error");
+        }
+        writeln!(w, "\n}}\n").expect("write error");
+    }
+
     let mut rng = rand::thread_rng();
     let mut words: Vec<String> = Vec::new();
+
     for _i in 0..args.num_words {
         if v.is_empty() {
             break;
