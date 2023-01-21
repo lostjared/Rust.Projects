@@ -22,6 +22,7 @@ use rs_lex::rlex::*;
 use std::collections::HashMap;
 use std::io::{BufRead, Write};
 use std::sync::{Arc, Mutex};
+
 struct Arguments {
     file: String,
     ofile: String,
@@ -267,7 +268,7 @@ where
     }
 
     if args.list_words {
-        writeln!(w, "list collected words: {{").expect("write error");
+        writeln!(w, "{}: {{", "list of collected words".blue()).expect("write error");
         for index in 0..v.len() {
             let wordv = v.get(index).unwrap();
             write!(w, "{} ", wordv).expect("write error");
@@ -291,9 +292,13 @@ where
         words.sort();
     }
 
+    writeln!(w, "{}: {{", "generated words".green()).expect("on write");
+
     for word in &words {
         write!(w, "{} ", word).expect("on write");
     }
+
+    writeln!(w, "\n}}").expect("on write");
     writeln!(w).expect("on write");
     if args.ofile != "<STDOUT>" {
         log.o(&format!("code2text: wrote to file: {}", args.ofile));
