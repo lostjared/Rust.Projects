@@ -10,6 +10,7 @@ use:
     -m maximum length each word can be
     -o output to filename
     -s sort output list of words
+    -w list all collected words
 */
 
 use clap::{App, Arg};
