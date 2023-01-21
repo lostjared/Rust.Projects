@@ -31,6 +31,7 @@ struct Arguments {
     under: bool,
     contains: String,
     sort_list: bool,
+    list_words: bool,
 }
 
 fn parse_args() -> Arguments {
@@ -119,6 +120,13 @@ fn parse_args() -> Arguments {
                 .takes_value(false)
                 .required(false),
         )
+        .arg(
+            Arg::with_name("words")
+                .long("words")
+                .short('l')
+                .takes_value(false)
+                .required(false),
+        )
         .get_matches();
 
     let i = m.value_of_lossy("input").unwrap();
@@ -130,7 +138,7 @@ fn parse_args() -> Arguments {
     let cont = m.value_of_lossy("contains").unwrap();
     let max = m.value_of_lossy("max").unwrap().parse().unwrap();
     let sort_v = m.is_present("sort");
-
+    let list_w = m.is_present("words");
     Arguments {
         file: i.to_string(),
         ofile: outf.to_string(),
@@ -141,6 +149,7 @@ fn parse_args() -> Arguments {
         under: u,
         contains: cont.to_string(),
         sort_list: sort_v,
+        list_words: list_w,
     }
 }
 
