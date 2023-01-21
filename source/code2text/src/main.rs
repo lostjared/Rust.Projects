@@ -159,21 +159,12 @@ fn remove_chars(input: String) -> String {
     new_value
 }
 
-fn gen_words<T>(
-    r: T,
-    num: usize,
-    num_len: usize,
-    num_max: i32,
-    under: bool,
-    contains: &str,
-    ofile: &str,
-    log_file: &str,
-    sorted: bool,
-) where
+fn gen_words<T>(r: T, args: &Arguments)
+where
     T: BufRead + Sized,
 {
     let mut lines: Vec<String> = Vec::new();
-    let mut log = Log::new_file_log("code2text", log_file, true, true);
+    let mut log = Log::new_file_log("code2text", &args.log, true, true);
     for line in r.lines() {
         match line {
             Ok(l) => {
@@ -208,16 +199,20 @@ fn gen_words<T>(
                             let mut v = data.lock().unwrap();
                             let mut map = map_data.lock().unwrap();
                             let s = i.get_string();
-                            if (num_max == -1 && s.len() >= num_len)
-                                || s.len() >= num_len
-                                    && (num_max != -1 && s.len() >= num_len && s.len() <= num_max as usize)
+                            if (args.word_max == -1 && s.len() >= args.word_len)
+                                || s.len() >= args.word_len
+                                    && (args.word_max != -1
+                                        && s.len() >= args.word_len
+                                        && s.len() <= args.word_max as usize)
                             {
                                 if map.contains_key(&s.to_string()) {
                                     continue;
                                 } else {
                                     map.insert(s.to_string(), true);
-                                    if !under {
-                                        if contains == "<NULL>" || s.find(&contains) != None {
+                                    if !args.under {
+                                        if args.contains == "<NULL>"
+                                            || s.find(&args.contains) != None
+                                        {
                                             v.push(s.to_string());
                                         }
                                         continue;
@@ -250,19 +245,19 @@ fn gen_words<T>(
         num_lines
     ));
 
-    if v.len() < num {
+    if v.len() < args.num_words {
         log.f("Not enough words");
     }
     let mut w: std::io::BufWriter<Box<dyn Write>>;
-    if ofile != "<STDOUT>" {
-        let f = std::fs::File::create(ofile).unwrap();
+    if args.ofile != "<STDOUT>" {
+        let f = std::fs::File::create(&args.ofile).unwrap();
         w = std::io::BufWriter::new(Box::new(f));
     } else {
         w = std::io::BufWriter::new(Box::new(std::io::stdout().lock()));
     }
     let mut rng = rand::thread_rng();
     let mut words: Vec<String> = Vec::new();
-    for _i in 0..num {
+    for _i in 0..args.num_words {
         if v.is_empty() {
             break;
         }
@@ -271,7 +266,7 @@ fn gen_words<T>(
         words.push(value.to_owned());
         v.remove(r);
     }
-    if sorted {
+    if args.sort_list {
         words.sort();
     }
 
@@ -279,8 +274,8 @@ fn gen_words<T>(
         write!(w, "{} ", word).expect("on write");
     }
     writeln!(w).expect("on write");
-    if ofile != "<STDOUT>" {
-        log.o(&format!("code2text: wrote to file: {}", ofile));
+    if args.ofile != "<STDOUT>" {
+        log.o(&format!("code2text: wrote to file: {}", args.ofile));
     }
 }
 
@@ -289,27 +284,10 @@ fn main() -> std::io::Result<()> {
     if args.file != "<STDIN>" {
         gen_words(
             std::io::BufReader::new(std::fs::File::open(&args.file).unwrap()),
-            args.num_words,
-            args.word_len,
-            args.word_max,
-            args.under,
-            &args.contains,
-            &args.ofile,
-            &args.log,
-            args.sort_list,
+            &args,
         );
     } else {
-        gen_words(
-            std::io::stdin().lock(),
-            args.num_words,
-            args.word_len,
-            args.word_max,
-            args.under,
-            &args.contains,
-            &args.ofile,
-            &args.log,
-            args.sort_list,
-        );
+        gen_words(std::io::stdin().lock(), &args);
     }
     Ok(())
 }
