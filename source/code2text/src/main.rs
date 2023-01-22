@@ -92,6 +92,7 @@ fn parse_args() -> Arguments {
             Arg::with_name("log")
                 .long("log")
                 .short('g')
+                .help("Log file filename")
                 .takes_value(true)
                 .required(false)
                 .default_value("log.txt")
@@ -99,6 +100,7 @@ fn parse_args() -> Arguments {
         )
         .arg(
             Arg::with_name("contains")
+                .help("word contains string")
                 .long("contains")
                 .short('c')
                 .takes_value(true)
@@ -108,6 +110,7 @@ fn parse_args() -> Arguments {
         )
         .arg(
             Arg::with_name("max")
+                .help("max characters")
                 .long("max")
                 .short('m')
                 .takes_value(true)
@@ -117,6 +120,7 @@ fn parse_args() -> Arguments {
         )
         .arg(
             Arg::with_name("sort")
+                .help("sort when displayed")
                 .long("sort")
                 .short('s')
                 .takes_value(false)
@@ -124,6 +128,7 @@ fn parse_args() -> Arguments {
         )
         .arg(
             Arg::with_name("words")
+                .help("print out collected words")
                 .long("words")
                 .short('w')
                 .takes_value(false)
