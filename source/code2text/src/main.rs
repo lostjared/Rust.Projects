@@ -256,9 +256,6 @@ where
         num_lines
     ));
 
-    if v.len() < args.num_words {
-        log.f("Not enough words");
-    }
     let mut w: std::io::BufWriter<Box<dyn Write>>;
     if args.ofile != "<STDOUT>" {
         let f = std::fs::File::create(&args.ofile).unwrap();
@@ -267,7 +264,7 @@ where
         w = std::io::BufWriter::new(Box::new(std::io::stdout().lock()));
     }
 
-    if args.list_words {
+    if args.list_words && !v.is_empty() {
         writeln!(w, "{}: {{", "list of collected words".blue()).expect("write error");
         for index in 0..v.len() {
             let wordv = v.get(index).unwrap();
@@ -275,6 +272,11 @@ where
         }
         writeln!(w, "\n}}\n").expect("write error");
     }
+
+    if v.len() < args.num_words {
+        log.f("Not enough words");
+    }
+   
 
     let mut rng = rand::thread_rng();
     let mut words: Vec<String> = Vec::new();
