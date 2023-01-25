@@ -1,8 +1,6 @@
 /*
-code2text - generate random words from text files or source code
-
+    code2text - generate random words from text files or source code
 use:
-
     -i filename.txt
     -u only find underscore words
     -n how many words to find
@@ -11,6 +9,9 @@ use:
     -o output to filename
     -s sort output list of words
     -w list all collected words
+
+example use:
+    code2text -i words.txt -n 10 -l 5 -s
 */
 
 use clap::{App, Arg};
@@ -281,7 +282,6 @@ where
     if v.len() < args.num_words {
         log.f("Not enough words");
     }
-   
 
     let mut rng = rand::thread_rng();
     let mut words: Vec<String> = Vec::new();
