@@ -9,6 +9,7 @@ use:
     -o output to filename
     -s sort output list of words
     -w list all collected words
+    -r text replacement with collected words (see README)
 
 example use:
     code2text -i words.txt -n 10 -l 5 -s
@@ -189,6 +190,18 @@ fn remove_chars(input: String) -> String {
     new_value
 }
 
+fn replace_words(input: &str, words: &Vec<String>) -> String {
+    let mut data = std::fs::read_to_string(input).unwrap();
+    let mut index = 1;
+    for word in words {        
+        let item = format!("%{}", index);
+        index += 1;
+        let re = data.replace(&item, word);
+        data = re;
+    }
+    data
+}
+
 fn gen_words<T>(r: T, args: &Arguments)
 where
     T: BufRead + Sized,
@@ -316,6 +329,12 @@ where
         write!(w, "{} ", word).expect("on write");
     }
     writeln!(w, "\n}}").expect("on write");
+
+    if args.rfile != "<NULL>" {
+        let rt_val = replace_words(&args.rfile, &words);
+        writeln!(w, "{}: {{\n{}\n}}\n", "generated text".green(), rt_val).expect("on write");
+    }
+
     writeln!(w).expect("on write");
     if args.ofile != "<STDOUT>" {
         log.o(&format!("code2text: wrote to file: {}", args.ofile));
