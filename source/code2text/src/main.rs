@@ -27,6 +27,7 @@ use std::sync::{Arc, Mutex};
 struct Arguments {
     file: String,
     ofile: String,
+    rfile: String,
     log: String,
     num_words: usize,
     word_len: usize,
@@ -135,6 +136,16 @@ fn parse_args() -> Arguments {
                 .takes_value(false)
                 .required(false),
         )
+        .arg(
+            Arg::with_name("replace")
+                .help("replace strings with extracted words")
+                .long("replace")
+                .short('r')
+                .takes_value(true)
+                .allow_invalid_utf8(true)
+                .default_value("<NULL>")
+                .required(false),
+        )
         .get_matches();
 
     let i = m.value_of_lossy("input").unwrap();
@@ -147,9 +158,11 @@ fn parse_args() -> Arguments {
     let max = m.value_of_lossy("max").unwrap().parse().unwrap();
     let sort_v = m.is_present("sort");
     let list_w = m.is_present("words");
+    let replace_w = m.value_of_lossy("replace").unwrap();
     Arguments {
         file: i.to_string(),
         ofile: outf.to_string(),
+        rfile: replace_w.to_string(),
         log: log_file.to_string(),
         num_words: num,
         word_len: l,
