@@ -8,6 +8,7 @@ use:
     -m maximum length each word can be
     -o output to filename
     -s sort output list of words
+    -g output log filename
     -w list all collected words
     -r text replacement with collected words (see README)
 
@@ -193,7 +194,7 @@ fn remove_chars(input: String) -> String {
 fn replace_words(input: &str, words: &Vec<String>) -> String {
     let mut data = std::fs::read_to_string(input).unwrap();
     let mut index = 1;
-    for word in words {        
+    for word in words {
         let item = format!("%{}", index);
         index += 1;
         let re = data.replace(&item, word);
@@ -279,8 +280,11 @@ where
     });
 
     let mut v = data.lock().unwrap();
-
-    println!("{}", "output: ".red());
+    if cfg!(unix) {
+        println!("{}", "output: ".red());
+    } else {
+        println!("output: ");
+    }
 
     log.o(&format!(
         "Scanning finished.\n{{\n\tGathered {} tokens for pool.\n\tText contained {} lines.\n\tNow generating words...\n}}\n",
@@ -324,7 +328,11 @@ where
     if args.sort_list {
         words.sort();
     }
-    writeln!(w, "{}: {{", "generated words".green()).expect("on write");
+    if cfg!(unix) {
+        writeln!(w, "{}: {{", "generated words".green()).expect("on write");
+    } else {
+        writeln!(w, "generated words: {{").expect("on write");
+    }
     for word in &words {
         write!(w, "{} ", word).expect("on write");
     }
@@ -332,7 +340,11 @@ where
 
     if args.rfile != "<NULL>" {
         let rt_val = replace_words(&args.rfile, &words);
-        writeln!(w, "{}: {{\n\n{}\n}}\n", "generated text".green(), rt_val).expect("on write");
+        if cfg!(unix) {
+            writeln!(w, "{}: {{\n\n{}\n}}\n", "generated text".green(), rt_val).expect("on write");
+        } else {
+            writeln!(w, "generated text: {{\n\n{}\n}}\n", rt_val).expect("on write");
+        }
     }
 
     writeln!(w).expect("on write");
