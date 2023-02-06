@@ -5,6 +5,7 @@ pub mod log {
         program_name: String,
         out_stream: Box<dyn std::io::Write>,
         echo: bool,
+        colors: bool,
     }
 
     pub fn the_time() -> String {
@@ -19,6 +20,7 @@ pub mod log {
                 program_name: name.to_string(),
                 out_stream: Box::new(std::io::BufWriter::new(std::io::stdout().lock())),
                 echo: false,
+                colors: true,
             }
         }
         /// new standard error log
@@ -27,6 +29,7 @@ pub mod log {
                 program_name: name.to_string(),
                 out_stream: Box::new(std::io::BufWriter::new(std::io::stderr().lock())),
                 echo: false,
+                colors: false,
             }
         }
         /// new log output file
@@ -39,12 +42,13 @@ pub mod log {
                     .open(output)
                     .expect("on open")
             } else {
-                 std::fs::File::create(output).expect("on create of file ")
+                std::fs::File::create(output).expect("on create of file ")
             };
             Self {
                 program_name: name.to_string(),
                 out_stream: Box::new(std::io::BufWriter::new(f)),
                 echo: echo_value,
+                colors: false,
             }
         }
 
@@ -67,14 +71,36 @@ pub mod log {
 
         pub fn log(&mut self, data: &str, level: String) {
             let t = the_time();
-            writeln!(
-                self.out_stream,
-                "{}: ({}) - {} {}",
-                self.program_name.red(), t.green(), level.blue(), data
-            )
-            .expect("On log write");
+            if self.colors {
+                writeln!(
+                    self.out_stream,
+                    "{}: ({}) - {} {}",
+                    self.program_name.red(),
+                    t.green(),
+                    level.blue(),
+                    data
+                )
+                .expect("On log write");
+            } else {
+                writeln!(
+                    self.out_stream,
+                    "{}: ({}) - {} {}",
+                    self.program_name, t, level, data
+                )
+                .expect("On log write");
+            }
             if self.echo {
-                println!("{}: ({}) - {}{}", self.program_name.red(), t.green(), level.blue(), data)
+                if cfg!(unix) {
+                    println!(
+                        "{}: ({}) - {}{}",
+                        self.program_name.red(),
+                        t.green(),
+                        level.blue(),
+                        data
+                    )
+                } else {
+                    println!("{}: ({}) - {}{}", self.program_name, t, level, data)
+                }
             }
         }
 
