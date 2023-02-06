@@ -332,7 +332,7 @@ where
 
     if args.rfile != "<NULL>" {
         let rt_val = replace_words(&args.rfile, &words);
-        writeln!(w, "{}: {{\n{}\n}}\n", "generated text".green(), rt_val).expect("on write");
+        writeln!(w, "{}: {{\n\n{}\n}}\n", "generated text".green(), rt_val).expect("on write");
     }
 
     writeln!(w).expect("on write");
