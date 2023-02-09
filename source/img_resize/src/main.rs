@@ -13,6 +13,7 @@ struct Arguments {
     size_val: (u32, u32),
     exact: bool,
     list: String,
+    dst: String,
 }
 /// parse arguments
 fn parse_args() -> Arguments {
@@ -67,6 +68,16 @@ fn parse_args() -> Arguments {
                 .default_value("<NULL>")
                 .allow_invalid_utf8(true),
         )
+        .arg(
+            Arg::new("filetype")
+                .help("extension")
+                .short('f')
+                .long("filetype")
+                .takes_value(true)
+                .required(false)
+                .default_value("<NULL>")
+                .allow_invalid_utf8(true),
+        )
         .get_matches();
     let ls = m.value_of_lossy("list").unwrap();
 
@@ -77,12 +88,15 @@ fn parse_args() -> Arguments {
         let sy = &res[f + 1..];
         let size_value = (sx.parse().unwrap(), sy.parse().unwrap());
         let exact_value = m.is_present("exact");
+        let ext = m.value_of_lossy("filetype").unwrap();
+
         Arguments {
             infile: "<NULL>".to_string(),
             outfile: "<NULL>".to_string(),
             size_val: size_value,
             exact: exact_value,
             list: ls.to_string(),
+            dst: ext.to_string(),
         }
     } else {
         let input_value = m.value_of_lossy("input").unwrap();
@@ -93,12 +107,14 @@ fn parse_args() -> Arguments {
         let sy = &res[f + 1..];
         let size_value = (sx.parse().unwrap(), sy.parse().unwrap());
         let exact_value = m.is_present("exact");
+
         Arguments {
             infile: input_value.to_string(),
             outfile: output_value.to_string(),
             size_val: size_value,
             exact: exact_value,
             list: ls.to_string(),
+            dst: "<NULL>".to_string(),
         }
     }
 }
@@ -138,16 +154,14 @@ fn main() -> std::io::Result<()> {
         let ls = build_list(&args.list);
         for i in ls {
             let ext = std::path::Path::new(&i).extension().unwrap();
-
             let path = i.find(&ext.to_string_lossy().to_string()).unwrap();
             let lpath = &i[..path];
-            let new_f = format!(
-                "{}{}x{}.{}",
-                lpath,
-                args.size_val.0,
-                args.size_val.1,
-                ext.to_string_lossy()
-            );
+            let ft = if args.dst == "<NULL>" {
+                ext.to_string_lossy().to_string()
+            } else {
+                args.dst.to_owned()
+            };
+            let new_f = format!("{}{}x{}.{}", lpath, args.size_val.0, args.size_val.1, ft);
             convert_file(&i, &new_f, args.size_val, args.exact);
         }
     }
