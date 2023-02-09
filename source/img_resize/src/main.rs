@@ -8,12 +8,12 @@ use clap::{App, Arg};
 use colored::Colorize;
 
 struct Arguments {
-    infile: String,
-    outfile: String,
+    infile: Option<String>,
+    outfile: Option<String>,
     size_val: (u32, u32),
     exact: bool,
-    list: String,
-    dst: String,
+    list: Option<String>,
+    dst: Option<String>,
 }
 /// parse arguments
 fn parse_args() -> Arguments {
@@ -64,8 +64,7 @@ fn parse_args() -> Arguments {
                 .short('l')
                 .long("list")
                 .takes_value(true)
-                .required(false)
-                .default_value("<NULL>")
+                .required(false)   
                 .allow_invalid_utf8(true),
         )
         .arg(
@@ -79,9 +78,10 @@ fn parse_args() -> Arguments {
                 .allow_invalid_utf8(true),
         )
         .get_matches();
-    let ls = m.value_of_lossy("list").unwrap();
+    let ls = m.value_of_lossy("list");
 
-    if ls.to_string() != "<NULL>" {
+    if ls != None {
+        let ls = ls.unwrap();
         let res = m.value_of_lossy("res").unwrap();
         let f = res.find('x').unwrap();
         let sx = &res[..f];
@@ -91,12 +91,12 @@ fn parse_args() -> Arguments {
         let ext = m.value_of_lossy("filetype").unwrap();
 
         Arguments {
-            infile: "<NULL>".to_string(),
-            outfile: "<NULL>".to_string(),
+            infile: None,
+            outfile: None,
             size_val: size_value,
             exact: exact_value,
-            list: ls.to_string(),
-            dst: ext.to_string(),
+            list: Some(ls.to_string()),
+            dst: Some(ext.to_string()),
         }
     } else {
         let input_value = m.value_of_lossy("input").unwrap();
@@ -109,12 +109,12 @@ fn parse_args() -> Arguments {
         let exact_value = m.is_present("exact");
 
         Arguments {
-            infile: input_value.to_string(),
-            outfile: output_value.to_string(),
+            infile: Some(input_value.to_string()),
+            outfile: Some(output_value.to_string()),
             size_val: size_value,
             exact: exact_value,
-            list: ls.to_string(),
-            dst: "<NULL>".to_string(),
+            list: None,
+            dst: None,
         }
     }
 }
@@ -148,18 +148,18 @@ fn convert_file(infile: &str, outfile: &str, size_val: (u32, u32), exact: bool) 
 /// main function
 fn main() -> std::io::Result<()> {
     let args = parse_args();
-    if args.list == "<NULL>" {
-        convert_file(&args.infile, &args.outfile, args.size_val, args.exact);
+    if args.list == None {
+        convert_file(&args.infile.unwrap(), &args.outfile.unwrap(), args.size_val, args.exact);
     } else {
-        let ls = build_list(&args.list);
+        let ls = build_list(&args.list.unwrap());
         for i in ls {
             let ext = std::path::Path::new(&i).extension().unwrap();
             let path = i.find(&ext.to_string_lossy().to_string()).unwrap();
             let lpath = &i[..path];
-            let ft = if args.dst == "<NULL>" {
+            let ft = if args.dst == None {
                 ext.to_string_lossy().to_string()
             } else {
-                args.dst.to_owned()
+                args.dst.as_ref().unwrap().to_owned()
             };
             let new_f = format!("{}{}x{}.{}", lpath, args.size_val.0, args.size_val.1, ft);
             convert_file(&i, &new_f, args.size_val, args.exact);
