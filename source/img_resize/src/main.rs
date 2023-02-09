@@ -64,7 +64,7 @@ fn parse_args() -> Arguments {
                 .short('l')
                 .long("list")
                 .takes_value(true)
-                .required(false)   
+                .required(false)
                 .allow_invalid_utf8(true),
         )
         .arg(
@@ -149,7 +149,12 @@ fn convert_file(infile: &str, outfile: &str, size_val: (u32, u32), exact: bool) 
 fn main() -> std::io::Result<()> {
     let args = parse_args();
     if args.list == None {
-        convert_file(&args.infile.unwrap(), &args.outfile.unwrap(), args.size_val, args.exact);
+        convert_file(
+            &args.infile.unwrap(),
+            &args.outfile.unwrap(),
+            args.size_val,
+            args.exact,
+        );
     } else {
         let ls = build_list(&args.list.unwrap());
         for i in ls {
