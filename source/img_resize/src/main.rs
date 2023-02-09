@@ -68,12 +68,10 @@ fn parse_args() -> Arguments {
                 .allow_invalid_utf8(true),
         )
         .get_matches();
-
     let ls = m.value_of_lossy("list").unwrap();
 
     if ls.to_string() != "<NULL>" {
         let res = m.value_of_lossy("res").unwrap();
-
         let f = res.find('x').unwrap();
         let sx = &res[..f];
         let sy = &res[f + 1..];
@@ -90,13 +88,11 @@ fn parse_args() -> Arguments {
         let input_value = m.value_of_lossy("input").unwrap();
         let output_value = m.value_of_lossy("output").unwrap();
         let res = m.value_of_lossy("res").unwrap();
-
         let f = res.find('x').unwrap();
         let sx = &res[..f];
         let sy = &res[f + 1..];
         let size_value = (sx.parse().unwrap(), sy.parse().unwrap());
         let exact_value = m.is_present("exact");
-
         Arguments {
             infile: input_value.to_string(),
             outfile: output_value.to_string(),
