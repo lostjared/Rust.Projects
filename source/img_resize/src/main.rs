@@ -75,6 +75,7 @@ fn parse_args() -> Arguments {
                 .takes_value(true)
                 .required(false)
                 .default_value("<NULL>")
+                .conflicts_with("input")
                 .allow_invalid_utf8(true),
         )
         .get_matches();
@@ -128,21 +129,42 @@ fn build_list(input: &str) -> Vec<String> {
     v
 }
 
-fn convert_file(infile: &str, outfile: &str, size_val: (u32, u32), exact: bool) {
+fn convert_file(infile: &str, outfile: &str, ft: Option<&str>, size_val: (u32, u32), exact: bool) {
     let i = image::open(infile).unwrap();
     let resized = if exact {
         i.resize_exact(size_val.0, size_val.1, image::imageops::Lanczos3)
     } else {
         i.resize(size_val.0, size_val.1, image::imageops::Lanczos3)
     };
-    resized.save(outfile).expect("Error on save");
-    println!(
-        "{} -> {} : {}x{}",
-        infile.red(),
-        outfile.blue(),
-        resized.width(),
-        resized.height()
-    );
+
+    let output_name;
+
+    if ft != None {
+        let ft = ft.unwrap();
+        let new_f = format!("{}{}x{}.{}", outfile, resized.width(), resized.height(), ft);
+        resized.save(&new_f).expect("Error on save");
+        output_name = new_f;
+    } else {
+        resized.save(outfile).expect("error on save");
+        output_name = outfile.to_string();
+    }
+    if cfg!(unix) {
+        println!(
+            "{} -> {} : {}x{}",
+            infile.red(),
+            output_name.blue(),
+            resized.width(),
+            resized.height()
+        );
+    } else {
+        println!(
+            "{} -> {} : {}x{}",
+            infile,
+            output_name,
+            resized.width(),
+            resized.height()
+        );
+    }
 }
 
 /// main function
@@ -152,6 +174,7 @@ fn main() -> std::io::Result<()> {
         convert_file(
             &args.infile.unwrap(),
             &args.outfile.unwrap(),
+            None,
             args.size_val,
             args.exact,
         );
@@ -159,15 +182,14 @@ fn main() -> std::io::Result<()> {
         let ls = build_list(&args.list.unwrap());
         for i in ls {
             let ext = std::path::Path::new(&i).extension().unwrap();
-            let path = i.find(&ext.to_string_lossy().to_string()).unwrap();
+            let path = i.rfind(&ext.to_string_lossy().to_string()).unwrap();
             let lpath = &i[..path];
             let ft = if args.dst == None {
                 ext.to_string_lossy().to_string()
             } else {
                 args.dst.as_ref().unwrap().to_owned()
             };
-            let new_f = format!("{}{}x{}.{}", lpath, args.size_val.0, args.size_val.1, ft);
-            convert_file(&i, &new_f, args.size_val, args.exact);
+            convert_file(&i, &lpath, Some(&ft), args.size_val, args.exact);
         }
     }
     Ok(())
