@@ -9,8 +9,8 @@ pub mod res_ex {
     }
 
     pub struct Res {
-        width: u32,
-        height: u32,
+        pub width: u32,
+        pub height: u32,
     }
 
     pub fn extract_resolution(input: &str) -> Res {
