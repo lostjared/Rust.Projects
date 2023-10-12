@@ -13,7 +13,7 @@ fn main() {
     let args : Vec<String> = std::env::args().collect();
 
     if args.len() != 2 {
-        eprintln!("Error reqiores one argument");
+        eprintln!("Error reqiores one argument use format WidthxHeight");
         std::process::exit(-1);
     }
 
