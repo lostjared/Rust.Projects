@@ -5,6 +5,9 @@ use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::PixelFormatEnum;
 use sdl2::rect::Rect;
+
+use rand::Rng;
+
 fn main() {
 
     let args : Vec<String> = std::env::args().collect();
@@ -24,6 +27,8 @@ fn main() {
     let tc = can.texture_creator();
     let mut texture = tc.create_texture_streaming(PixelFormatEnum::RGB24, width, height).map_err(|e| e.to_string()).expect("Error on texture create");
     let mut e = sdl.event_pump().unwrap();
+    let mut rng = rand::thread_rng();
+
     'main: loop {
         for _event in e.poll_iter() {
             match _event {
