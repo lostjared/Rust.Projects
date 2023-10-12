@@ -1,6 +1,6 @@
 
 use res_ex::res_ex::extract_resolution;
-// cargo run --release
+// cargo run --release --  1280x720
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::PixelFormatEnum;
