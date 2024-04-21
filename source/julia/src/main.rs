@@ -67,8 +67,8 @@ pub fn draw_julia(filename: &str, res: (i32, i32), param: (f32, f32), iter: i32)
             }
             let pixel = imgbuf.get_pixel_mut(x, y);
             let image::Rgb(_data) = *pixel;
-            let c = color_map[i as usize];
-            *pixel = image::Rgb([c.0, c.1, c.2]);
+            let color = color_map[i as usize];
+            *pixel = image::Rgb([color.0, color.1, color.2]);
         }
     }
     imgbuf.save(&filename).unwrap();
