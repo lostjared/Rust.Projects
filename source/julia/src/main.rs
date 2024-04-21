@@ -24,13 +24,14 @@ pub fn parse_split_double(t: &str) -> (f32, f32) {
     (left.parse::<f32>().unwrap(), right.parse::<f32>().unwrap())
 }
 
-fn main() {
+fn main() -> std::io::Result<()> {
     println!("output.png 800x600 paramA,paramB iter");
     let args : Vec<String> = std::env::args().collect();
     let res = parse_split_int(&args[2]);
     let param = parse_split_double(&args[3]);
     let iter = args[4].parse::<i32>();
     draw_julia(&args[1], res, param, iter.unwrap());
+    Ok(())
 }
 
 pub fn draw_julia(filename: &str, res: (i32, i32), param: (f32, f32), iter: i32) {
