@@ -1,3 +1,6 @@
+// Player 1 A,S move paddle up/down
+// Player 2 Up,down arrow keys paddle up/down
+
 use rand::Rng;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
@@ -135,7 +138,7 @@ fn main() {
     let sdl = sdl2::init().unwrap();
     let video = sdl.video().unwrap();
     let window = video
-        .window("WallPong", width, height)                                                                                                                                                                  
+        .window("Pong", width, height)                                                                                                                                                                  
         .resizable()
         .opengl()
         .build()
@@ -191,26 +194,25 @@ fn main() {
         prev_tick = tick;
         tick_count += ptick;
         if tick_count > 15 {
-            if e.keyboard_state().is_scancode_pressed(Scancode::Up) && paddle.pos_y > 0 {
+            if e.keyboard_state().is_scancode_pressed(Scancode::A) && paddle.pos_y > 0 {
                 paddle.pos_y -= 10;
             }
 
-            if e.keyboard_state().is_scancode_pressed(Scancode::Down)
+            if e.keyboard_state().is_scancode_pressed(Scancode::S)
                 && paddle.pos_y + (paddle.pos_h as i32) < height as i32
             {
                 paddle.pos_y += 10;
             }
 
-            if e.keyboard_state().is_scancode_pressed(Scancode::A) && paddle_two.pos_y > 0 {
+            if e.keyboard_state().is_scancode_pressed(Scancode::Up) && paddle_two.pos_y > 0 {
                 paddle_two.pos_y -= 10;
             }
 
-            if e.keyboard_state().is_scancode_pressed(Scancode::S)
+            if e.keyboard_state().is_scancode_pressed(Scancode::Down)
                 && paddle_two.pos_y + (paddle_two.pos_h as i32) < height as i32
             {
                 paddle_two.pos_y += 10;
             }
-
             tick_count = 0;
             proc_game(&mut paddle,&mut paddle_two, &mut ball);
         }
