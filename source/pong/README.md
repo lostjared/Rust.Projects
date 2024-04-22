@@ -10,7 +10,6 @@ This project is a simple implementation of the classic Pong game written in Rust
   - Player 2 controls: Up Arrow (up), Down Arrow (down).
 - Random ball direction changes when hitting paddles or borders.
 - Basic collision detection and response.
-- Score resetting when the ball goes out of the horizontal bounds.
 
 ## Requirements
 
