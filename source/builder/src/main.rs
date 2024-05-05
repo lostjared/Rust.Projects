@@ -3,15 +3,6 @@ struct RType {
     pub index: u32,
 }
 
-impl RType {
-    pub fn new() -> RType {
-        RType {
-            data: String::new(),
-            index: 0,
-        }
-    }
-}
-
 struct RTypeBuilder {
     data: Option<String>,
     index: u32,
