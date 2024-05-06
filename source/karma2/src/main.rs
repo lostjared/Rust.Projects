@@ -28,14 +28,20 @@ where
 fn main() -> std::io::Result<()> {
     let mut input = std::io::stdin().lock();
     let mut output = std::io::stdout().lock();
+    let mut actions = Vec::new();
     loop {
         let data = get(give(&mut input, &mut output));
         if let Some(data) = data {
             println!("Karma Returns: {}", data);
+            actions.push(data);
         } else {
             break;
         }
     }
     println!("Eescape!");
+    println!("looking back: ");
+    for i in &actions {
+        println!("{}", i);
+    }
     Ok(())
 }
