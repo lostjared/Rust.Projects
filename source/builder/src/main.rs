@@ -5,14 +5,14 @@ struct RType {
 
 struct RTypeBuilder {
     data: Option<String>,
-    index: u32,
+    index: Option<u32>,
 }
 
 impl RTypeBuilder {
     fn new() -> Self {
         Self {
             data: None,
-            index: 0,
+            index: None,
         }
     }
 
@@ -22,14 +22,14 @@ impl RTypeBuilder {
     }
 
     fn set_index(mut self, index: u32) -> Self {
-        self.index = index;
+        self.index = Some(index);
         self
     }
 
     fn build(self) -> RType {
         RType {
             data: self.data.expect("data not found"),
-            index: self.index,
+            index: self.index.unwrap_or(0),
         }
     }
 }
