@@ -31,7 +31,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let window = "Self Scale";
     highgui::named_window(window, highgui::WINDOW_AUTOSIZE)?;
     let file_name = &argz[1];
-    let mut img = imgcodecs::imread(file_name, imgcodecs::IMREAD_COLOR)?;
+    let img = imgcodecs::imread(file_name, imgcodecs::IMREAD_COLOR)?;
     if img.empty() {
         println!("Could not open or find the image");
         std::process::exit(1);
