@@ -54,7 +54,7 @@ pub mod mxr {
                 video: video,
                 can: can,
                 tc: tc,
-                e: e,
+                event: e,
             }
         }
     }
@@ -67,6 +67,6 @@ pub mod mxr {
         pub video: sdl2::VideoSubsystem,
         pub can: Canvas<sdl2::video::Window>,
         pub tc: TextureCreator<WindowContext>,
-        pub e: EventPump,
+        pub event: EventPump,
     }
 }
