@@ -5,16 +5,16 @@ use opencv::{
     videoio,
 };
 
-fn proc_image(image: &mut Mat, scale: &mut f64) -> opencv::Result<()> {
+fn proc_image(image: &mut Mat, scale: &mut f32) -> opencv::Result<()> {
     let rows = image.rows();
     let cols = image.cols();
     for z in 0..rows {
         let mut row = image.row_mut(z)?;
         for i in 0..cols {
             let mut pixel = *row.at_mut::<Vec3b>(i)?;
-            pixel[0] = ((pixel[0] as f64 * *scale) % 256.0) as u8;
-            pixel[1] = ((pixel[1] as f64 * *scale) % 256.0) as u8;
-            pixel[2] = ((pixel[2] as f64 * *scale) % 256.0) as u8;
+            pixel[0] = ((pixel[0] as f32 * *scale) % 256.0) as u8;
+            pixel[1] = ((pixel[1] as f32 * *scale) % 256.0) as u8;
+            pixel[2] = ((pixel[2] as f32 * *scale) % 256.0) as u8;
             *row.at_mut::<Vec3b>(i)? = pixel;
         }
     }
@@ -39,7 +39,7 @@ fn main() -> opencv::Result<()> {
     if !videoio::VideoCapture::is_opened(&cam)? {
         panic!("Unable to open video file");
     }
-    let mut scale: f64 = 1.0;
+    let mut scale: f32 = 1.0;
     loop {
         let mut frame = core::Mat::default();
         cam.read(&mut frame)?;
