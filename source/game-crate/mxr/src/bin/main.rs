@@ -4,9 +4,8 @@ use sdl2::keyboard::Keycode;
 
 fn main() -> std::io::Result<()> {
     let mut mx = WindowBuilder::new().create("Hello World", 640, 480).build();
-    let mut e = mx.sdl.event_pump().unwrap();
     'main: loop {
-        for _event in e.poll_iter() {
+        for _event in mx.e.poll_iter() {
             match _event {
                 Event::Quit { .. }
                 | Event::KeyDown {

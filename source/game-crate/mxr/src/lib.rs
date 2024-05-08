@@ -3,6 +3,7 @@ pub mod mxr {
     use sdl2::render::Canvas;
     use sdl2::render::TextureCreator;
     use sdl2::video::WindowContext;
+    use sdl2::EventPump;
 
     pub struct WindowBuilder {
         title: Option<String>,
@@ -43,6 +44,7 @@ pub mod mxr {
                 .map_err(|e| e.to_string())
                 .expect("Error on canvas");
             let tc = can.texture_creator();
+            let e = sdl.event_pump().unwrap();
 
             Window {
                 title: self.title.expect("title"),
@@ -52,6 +54,7 @@ pub mod mxr {
                 video: video,
                 can: can,
                 tc: tc,
+                e: e,
             }
         }
     }
@@ -64,5 +67,6 @@ pub mod mxr {
         pub video: sdl2::VideoSubsystem,
         pub can: Canvas<sdl2::video::Window>,
         pub tc: TextureCreator<WindowContext>,
+        pub e: EventPump,
     }
 }
