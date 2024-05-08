@@ -5,14 +5,10 @@ use opencv::{
     videoio,
 };
 
-
-use opencv::core::CV_8UC3;
-use opencv::core::CV_32FC3;
-
 fn proc_image(image: &mut Mat, scale: &mut f64) -> opencv::Result<()> {
     let rows = image.rows();
     let cols = image.cols();
-       for z in 0..rows {
+    for z in 0..rows {
         let mut row = image.row_mut(z)?;
         for i in 0..cols {
             let mut pixel = *row.at_mut::<Vec3b>(i)?;
@@ -30,8 +26,6 @@ fn proc_image(image: &mut Mat, scale: &mut f64) -> opencv::Result<()> {
 
     Ok(())
 }
-
-
 
 fn main() -> opencv::Result<()> {
     let window = "video_test";
