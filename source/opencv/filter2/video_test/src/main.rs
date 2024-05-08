@@ -1,8 +1,8 @@
 use opencv::{
-    prelude::*,
-    videoio,
     core::{self, Vec3b},
     highgui,
+    prelude::*,
+    videoio,
 };
 
 fn proc_image(image: &mut Mat, scale: &mut f32) -> opencv::Result<()> {
@@ -23,7 +23,7 @@ fn proc_image(image: &mut Mat, scale: &mut f32) -> opencv::Result<()> {
 
 fn main() -> opencv::Result<()> {
     let window = "video_test";
-    let args : Vec<String> = std::env::args().collect();
+    let args: Vec<String> = std::env::args().collect();
     if args.len() != 2 {
         panic!("Requires one argument: Video file");
     }
@@ -33,18 +33,18 @@ fn main() -> opencv::Result<()> {
     if !videoio::VideoCapture::is_opened(&cam)? {
         panic!("Unable to open video file");
     }
-    let mut scale : f32 = 1.0;
-     loop {
-       let mut frame = core::Mat::default();   
-       cam.read(&mut frame)?;
+    let mut scale: f32 = 1.0;
+    loop {
+        let mut frame = core::Mat::default();
+        cam.read(&mut frame)?;
         if frame.size()?.width > 0 {
             proc_image(&mut frame, &mut scale)?;
             highgui::imshow(window, &frame)?;
         } else {
-            break; 
+            break;
         }
         if highgui::wait_key(1)? > 0 {
-            break; 
+            break;
         }
     }
     Ok(())
