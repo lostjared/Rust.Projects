@@ -11,6 +11,12 @@ pub mod mxr {
         h: Option<u32>,
     }
 
+    impl Default for WindowBuilder {
+        fn default() -> Self {
+            Self::new()
+        }
+     }
+
     impl WindowBuilder {
         pub fn new() -> Self {
             WindowBuilder {
@@ -26,9 +32,9 @@ pub mod mxr {
             self
         }
         pub fn build(self) -> Window {
-            let sdl = sdl2::init().unwrap();
-            let video = sdl.video().unwrap();
-            let window = video
+            let sdl1 = sdl2::init().unwrap();
+            let video1 = sdl1.video().unwrap();
+            let window = video1
                 .window(
                     &self.title.clone().expect("title"),
                     self.w.expect("width"),
@@ -37,22 +43,22 @@ pub mod mxr {
                 .opengl()
                 .build()
                 .unwrap();
-            let can = window
+            let can1 = window
                 .into_canvas()
                 .build()
                 .map_err(|e| e.to_string())
                 .expect("Error on canvas");
-            let tc = can.texture_creator();
-            let e = sdl.event_pump().unwrap();
+            let tc1= can1.texture_creator();
+            let e = sdl1.event_pump().unwrap();
 
             Window {
                 title: self.title.expect("title"),
                 w: self.w.expect("width"),
                 h: self.h.expect("height"),
-                sdl: sdl,
-                video: video,
-                can: can,
-                tc: tc,
+                sdl: sdl1,
+                video: video1,
+                can: can1,
+                tc: tc1,
                 event: e,
             }
         }

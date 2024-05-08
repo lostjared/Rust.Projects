@@ -1,12 +1,16 @@
 use mxr::mxr::*;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
+use std::io::Result;
 
-fn main() -> std::io::Result<()> {
-    let mut mx = WindowBuilder::new().create("Hello World", 640, 480).build();
+fn main() -> Result<()> {
+    let mut mx = WindowBuilder::new()
+    .create("Hello World", 640, 480)
+    .build();
+
     'main: loop {
-        for _event in mx.event.poll_iter() {
-            match _event {
+        for event in mx.event.poll_iter() {
+            match event {
                 Event::Quit { .. }
                 | Event::KeyDown {
                     keycode: Some(Keycode::Escape),
