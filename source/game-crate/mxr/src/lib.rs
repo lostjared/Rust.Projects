@@ -34,7 +34,6 @@ pub mod mxr {
                     self.w.expect("width"),
                     self.h.expect("on h"),
                 )
-                .resizable()
                 .opengl()
                 .build()
                 .unwrap();
