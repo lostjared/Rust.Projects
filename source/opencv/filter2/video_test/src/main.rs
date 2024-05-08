@@ -43,7 +43,7 @@ fn main() -> opencv::Result<()> {
         } else {
             break; 
         }
-        if highgui::wait_key(10)? > 0 {
+        if highgui::wait_key(1)? > 0 {
             break; 
         }
     }
