@@ -5,20 +5,25 @@ use opencv::{
     Result,
 };
 
-
 fn proc_image(image: &mut Mat, scale: &mut f32) -> Result<(), Box<dyn std::error::Error>> {
-    for z in 0..image.rows() {
-        for i in 0..image.cols() {
-            let pixel = image.at_2d_mut::<Vec3b>(z, i)?;
-            pixel[0] = ((pixel[0] as f32 * *scale) as u32 % 256) as u8;
-            pixel[1] = ((pixel[1] as f32 * *scale) as u32 % 256) as u8;
-            pixel[2] = ((pixel[2] as f32 * *scale) as u32 % 256) as u8;
+    let rows = image.rows();
+    let cols = image.cols();
+    for z in 0..rows {
+        let mut row = image.row_mut(z)?;
+        for i in 0..cols {
+            let mut pixel = *row.at_mut::<Vec3b>(i)?;
+            pixel[0] = ((pixel[0] as f32 * *scale) % 256.0) as u8;
+            pixel[1] = ((pixel[1] as f32 * *scale) % 256.0) as u8;
+            pixel[2] = ((pixel[2] as f32 * *scale) % 256.0) as u8;
+            *row.at_mut::<Vec3b>(i)? = pixel;
         }
     }
+
     *scale += 0.05;
     if *scale > 2.0 {
         *scale = 1.0;
     }
+
     Ok(())
 }
 
