@@ -4,10 +4,7 @@ use sdl2::keyboard::Keycode;
 use std::io::Result;
 
 fn main() -> Result<()> {
-    let mut mx = WindowBuilder::new()
-    .create("Hello World", 640, 480)
-    .build();
-
+    let mut mx = WindowBuilder::new().create("Hello World", 640, 480).build();
     'main: loop {
         for event in mx.event.poll_iter() {
             match event {

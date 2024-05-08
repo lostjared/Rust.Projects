@@ -15,7 +15,7 @@ pub mod mxr {
         fn default() -> Self {
             Self::new()
         }
-     }
+    }
 
     impl WindowBuilder {
         pub fn new() -> Self {
@@ -48,7 +48,7 @@ pub mod mxr {
                 .build()
                 .map_err(|e| e.to_string())
                 .expect("Error on canvas");
-            let tc1= can1.texture_creator();
+            let tc1 = can1.texture_creator();
             let e = sdl1.event_pump().unwrap();
 
             Window {
