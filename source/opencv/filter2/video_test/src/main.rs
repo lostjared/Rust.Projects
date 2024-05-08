@@ -34,8 +34,8 @@ fn main() -> opencv::Result<()> {
         panic!("Unable to open video file");
     }
     let mut scale : f32 = 1.0;
-    let mut frame = core::Mat::default();   
-    loop {
+     loop {
+       let mut frame = core::Mat::default();   
        cam.read(&mut frame)?;
         if frame.size()?.width > 0 {
             proc_image(&mut frame, &mut scale)?;
