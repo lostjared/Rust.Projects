@@ -1,11 +1,11 @@
 pub mod mxr {
 
+    use sdl2::rect::Rect;
     use sdl2::render::Canvas;
     use sdl2::render::TextureCreator;
+    use sdl2::render::TextureQuery;
     use sdl2::video::WindowContext;
     use sdl2::EventPump;
-    use sdl2::rect::Rect;
-    use sdl2::render::TextureQuery;
 
     pub struct WindowBuilder {
         title: Option<String>,
@@ -52,7 +52,7 @@ pub mod mxr {
                 .expect("Error on canvas");
             let tc1 = can1.texture_creator();
             let e = sdl1.event_pump().unwrap();
-            
+
             Window {
                 title: self.title.expect("title"),
                 w: self.w.expect("width"),
@@ -64,7 +64,6 @@ pub mod mxr {
                 event: e,
             }
         }
-
     }
 
     pub struct Window {
@@ -80,7 +79,7 @@ pub mod mxr {
 
     impl Window {
         pub fn printtext(
-            &mut self, 
+            &mut self,
             font: &sdl2::ttf::Font,
             x: i32,
             y: i32,
@@ -94,14 +93,13 @@ pub mod mxr {
                 height: hi,
                 ..
             } = text_surf_tex.query();
-            self.can.copy(
-                &text_surf_tex,
-                Some(Rect::new(0, 0, wi, hi)),
-                Some(Rect::new(x, y, wi, hi)),
-            )
-            .expect("on font copy");
+            self.can
+                .copy(
+                    &text_surf_tex,
+                    Some(Rect::new(0, 0, wi, hi)),
+                    Some(Rect::new(x, y, wi, hi)),
+                )
+                .expect("on font copy");
         }
-
     }
-
 }
