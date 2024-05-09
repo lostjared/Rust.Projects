@@ -36,19 +36,16 @@ pub mod mxr {
         pub fn build(self) -> Result<MXWindow, String> {
             let sdl1 = sdl2::init().unwrap();
             let video1 = sdl1.video().unwrap();
-
             let wx = self.w.unwrap();
             let hx = self.h.unwrap();
             let titlex = self.title.unwrap();
-
             let window = video1.window(&titlex, wx, hx).opengl().build().unwrap();
             let can1 = window
                 .into_canvas()
                 .build()
-                .map_err(|e| e.to_string())
-                .expect("Error on canvas");
+                .map_err(|e| e.to_string())?;
             let tc1 = can1.texture_creator();
-            let e = sdl1.event_pump().unwrap();
+            let e = sdl1.event_pump().map_err(|x| x.to_string())?;
 
             Ok(MXWindow {
                 title: titlex,
@@ -83,8 +80,8 @@ pub mod mxr {
             color: sdl2::pixels::Color,
             text: &str,
         ) -> Result<(), String> {
-            let text_surf = font.render(text).blended(color).unwrap();
-            let text_surf_tex = self.tc.create_texture_from_surface(&text_surf).unwrap();
+            let text_surf = font.render(text).blended(color).map_err(|x| x.to_string())?;
+            let text_surf_tex = self.tc.create_texture_from_surface(&text_surf).map_err(|x| x.to_string())?;
             let TextureQuery {
                 width: wi,
                 height: hi,
@@ -105,8 +102,8 @@ pub mod mxr {
             color: sdl2::pixels::Color,
             text: &str,
         ) -> Result<sdl2::render::Texture<'a>, String> {
-            let text_surf = font.render(text).blended(color).unwrap();
-            let text_surf_tex = tc.create_texture_from_surface(&text_surf).unwrap();
+            let text_surf = font.render(text).blended(color).map_err(|x| x.to_string())?;
+            let text_surf_tex = tc.create_texture_from_surface(&text_surf).map_err(|x| x.to_string())?;
             Ok(text_surf_tex)
         }
 
