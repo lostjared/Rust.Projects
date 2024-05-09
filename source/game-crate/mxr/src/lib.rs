@@ -7,21 +7,21 @@ pub mod mxr {
     use sdl2::video::WindowContext;
     use sdl2::EventPump;
 
-    pub struct WindowBuilder {
+    pub struct MXWindowBuilder {
         title: Option<String>,
         w: Option<u32>,
         h: Option<u32>,
     }
 
-    impl Default for WindowBuilder {
+    impl Default for MXWindowBuilder {
         fn default() -> Self {
             Self::new()
         }
     }
 
-    impl WindowBuilder {
+    impl MXWindowBuilder {
         pub fn new() -> Self {
-            WindowBuilder {
+            MXWindowBuilder {
                 title: None,
                 w: None,
                 h: None,
@@ -33,7 +33,7 @@ pub mod mxr {
             self.h = Some(h);
             self
         }
-        pub fn build(self) -> Result<Window, String> {
+        pub fn build(self) -> Result<MXWindow, String> {
             let sdl1 = sdl2::init().unwrap();
             let video1 = sdl1.video().unwrap();
             let window = video1
@@ -53,7 +53,7 @@ pub mod mxr {
             let tc1 = can1.texture_creator();
             let e = sdl1.event_pump().unwrap();
 
-            Ok(Window {
+            Ok(MXWindow {
                 title: self.title.expect("title"),
                 w: self.w.expect("width"),
                 h: self.h.expect("height"),
@@ -66,7 +66,7 @@ pub mod mxr {
         }
     }
 
-    pub struct Window {
+    pub struct MXWindow {
         pub title: String,
         pub w: u32,
         pub h: u32,
@@ -77,7 +77,7 @@ pub mod mxr {
         pub event: EventPump,
     }
 
-    impl Window {
+    impl MXWindow {
         pub fn printtext(
             &mut self,
             font: &sdl2::ttf::Font,

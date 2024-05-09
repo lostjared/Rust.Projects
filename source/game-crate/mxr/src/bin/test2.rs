@@ -3,7 +3,7 @@ use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 
 fn main() -> Result<(), String> {
-    let mut mx = WindowBuilder::new()
+    let mut mx = MXWindowBuilder::new()
         .create("Hello World [load_gfx]", 1440, 1080)
         .build()?;
     let ttf_context = sdl2::ttf::init().map_err(|e| e.to_string())?;
