@@ -7,7 +7,7 @@ fn main() -> Result<(), String> {
     let ttf_context = sdl2::ttf::init().map_err(|e| e.to_string())?;
     let font = ttf_context.load_font("./data/font.ttf", 18)?;
     let tc = mx.can.texture_creator();
-    let logo_tex = mx.load_texture(&tc, "./data/logo.bmp").unwrap();
+    let logo_tex = mx.load_texture(&tc, "./data/logo.bmp")?;
     let mut frame_counter: u64 = 0;
     'main: loop {
         for event in mx.event.poll_iter() {
