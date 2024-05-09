@@ -93,20 +93,20 @@ pub mod mxr {
                 height: hi,
                 ..
             } = text_surf_tex.query();
-            self.can
-                .copy(
-                    &text_surf_tex,
-                    Some(Rect::new(0, 0, wi, hi)),
-                    Some(Rect::new(x, y, wi, hi)),
-                )?;
+            self.can.copy(
+                &text_surf_tex,
+                Some(Rect::new(0, 0, wi, hi)),
+                Some(Rect::new(x, y, wi, hi)),
+            )?;
             Ok(())
         }
-        pub fn load_texture<'a>(&mut self, creator: &'a TextureCreator<WindowContext>, filename: &str) -> Result<sdl2::render::Texture<'a>, String> {
+        pub fn load_texture<'a>(
+            &mut self,
+            creator: &'a TextureCreator<WindowContext>,
+            filename: &str,
+        ) -> Result<sdl2::render::Texture<'a>, String> {
             let surf = sdl2::surface::Surface::load_bmp(filename)?;
             Ok(creator.create_texture_from_surface(&surf).unwrap())
         }
     }
-
- 
-
 }

@@ -3,7 +3,9 @@ use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 
 fn main() -> Result<(), String> {
-    let mut mx = WindowBuilder::new().create("Hello World", 1440, 1080).build()?;
+    let mut mx = WindowBuilder::new()
+        .create("Hello World", 1440, 1080)
+        .build()?;
     let ttf_context = sdl2::ttf::init().map_err(|e| e.to_string())?;
     let font = ttf_context.load_font("./data/font.ttf", 18)?;
     let tc = mx.can.texture_creator();
@@ -22,14 +24,17 @@ fn main() -> Result<(), String> {
         }
         mx.can.set_draw_color(sdl2::pixels::Color::RGB(0, 0, 0));
         mx.can.clear();
-        mx.can.copy(&logo_tex, None, None).expect("Failure to copy texture to canvas");
+        mx.can
+            .copy(&logo_tex, None, None)
+            .expect("Failure to copy texture to canvas");
         mx.printtext(
             &font,
             15,
             15,
             sdl2::pixels::Color::RGB(255, 255, 255),
             &format!("Hello, World! {} frames drawn", frame_counter),
-        ).expect("Failuare to print text to screen.");
+        )
+        .expect("Failure to print text to screen.");
         mx.can.present();
         frame_counter += 1;
     }
