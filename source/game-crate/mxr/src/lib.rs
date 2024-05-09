@@ -37,15 +37,15 @@ pub mod mxr {
             let sdl1 = sdl2::init().unwrap();
             let video1 = sdl1.video().unwrap();
 
-            let w = self.w.unwrap();
-            let h = self.h.unwrap();
-            let title = self.title.unwrap();
+            let wx = self.w.unwrap();
+            let hx = self.h.unwrap();
+            let titlex = self.title.unwrap();
 
             let window = video1
                 .window(
-                    &title,
-                    w,
-                    h,
+                    &titlex,
+                    wx,
+                    hx,
                 )
                 .opengl()
                 .build()
@@ -59,9 +59,9 @@ pub mod mxr {
             let e = sdl1.event_pump().unwrap();
 
             Ok(MXWindow {
-                title: title,
-                w: w,
-                h: h,
+                title: titlex,
+                w: wx,
+                h: hx,
                 sdl: sdl1,
                 video: video1,
                 can: can1,
@@ -121,7 +121,7 @@ pub mod mxr {
         ) -> Result<Vec<sdl2::render::Texture<'a>>, String> {
             let mut v = Vec::new();
             for i in file_strings {
-                let t = self.load_texture(&tc, i)?;
+                let t = self.load_texture(tc, i)?;
                 v.push(t);
             }
             Ok(v)
