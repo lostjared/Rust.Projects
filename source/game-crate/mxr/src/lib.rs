@@ -36,11 +36,16 @@ pub mod mxr {
         pub fn build(self) -> Result<MXWindow, String> {
             let sdl1 = sdl2::init().unwrap();
             let video1 = sdl1.video().unwrap();
+
+            let w = self.w.unwrap();
+            let h = self.h.unwrap();
+            let title = self.title.unwrap();
+
             let window = video1
                 .window(
-                    &self.title.clone().expect("title"),
-                    self.w.expect("width"),
-                    self.h.expect("on h"),
+                    &title,
+                    w,
+                    h,
                 )
                 .opengl()
                 .build()
@@ -54,9 +59,9 @@ pub mod mxr {
             let e = sdl1.event_pump().unwrap();
 
             Ok(MXWindow {
-                title: self.title.expect("title"),
-                w: self.w.expect("width"),
-                h: self.h.expect("height"),
+                title: title,
+                w: w,
+                h: h,
                 sdl: sdl1,
                 video: video1,
                 can: can1,
