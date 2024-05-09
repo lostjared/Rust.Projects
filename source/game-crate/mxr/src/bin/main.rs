@@ -7,9 +7,8 @@ fn main() -> Result<()> {
     let mut mx = WindowBuilder::new().create("Hello World", 1440, 1080).build();
     let ttf_context = sdl2::ttf::init().map_err(|e| e.to_string()).unwrap();
     let font = ttf_context.load_font("./data/font.ttf", 18).expect("test");
-    let surf = sdl2::surface::Surface::load_bmp("./data/logo.bmp").expect("on load bitmap");
     let tc = mx.can.texture_creator();
-    let logo_tex = tc.create_texture_from_surface(surf).expect("on load surface");
+    let logo_tex = mx.load_texture(&tc, "./data/logo.bmp");
     let mut frame_counter: u64 = 0;
     'main: loop {
         for event in mx.event.poll_iter() {
