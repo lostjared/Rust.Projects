@@ -2,15 +2,6 @@ use mxr::mxr::*;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 
-fn load_gfx<'a>(mx: &mut Window, tc: &'a sdl2::render::TextureCreator<sdl2::video::WindowContext>) -> Result<Vec<sdl2::render::Texture<'a>>, String> {
-    let file_strings = vec!["./data/logo.bmp"];
-    let mut v = Vec::new();
-    for i in file_strings {
-        let t = mx.load_texture(&tc, i)?;
-        v.push(t);
-    }
-    Ok(v)
-}
 
 fn main() -> Result<(), String> {
     let mut mx = WindowBuilder::new()
@@ -19,7 +10,8 @@ fn main() -> Result<(), String> {
     let ttf_context = sdl2::ttf::init().map_err(|e| e.to_string())?;
     let font = ttf_context.load_font("./data/font.ttf", 18)?;
     let tc = mx.can.texture_creator();
-    let textures = load_gfx(&mut mx, &tc)?;
+    let files = vec!["./data/logo.bmp"];
+    let textures = mx.load_gfx(files, &tc)?;
     let mut frame_counter: u64 = 0;
 
     'main: loop {
