@@ -2,7 +2,6 @@ use mxr::mxr::*;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 
-
 fn main() -> Result<(), String> {
     let mut mx = WindowBuilder::new()
         .create("Hello World [load_gfx]", 1440, 1080)

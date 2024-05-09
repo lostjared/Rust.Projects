@@ -109,7 +109,11 @@ pub mod mxr {
             Ok(creator.create_texture_from_surface(&surf).unwrap())
         }
 
-        pub fn load_gfx<'a>(&mut self, file_strings: Vec<&str>, tc: &'a sdl2::render::TextureCreator<sdl2::video::WindowContext>) -> Result<Vec<sdl2::render::Texture<'a>>, String> {
+        pub fn load_gfx<'a>(
+            &mut self,
+            file_strings: Vec<&str>,
+            tc: &'a sdl2::render::TextureCreator<sdl2::video::WindowContext>,
+        ) -> Result<Vec<sdl2::render::Texture<'a>>, String> {
             let mut v = Vec::new();
             for i in file_strings {
                 let t = self.load_texture(&tc, i)?;
