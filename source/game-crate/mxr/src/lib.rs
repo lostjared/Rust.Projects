@@ -41,15 +41,7 @@ pub mod mxr {
             let hx = self.h.unwrap();
             let titlex = self.title.unwrap();
 
-            let window = video1
-                .window(
-                    &titlex,
-                    wx,
-                    hx,
-                )
-                .opengl()
-                .build()
-                .unwrap();
+            let window = video1.window(&titlex, wx, hx).opengl().build().unwrap();
             let can1 = window
                 .into_canvas()
                 .build()
@@ -105,6 +97,19 @@ pub mod mxr {
             )?;
             Ok(())
         }
+
+        pub fn printtext_texture<'a>(
+            &mut self,
+            font: &sdl2::ttf::Font,
+            tc: &'a sdl2::render::TextureCreator<sdl2::video::WindowContext>,
+            color: sdl2::pixels::Color,
+            text: &str,
+        ) -> Result<sdl2::render::Texture<'a>, String> {
+            let text_surf = font.render(text).blended(color).unwrap();
+            let text_surf_tex = tc.create_texture_from_surface(&text_surf).unwrap();
+            Ok(text_surf_tex)
+        }
+
         pub fn load_texture<'a>(
             &mut self,
             creator: &'a TextureCreator<WindowContext>,
