@@ -33,7 +33,7 @@ pub mod mxr {
             self.h = Some(h);
             self
         }
-        pub fn build(self) -> Window {
+        pub fn build(self) -> Result<Window, String> {
             let sdl1 = sdl2::init().unwrap();
             let video1 = sdl1.video().unwrap();
             let window = video1
@@ -53,7 +53,7 @@ pub mod mxr {
             let tc1 = can1.texture_creator();
             let e = sdl1.event_pump().unwrap();
 
-            Window {
+            Ok(Window {
                 title: self.title.expect("title"),
                 w: self.w.expect("width"),
                 h: self.h.expect("height"),
@@ -62,7 +62,7 @@ pub mod mxr {
                 can: can1,
                 tc: tc1,
                 event: e,
-            }
+            })
         }
     }
 
@@ -85,7 +85,7 @@ pub mod mxr {
             y: i32,
             color: sdl2::pixels::Color,
             text: &str,
-        ) {
+        ) -> Result<(), String> {
             let text_surf = font.render(text).blended(color).unwrap();
             let text_surf_tex = self.tc.create_texture_from_surface(&text_surf).unwrap();
             let TextureQuery {
@@ -98,8 +98,8 @@ pub mod mxr {
                     &text_surf_tex,
                     Some(Rect::new(0, 0, wi, hi)),
                     Some(Rect::new(x, y, wi, hi)),
-                )
-                .expect("on font copy");
+                )?;
+            Ok(())
         }
         pub fn load_texture<'a>(&mut self, creator: &'a TextureCreator<WindowContext>, filename: &str) -> sdl2::render::Texture<'a> {
             let surf = sdl2::surface::Surface::load_bmp(filename).expect("load surface");

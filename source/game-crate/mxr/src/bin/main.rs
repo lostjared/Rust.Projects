@@ -1,12 +1,11 @@
 use mxr::mxr::*;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
-use std::io::Result;
 
-fn main() -> Result<()> {
-    let mut mx = WindowBuilder::new().create("Hello World", 1440, 1080).build();
-    let ttf_context = sdl2::ttf::init().map_err(|e| e.to_string()).unwrap();
-    let font = ttf_context.load_font("./data/font.ttf", 18).expect("test");
+fn main() -> Result<(), String> {
+    let mut mx = WindowBuilder::new().create("Hello World", 1440, 1080).build()?;
+    let ttf_context = sdl2::ttf::init().map_err(|e| e.to_string())?;
+    let font = ttf_context.load_font("./data/font.ttf", 18)?;
     let tc = mx.can.texture_creator();
     let logo_tex = mx.load_texture(&tc, "./data/logo.bmp");
     let mut frame_counter: u64 = 0;
@@ -30,7 +29,7 @@ fn main() -> Result<()> {
             15,
             sdl2::pixels::Color::RGB(255, 255, 255),
             &format!("Hello, World! {} frames drawn", frame_counter),
-        );
+        ).expect("on print text");
         mx.can.present();
         frame_counter += 1;
     }
