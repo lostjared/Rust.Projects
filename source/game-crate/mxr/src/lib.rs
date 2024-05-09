@@ -103,8 +103,7 @@ pub mod mxr {
         }
         pub fn load_texture<'a>(&mut self, creator: &'a TextureCreator<WindowContext>, filename: &str) -> sdl2::render::Texture<'a> {
             let surf = sdl2::surface::Surface::load_bmp(filename).expect("load surface");
-            let tex = creator.create_texture_from_surface(&surf).unwrap();
-            tex
+            creator.create_texture_from_surface(&surf).unwrap()
         }
     }
 
