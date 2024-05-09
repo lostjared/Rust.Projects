@@ -22,14 +22,14 @@ fn main() -> Result<(), String> {
         }
         mx.can.set_draw_color(sdl2::pixels::Color::RGB(0, 0, 0));
         mx.can.clear();
-        mx.can.copy(&logo_tex, None, None).expect("on err");
+        mx.can.copy(&logo_tex, None, None).expect("Failure to copy texture to canvas");
         mx.printtext(
             &font,
             15,
             15,
             sdl2::pixels::Color::RGB(255, 255, 255),
             &format!("Hello, World! {} frames drawn", frame_counter),
-        ).expect("on print text");
+        ).expect("Failuare to print text to screen.");
         mx.can.present();
         frame_counter += 1;
     }
