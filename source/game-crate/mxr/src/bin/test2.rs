@@ -10,7 +10,7 @@ fn main() -> Result<(), String> {
     let font = ttf_context.load_font("./data/font.ttf", 18)?;
     let tc = mx.can.texture_creator();
     let files = vec!["./data/logo.bmp"];
-    let textures = mx.load_gfx(files, &tc)?;
+    let textures = mx.load_gfx(files, &tc, None)?;
     let mut frame_counter: u64 = 0;
 
     'main: loop {

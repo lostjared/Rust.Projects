@@ -82,15 +82,11 @@ pub mod mxr {
         ) -> Result<(), String> {
             let text_surf = font.render(text).blended(color).map_err(|x| x.to_string())?;
             let text_surf_tex = self.tc.create_texture_from_surface(&text_surf).map_err(|x| x.to_string())?;
-            let TextureQuery {
-                width: wi,
-                height: hi,
-                ..
-            } = text_surf_tex.query();
+            let tex_s = tex_get_size(&text_surf_tex);
             self.can.copy(
                 &text_surf_tex,
-                Some(Rect::new(0, 0, wi, hi)),
-                Some(Rect::new(x, y, wi, hi)),
+                Some(Rect::new(0, 0, tex_s.0, tex_s.1)),
+                Some(Rect::new(x, y, tex_s.0, tex_s.1)),
             )?;
             Ok(())
         }
@@ -111,8 +107,12 @@ pub mod mxr {
             &mut self,
             creator: &'a TextureCreator<WindowContext>,
             filename: &str,
+            key: Option<sdl2::pixels::Color>
         ) -> Result<sdl2::render::Texture<'a>, String> {
-            let surf = sdl2::surface::Surface::load_bmp(filename)?;
+            let mut surf = sdl2::surface::Surface::load_bmp(filename)?;
+            if key != None {
+                surf.set_color_key(true, key.unwrap())?;
+            }
             Ok(creator.create_texture_from_surface(&surf).unwrap())
         }
 
@@ -120,13 +120,25 @@ pub mod mxr {
             &mut self,
             file_strings: Vec<&str>,
             tc: &'a sdl2::render::TextureCreator<sdl2::video::WindowContext>,
+            key: Option<sdl2::pixels::Color>
         ) -> Result<Vec<sdl2::render::Texture<'a>>, String> {
             let mut v = Vec::new();
             for i in file_strings {
-                let t = self.load_texture(tc, i)?;
+                let t = self.load_texture(tc, i, key)?;
                 v.push(t);
             }
             Ok(v)
         }
     }
+
+    pub fn tex_get_size(tex: &sdl2::render::Texture) -> (u32, u32) {
+        let TextureQuery {
+            width: wi,
+            height: hi,
+            ..
+        } = tex.query();
+        (wi, hi)
+    }
+
 }
+

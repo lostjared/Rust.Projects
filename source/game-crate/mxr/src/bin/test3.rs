@@ -1,7 +1,6 @@
 use mxr::mxr::*;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
-use sdl2::render::TextureQuery;
 
 fn main() -> Result<(), String> {
     let mut mx = MXWindowBuilder::new()
@@ -11,7 +10,7 @@ fn main() -> Result<(), String> {
     let font = ttf_context.load_font("./data/font.ttf", 18)?;
     let tc = mx.can.texture_creator();
     let files = vec!["./data/logo.bmp"];
-    let textures = mx.load_gfx(files, &tc)?;
+    let textures = mx.load_gfx(files, &tc, None)?;
     let tex = mx
         .printtext_texture(
             &font,
@@ -20,11 +19,8 @@ fn main() -> Result<(), String> {
             &format!("print text to texture test"),
         )
         .unwrap();
-    let TextureQuery {
-        width: wi,
-        height: hi,
-        ..
-    } = tex.query();
+
+    let tex_s = tex_get_size(&tex);
 
     'main: loop {
         for event in mx.event.poll_iter() {
@@ -43,7 +39,7 @@ fn main() -> Result<(), String> {
             .copy(&textures[0], None, None)
             .expect("Failure to copy texture to canvas");
         mx.can
-            .copy(&tex, None, sdl2::rect::Rect::new(15, 15, wi, hi))
+            .copy(&tex, None, sdl2::rect::Rect::new(15, 15, tex_s.0, tex_s.1))
             .expect("on copy");
         mx.can.present();
     }
