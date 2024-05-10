@@ -1,5 +1,3 @@
-
-
 trait Draw {
     fn draw_to_screen(&self);
 }
@@ -25,10 +23,11 @@ fn static_dispatch<T: Draw>(d: &T) {
 }
 
 fn main() {
-
-
-    let v = Vertex { x: 0.0, y: 0.0, z: 0.0 };
+    let v = Vertex {
+        x: 0.0,
+        y: 0.0,
+        z: 0.0,
+    };
     dynamic_dispatch(&v);
     static_dispatch(&v);
-
 }
