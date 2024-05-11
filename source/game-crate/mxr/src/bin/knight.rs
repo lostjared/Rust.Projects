@@ -1,5 +1,5 @@
-// draw to offscreen 640x480 surface
-// copy surface to screen as screen as 1440x1080 or width height as arguments
+// Knights Tour simulation
+// move around the chessboard touching each square exactly once
 
 use mxr::mxr::*;
 use sdl2::event::Event;
