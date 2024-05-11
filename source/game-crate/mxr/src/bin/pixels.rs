@@ -1,19 +1,19 @@
 use mxr::mxr::*;
+use rand::Rng;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
-use rand::Rng;
 fn main() -> Result<(), String> {
-
     let width = 1440;
     let height = 1080;
-
     let mut mx = MXWindowBuilder::new()
         .create("Hello World", 1440, 1080)
         .build()?;
     let ttf_context = sdl2::ttf::init().map_err(|e| e.to_string())?;
     let font = ttf_context.load_font("./data/font.ttf", 18)?;
     let tc = mx.can.texture_creator();
-    let mut texture = tc.create_texture_streaming(sdl2::pixels::PixelFormatEnum::RGB24, width, height).map_err(|e| e.to_string())?;
+    let mut texture = tc
+        .create_texture_streaming(sdl2::pixels::PixelFormatEnum::RGB24, width, height)
+        .map_err(|e| e.to_string())?;
     let mut frame_counter: u64 = 0;
     'main: loop {
         for event in mx.event.poll_iter() {
@@ -39,8 +39,7 @@ fn main() -> Result<(), String> {
                 }
             }
         })?;
-        mx.can
-            .copy(&texture, None, None)?;
+        mx.can.copy(&texture, None, None)?;
         mx.printtext(
             &font,
             15,
