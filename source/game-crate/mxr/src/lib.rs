@@ -40,10 +40,7 @@ pub mod mxr {
             let hx = self.h.unwrap();
             let titlex = self.title.unwrap();
             let window = video1.window(&titlex, wx, hx).opengl().build().unwrap();
-            let can1 = window
-                .into_canvas()
-                .build()
-                .map_err(|e| e.to_string())?;
+            let can1 = window.into_canvas().build().map_err(|e| e.to_string())?;
             let tc1 = can1.texture_creator();
             let e = sdl1.event_pump().map_err(|x| x.to_string())?;
 
@@ -80,8 +77,14 @@ pub mod mxr {
             color: sdl2::pixels::Color,
             text: &str,
         ) -> Result<(), String> {
-            let text_surf = font.render(text).blended(color).map_err(|x| x.to_string())?;
-            let text_surf_tex = self.tc.create_texture_from_surface(&text_surf).map_err(|x| x.to_string())?;
+            let text_surf = font
+                .render(text)
+                .blended(color)
+                .map_err(|x| x.to_string())?;
+            let text_surf_tex = self
+                .tc
+                .create_texture_from_surface(&text_surf)
+                .map_err(|x| x.to_string())?;
             let tex_s = tex_get_size(&text_surf_tex);
             self.can.copy(
                 &text_surf_tex,
@@ -98,8 +101,13 @@ pub mod mxr {
             color: sdl2::pixels::Color,
             text: &str,
         ) -> Result<sdl2::render::Texture<'a>, String> {
-            let text_surf = font.render(text).blended(color).map_err(|x| x.to_string())?;
-            let text_surf_tex = tc.create_texture_from_surface(&text_surf).map_err(|x| x.to_string())?;
+            let text_surf = font
+                .render(text)
+                .blended(color)
+                .map_err(|x| x.to_string())?;
+            let text_surf_tex = tc
+                .create_texture_from_surface(&text_surf)
+                .map_err(|x| x.to_string())?;
             Ok(text_surf_tex)
         }
 
@@ -107,7 +115,7 @@ pub mod mxr {
             &mut self,
             creator: &'a TextureCreator<WindowContext>,
             filename: &str,
-            key: Option<sdl2::pixels::Color>
+            key: Option<sdl2::pixels::Color>,
         ) -> Result<sdl2::render::Texture<'a>, String> {
             let mut surf = sdl2::surface::Surface::load_bmp(filename)?;
             if key != None {
@@ -120,7 +128,7 @@ pub mod mxr {
             &mut self,
             file_strings: Vec<&str>,
             tc: &'a sdl2::render::TextureCreator<sdl2::video::WindowContext>,
-            key: Option<sdl2::pixels::Color>
+            key: Option<sdl2::pixels::Color>,
         ) -> Result<Vec<sdl2::render::Texture<'a>>, String> {
             let mut v = Vec::new();
             for i in file_strings {
@@ -139,6 +147,4 @@ pub mod mxr {
         } = tex.query();
         (wi, hi)
     }
-
 }
-

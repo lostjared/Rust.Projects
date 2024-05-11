@@ -8,7 +8,7 @@ use sdl2::keyboard::Keycode;
 fn main() -> Result<(), String> {
     let mut width = 1440;
     let mut height = 1080;
-    let args : Vec<String> = std::env::args().collect();
+    let args: Vec<String> = std::env::args().collect();
     if args.len() == 3 {
         width = args[1].parse::<u32>().unwrap();
         height = args[2].parse::<u32>().unwrap();
@@ -29,11 +29,10 @@ fn main() -> Result<(), String> {
             &format!("print text to texture test"),
         )
         .unwrap();
-
     let tex_s = tex_get_size(&tex);
     let mut texture = tc
-    .create_texture_target(tc.default_pixel_format(), 640, 480)
-    .unwrap();
+        .create_texture_target(tc.default_pixel_format(), 640, 480)
+        .unwrap();
     'main: loop {
         for event in mx.event.poll_iter() {
             match event {
@@ -45,16 +44,18 @@ fn main() -> Result<(), String> {
                 _ => {}
             }
         }
-        mx.can.with_texture_canvas(&mut texture, |texture_canvas| {
-            texture_canvas.set_draw_color(sdl2::pixels::Color::RGB(0, 0, 0));
-            texture_canvas.clear();  
-            texture_canvas
-            .copy(&textures[0], None, None)
-            .expect("Failure to copy texture to canvas");
-            texture_canvas
-            .copy(&tex, None, sdl2::rect::Rect::new(15, 15, tex_s.0, tex_s.1))
-            .expect("on copy");
-        }).map_err(|x| x.to_string())?;
+        mx.can
+            .with_texture_canvas(&mut texture, |texture_canvas| {
+                texture_canvas.set_draw_color(sdl2::pixels::Color::RGB(0, 0, 0));
+                texture_canvas.clear();
+                texture_canvas
+                    .copy(&textures[0], None, None)
+                    .expect("Failure to copy texture to canvas");
+                texture_canvas
+                    .copy(&tex, None, sdl2::rect::Rect::new(15, 15, tex_s.0, tex_s.1))
+                    .expect("on copy");
+            })
+            .map_err(|x| x.to_string())?;
         mx.can.clear();
         mx.can.copy(&texture, None, None)?;
         mx.can.present();
