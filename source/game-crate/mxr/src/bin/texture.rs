@@ -26,7 +26,7 @@ fn main() -> Result<(), String> {
             &font,
             &tc,
             sdl2::pixels::Color::RGB(255, 255, 255),
-            &format!("print text to texture test"),
+            "print text to texture test",
         )
         .unwrap();
     let tex_s = tex_get_size(&tex);

@@ -43,9 +43,9 @@ fn main() -> Result<(), String> {
             for y in 0..tex_size.1 {
                 for x in 0..tex_size.0 {
                     let offset = x as usize * 3 + y as usize * pitch;
-                    buffer[offset as usize] = rng.gen_range(0..255) as u8;
-                    buffer[offset as usize + 1] = rng.gen_range(0..255) as u8;
-                    buffer[offset as usize + 2] = rng.gen_range(0..255) as u8;
+                    buffer[offset] = rng.gen_range(0..255) as u8;
+                    buffer[offset] = rng.gen_range(0..255) as u8;
+                    buffer[offset] = rng.gen_range(0..255) as u8;
                 }
             }
         })?;

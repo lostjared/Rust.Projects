@@ -16,7 +16,7 @@ fn main() -> Result<(), String> {
             &font,
             &tc,
             sdl2::pixels::Color::RGB(255, 255, 255),
-            &format!("print text to texture test"),
+            "Print Text to Texture",
         )
         .unwrap();
 
