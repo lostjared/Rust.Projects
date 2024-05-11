@@ -11,6 +11,7 @@ pub mod mxr {
         title: Option<String>,
         w: Option<u32>,
         h: Option<u32>,
+        icon: Option<String>,
     }
 
     impl Default for MXWindowBuilder {
@@ -25,6 +26,7 @@ pub mod mxr {
                 title: None,
                 w: None,
                 h: None,
+                icon: None,
             }
         }
         pub fn create(mut self, cap: &str, w: u32, h: u32) -> Self {
@@ -33,13 +35,21 @@ pub mod mxr {
             self.h = Some(h);
             self
         }
+        pub fn set_icon(mut self, filename: &str) -> Self {
+            self.icon = Some(filename.to_string());
+            self
+        }
         pub fn build(self) -> Result<MXWindow, String> {
             let sdl1 = sdl2::init().unwrap();
             let video1 = sdl1.video().unwrap();
             let wx = self.w.unwrap();
             let hx = self.h.unwrap();
             let titlex = self.title.unwrap();
-            let window = video1.window(&titlex, wx, hx).opengl().build().unwrap();
+            let mut window = video1.window(&titlex, wx, hx).opengl().build().unwrap();
+            if let Some(icon_name) = self.icon {
+                let surf = sdl2::surface::Surface::load_bmp(icon_name).unwrap();
+                window.set_icon(surf);
+            }
             let can1 = window.into_canvas().build().map_err(|e| e.to_string())?;
             let tc1 = can1.texture_creator();
             let e = sdl1.event_pump().map_err(|x| x.to_string())?;

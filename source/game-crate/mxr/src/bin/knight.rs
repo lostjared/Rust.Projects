@@ -29,11 +29,12 @@ fn main() -> Result<(), String> {
     }
     let mut mx = MXWindowBuilder::new()
         .create("Knights Tour", width, height)
+        .set_icon("./data/knight.bmp")
         .build()?;
     let ttf_context = sdl2::ttf::init().map_err(|e| e.to_string())?;
     let font = ttf_context.load_font("./data/font.ttf", 18)?;
     let tc = mx.can.texture_creator();
-    let files = vec!["./data/logo.bmp", "./data/knight.bmp"];
+    let files = vec!["./data/knight.bmp"];
     let textures = mx.load_gfx(files, &tc, Some(sdl2::pixels::Color::RGB(255, 255, 255)))?;
     let tex = mx
         .printtext_texture(
@@ -197,7 +198,7 @@ fn main() -> Result<(), String> {
                 texture_canvas.set_draw_color(sdl2::pixels::Color::RGB(0, 0, 0));
                 texture_canvas.clear();
                 drawboard(texture_canvas, startx, starty, &board);
-                drawknight(texture_canvas, startx, starty, knight_pos, &textures[1]);
+                drawknight(texture_canvas, startx, starty, knight_pos, &textures[0]);
                 if !tour_over {
                     texture_canvas
                         .copy(&tex, None, sdl2::rect::Rect::new(5, 5, tex_s.0, tex_s.1))
