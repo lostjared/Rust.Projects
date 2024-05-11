@@ -1,4 +1,3 @@
-
 // texture sized at 640x480
 // random pixels drawn
 // scaled to 1440x1080 or arguments: width height
@@ -10,7 +9,7 @@ use sdl2::keyboard::Keycode;
 fn main() -> Result<(), String> {
     let mut width = 1440;
     let mut height = 1080;
-    let args : Vec<String> = std::env::args().collect();
+    let args: Vec<String> = std::env::args().collect();
     if args.len() == 3 {
         width = args[1].parse::<u32>().unwrap();
         height = args[2].parse::<u32>().unwrap();
@@ -22,7 +21,7 @@ fn main() -> Result<(), String> {
     let font = ttf_context.load_font("./data/font.ttf", 18)?;
     let tc = mx.can.texture_creator();
     let mut texture = tc
-        .create_texture_streaming(sdl2::pixels::PixelFormatEnum::RGB24,640, 480)
+        .create_texture_streaming(sdl2::pixels::PixelFormatEnum::RGB24, 640, 480)
         .map_err(|e| e.to_string())?;
     let mut frame_counter: u64 = 0;
     'main: loop {
