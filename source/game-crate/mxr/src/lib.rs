@@ -128,7 +128,7 @@ pub mod mxr {
             key: Option<sdl2::pixels::Color>,
         ) -> Result<sdl2::render::Texture<'a>, String> {
             let mut surf = sdl2::surface::Surface::load_bmp(filename)?;
-            if key != None {
+            if key.is_some() {
                 surf.set_color_key(true, key.unwrap())?;
             }
             Ok(creator.create_texture_from_surface(&surf).unwrap())

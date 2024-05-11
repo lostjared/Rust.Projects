@@ -41,7 +41,7 @@ fn main() -> Result<(), String> {
             &font,
             &tc,
             sdl2::pixels::Color::RGB(255, 255, 255),
-            &format!("Press Space to Move Knight"),
+            "Press Space to Move Knight",
         )
         .unwrap();
     let tex_over = mx
@@ -77,26 +77,29 @@ fn main() -> Result<(), String> {
     let vertical: [i32; 8] = [-1, -2, -2, -1, 1, 2, 2, 1];
     let mut knight_pos = Position::new(1, 6);
 
-    fn drawboard(canvas: &mut sdl2::render::Canvas<sdl2::video::Window>, startx: i32, starty: i32, board: &[[i32; BOARD_SIZE]; BOARD_SIZE]) {
+    fn drawboard(
+        canvas: &mut sdl2::render::Canvas<sdl2::video::Window>,
+        startx: i32,
+        starty: i32,
+        board: &[[i32; BOARD_SIZE]; BOARD_SIZE],
+    ) {
         let mut dx = startx;
         let mut dy = starty;
         let mut ion = true;
-        for i in 0..BOARD_SIZE {
-            for z in 0..BOARD_SIZE {
+        for row in board.iter() {
+            for &cell in row.iter() {
                 let color = if ion {
                     sdl2::pixels::Color::RGB(255, 255, 255)
                 } else {
                     sdl2::pixels::Color::RGB(255, 0, 0)
                 };
                 ion = !ion;
-
-                if board[i][z] == 0 {
+                if cell == 0 {
                     canvas.set_draw_color(color);
                     canvas
                         .fill_rect(sdl2::rect::Rect::new(dx, dy, 50, 50))
                         .expect("on drawing rectangle for grid");
                 }
-
                 dx += 55;
                 if dx >= startx + 8 * 55 {
                     dx = startx;
@@ -107,22 +110,24 @@ fn main() -> Result<(), String> {
         }
     }
 
-    fn drawknight(canvas: &mut sdl2::render::Canvas<sdl2::video::Window>, startx: i32, starty: i32, knight_pos: Position, texture: &sdl2::render::Texture) {
+    fn drawknight(
+        canvas: &mut sdl2::render::Canvas<sdl2::video::Window>,
+        startx: i32,
+        starty: i32,
+        knight_pos: Position,
+        texture: &sdl2::render::Texture,
+    ) {
         let dx = startx + knight_pos.col * 55;
         let dy = starty + knight_pos.row * 55;
         canvas
-            .copy(
-                texture,
-                None,
-                sdl2::rect::Rect::new(dx + 5, dy + 5, 35, 35),
-            )
+            .copy(texture, None, sdl2::rect::Rect::new(dx + 5, dy + 5, 35, 35))
             .expect("on draw knight");
     }
 
     fn clearboard(board: &mut [[i32; BOARD_SIZE]; BOARD_SIZE]) {
-        for i in 0..BOARD_SIZE {
-            for z in 0..BOARD_SIZE {
-                board[i][z] = 0;
+        for row in board.iter_mut().take(BOARD_SIZE) {
+            for cell in row.iter_mut().take(BOARD_SIZE) {
+                *cell = 0;
             }
         }
     }
@@ -144,11 +149,14 @@ fn main() -> Result<(), String> {
             let mut col = knight_pos.col;
             row += horizontal[i];
             col += vertical[i];
-            if row >= 0 && row < 8 && col >= 0 && col < 8 && board[row as usize][col as usize] == 0 {
-                if htable[row as usize][col as usize] < smallest && htable[row as usize][col as usize] != 0 {
-                    smallest = htable[row as usize][col as usize];
-                    choice = i as i32;
-                }
+            if (0..8).contains(&row)
+                && (0..8).contains(&col)
+                && board[row as usize][col as usize] == 0
+                && htable[row as usize][col as usize] < smallest
+                && htable[row as usize][col as usize] != 0
+            {
+                smallest = htable[row as usize][col as usize];
+                choice = i as i32;
             }
         }
 
@@ -179,7 +187,15 @@ fn main() -> Result<(), String> {
                     keycode: Some(Keycode::Space),
                     ..
                 } => {
-                    nextmove(&mut board, &htable, &horizontal, &vertical, &mut knight_pos, &mut moves, &mut tour_over);
+                    nextmove(
+                        &mut board,
+                        &htable,
+                        &horizontal,
+                        &vertical,
+                        &mut knight_pos,
+                        &mut moves,
+                        &mut tour_over,
+                    );
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Return),
