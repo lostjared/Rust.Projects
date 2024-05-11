@@ -6,7 +6,7 @@ fn main() -> Result<(), String> {
     let width = 1440;
     let height = 1080;
     let mut mx = MXWindowBuilder::new()
-        .create("Hello World", 1440, 1080)
+        .create("Hello World - [Random Pixels]", 1440, 1080)
         .build()?;
     let ttf_context = sdl2::ttf::init().map_err(|e| e.to_string())?;
     let font = ttf_context.load_font("./data/font.ttf", 18)?;
