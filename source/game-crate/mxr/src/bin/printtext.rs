@@ -4,7 +4,7 @@ use sdl2::keyboard::Keycode;
 
 fn main() -> Result<(), String> {
     let mut mx = MXWindowBuilder::new()
-        .create("Hello World", 1440, 1080)
+        .create("Hello World - [printtext demo]", 1440, 1080)
         .build()?;
     let ttf_context = sdl2::ttf::init().map_err(|e| e.to_string())?;
     let font = ttf_context.load_font("./data/font.ttf", 32)?;
