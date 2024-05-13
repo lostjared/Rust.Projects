@@ -35,22 +35,26 @@ fn main() {
     let th1 = std::thread::spawn(move || {
         obj2.echo();
         loop {
+            println!("THREAD 1 -> ");
             obj2.inc();
             obj2.echo();
             if obj2.value() > 1000 {
                 break;
             }
+            std::thread::sleep(std::time::Duration::from_millis(100));
         }
     });
    let obj3 = obj.clone();
    let th2 = std::thread::spawn(move || {
         obj3.echo();
         loop {
+            println!("THREAD 2 -> ");
             obj3.inc();
             obj3.echo();
             if obj3.value() > 3000 {
                 break;
             }
+            std::thread::sleep(std::time::Duration::from_millis(100));
         }
     });
     th1.join().expect("on join");
