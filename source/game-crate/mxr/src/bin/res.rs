@@ -6,7 +6,6 @@ use sdl2::keyboard::Keycode;
 fn main() -> Result<(), String> {
     let mut width = 1920;
     let mut height = 1080;
-    let mut over = 0;
     let args: Vec<String> = std::env::args().collect();
     if args.len() == 3 {
         width = args[1].parse::<u32>().unwrap();
