@@ -46,6 +46,7 @@ pub mod mxr {
             let hx = self.h.unwrap();
             let titlex = self.title.unwrap();
             let mut window = video1.window(&titlex, wx, hx).opengl().build().unwrap();
+            let win_id = window.raw();
             if let Some(icon_name) = self.icon {
                 let surf = sdl2::surface::Surface::load_bmp(icon_name).unwrap();
                 window.set_icon(surf);
@@ -63,6 +64,7 @@ pub mod mxr {
                 can: can1,
                 tc: tc1,
                 event: e,
+                id: win_id,
             })
         }
     }
@@ -76,6 +78,7 @@ pub mod mxr {
         pub can: Canvas<sdl2::video::Window>,
         pub tc: TextureCreator<WindowContext>,
         pub event: EventPump,
+        pub id: *mut sdl2::sys::SDL_Window,
     }
 
     impl MXWindow {
@@ -146,6 +149,17 @@ pub mod mxr {
                 v.push(t);
             }
             Ok(v)
+        }
+
+        pub fn toggle_fullscreen(&self, state: u32) {
+            unsafe {
+                let _result = sdl2::sys::SDL_SetWindowFullscreen(self.id, state);
+                sdl2::sys::SDL_SetWindowSize(
+                    self.id,
+                    self.w as i32,
+                    self.h as i32,
+                );
+            }
         }
     }
 

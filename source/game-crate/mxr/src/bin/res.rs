@@ -24,13 +24,15 @@ fn main() -> Result<(), String> {
             &font,
             &tc,
             sdl2::pixels::Color::RGB(255, 255, 255),
-            "print text to texture test",
+            "press [return to exit fullscreen]",
         )
         .unwrap();
     let tex_s = tex_get_size(&tex);
     let mut texture = tc
         .create_texture_target(tc.default_pixel_format(), 1280, 720)
         .unwrap();        
+    mx.toggle_fullscreen(1);
+    let mut exit_mode = 0;
 
     'main: loop {
         for event in mx.event.poll_iter() {
@@ -40,8 +42,16 @@ fn main() -> Result<(), String> {
                     keycode: Some(Keycode::Escape),
                     ..
                 } => break 'main,
+                Event::KeyDown {
+                    keycode: Some(Keycode::Return),
+                    ..
+                } => exit_mode = 1,
                 _ => {}
             }
+        }
+
+        if exit_mode == 1 {
+            mx.toggle_fullscreen(0);
         }
         
         mx.can
