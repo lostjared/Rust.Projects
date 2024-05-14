@@ -1,5 +1,3 @@
-// draw to offscreen 640x480 surface
-// copy surface to screen as screen as 1440x1080 or width height as arguments
 
 use mxr::mxr::*;
 use sdl2::event::Event;
@@ -8,6 +6,7 @@ use sdl2::keyboard::Keycode;
 fn main() -> Result<(), String> {
     let mut width = 1920;
     let mut height = 1080;
+    let mut over = 0;
     let args: Vec<String> = std::env::args().collect();
     if args.len() == 3 {
         width = args[1].parse::<u32>().unwrap();
@@ -19,8 +18,8 @@ fn main() -> Result<(), String> {
     let ttf_context = sdl2::ttf::init().map_err(|e| e.to_string())?;
     let font = ttf_context.load_font("./data/font.ttf", 18)?;
     let tc = mx.can.texture_creator();
-    let files = vec!["./data/logo.bmp", "./data/ninja.right.bmp", "./data/ninja.left.bmp"];
-    let textures = mx.load_gfx(files, &tc, Some(sdl2::pixels::Color::RGB(255,255,255)))?;
+    let files = vec!["./data/logo.bmp"];
+    let textures = mx.load_gfx(files, &tc, Some(sdl2::pixels::Color::RGB(0,0,0)))?;
     let tex = mx
         .printtext_texture(
             &font,
@@ -32,7 +31,8 @@ fn main() -> Result<(), String> {
     let tex_s = tex_get_size(&tex);
     let mut texture = tc
         .create_texture_target(tc.default_pixel_format(), 1280, 720)
-        .unwrap();
+        .unwrap();        
+
     'main: loop {
         for event in mx.event.poll_iter() {
             match event {
@@ -44,6 +44,7 @@ fn main() -> Result<(), String> {
                 _ => {}
             }
         }
+        
         mx.can
             .with_texture_canvas(&mut texture, |texture_canvas| {
                 texture_canvas.set_draw_color(sdl2::pixels::Color::RGB(0, 0, 0));
@@ -59,6 +60,7 @@ fn main() -> Result<(), String> {
         mx.can.clear();
         mx.can.copy(&texture, None, None)?;
         mx.can.present();
-    }
+
+std::thread::sleep(std::time::Duration::from_millis(100));   }
     Ok(())
 }
