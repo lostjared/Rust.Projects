@@ -16,13 +16,13 @@ fn generate_char(rng: &mut ThreadRng, ch_type: &CharType) -> char {
 
     match ch_type {
         CharType::UpperLetter => {
-            return rng.gen_range('A' as u8 .. 'Z' as u8) as char;
+            return rng.gen_range('A' as u8 ..= 'Z' as u8) as char;
         }
         CharType::LowerLetter => {
-            return rng.gen_range('a' as u8 .. 'z' as u8) as char;
+            return rng.gen_range('a' as u8 ..= 'z' as u8) as char;
         }
         CharType::Digit => {
-            return rng.gen_range('0' as u8 .. '9' as u8) as char;
+            return rng.gen_range('0' as u8 ..= '9' as u8) as char;
         }
         CharType::Symbol => {
             let valid = String::from("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~");
@@ -55,7 +55,6 @@ fn generate_password(length: u32) -> String {
     }
     pw
 }
-
 
 fn main() {
     let args : Vec<String> = std::env::args().collect();
