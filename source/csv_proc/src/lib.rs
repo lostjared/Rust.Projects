@@ -1,3 +1,8 @@
+// Like a CSV file but with syntax of a programming language
+// called a csv_proc
+// each row/col contains one Token either an Idenetifier, String, Digits, Symbol, or Single String
+// to allow more than one type surround in quotes
+
 pub mod csv {
 
    use rs_lex::rlex::*;
@@ -23,6 +28,7 @@ pub mod csv {
        fn tokenize_data(&self, data: &str) -> Vec<Vec<Box<dyn Token>>> {
            let mut all_tokens = Vec::new();
            for line in data.lines() {
+               if line.is_empty() { continue; }
                let mut tokens: Vec<Box<dyn Token>> = Vec::new();
                let mut rlex = Scanner::new(line);
                loop {

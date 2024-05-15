@@ -1,3 +1,8 @@
+// Like a CSV file but with syntax of a programming language
+// called a csv_proc
+// each row/col contains one Token either an Idenetifier, String, Digits, Symbol, or Single String
+// to allow more than one type surround in quotes
+
 use csv_proc::csv::*;
 
 fn main() -> std::io::Result<()> {
