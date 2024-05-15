@@ -7,7 +7,7 @@ fn main() -> std::io::Result<()> {
         std::process::exit(1);
     }
     let mut csv = Csv::new();
-    csv.load_file(&args[1])?;
+    csv.load_file(&args[1], ",")?;
     for row in &csv.data {
         let size = row.len();
         if size > 0 {

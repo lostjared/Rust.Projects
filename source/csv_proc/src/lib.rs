@@ -13,10 +13,10 @@ pub mod csv {
            Csv { data: Vec::new() }
        }
 
-       pub fn load_file(&mut self, filename: &str) -> Result<()> {
+       pub fn load_file(&mut self, filename: &str, sep: &str) -> Result<()> {
            let data = read_to_string(filename)?;
            let all_tokens = self.tokenize_data(&data);
-           self.convert_tokens_to_data(all_tokens);
+           self.convert_tokens_to_data(all_tokens, sep);
            Ok(())
        }
 
@@ -43,7 +43,7 @@ pub mod csv {
            all_tokens
        }
 
-       fn convert_tokens_to_data(&mut self, all_tokens: Vec<Vec<Box<dyn Token>>>) {
+       fn convert_tokens_to_data(&mut self, all_tokens: Vec<Vec<Box<dyn Token>>>, sep: &str) {
            for row in all_tokens {
                let mut vrow: Vec<String> = Vec::new();
                let mut index = 0;
@@ -53,7 +53,7 @@ pub mod csv {
                        if matches!(id, TokenType::Identifier | TokenType::Digits | TokenType::Symbol | TokenType::String | TokenType::SingleString) {
                            vrow.push(row[index].get_string());
                            index += 1;
-                           if index < row.len() && row[index].get_string() == "," {
+                           if index < row.len() && row[index].get_string() == sep {
                                index += 1;
                                continue 'main;
                            } else {
