@@ -11,7 +11,7 @@ pub enum CharType {
     Symbol,
 }
 
-fn generate_char(rng: &mut ThreadRng, ch_type: &CharType) -> char {
+fn generate_char(rng: &mut ThreadRng, ch_type: CharType) -> char {
     match ch_type {
         CharType::UpperLetter => {
             return rng.gen_range('A' as u8..='Z' as u8) as char;
@@ -30,37 +30,34 @@ fn generate_char(rng: &mut ThreadRng, ch_type: &CharType) -> char {
     }
 }
 
-fn generate_password(length: u32) -> String {
-    let mut value: Vec<char> = Vec::new();
+fn generate_password(length: usize) -> String {
     let mut rng = rand::thread_rng();
-    for _i in 0..length * 2 {
-        let rtype = rng.gen_range(0..4);
-        match rtype {
-            0 => value.push(generate_char(&mut rng, &CharType::UpperLetter)),
-            1 => value.push(generate_char(&mut rng, &CharType::LowerLetter)),
-            2 => value.push(generate_char(&mut rng, &CharType::Digit)),
-            3 => value.push(generate_char(&mut rng, &CharType::Symbol)),
-            _ => value.push(generate_char(&mut rng, &CharType::UpperLetter)),
-        }
-    }
-    let mut shuffle_rand = rand::thread_rng();
-    let mut irs = Irs::default();
-    irs.shuffle(&mut value, &mut shuffle_rand)
-        .expect("on shuffle");
-    let mut pw = String::new();
-    for i in 0..length {
-        pw.push(value[i as usize]);
-    }
-    pw
-}
+    let mut value: Vec<char> = (0..length)
+        .map(|_| {
+            let rtype = rng.gen_range(0..4);
+            match rtype {
+                0 => generate_char(&mut rng, CharType::UpperLetter),
+                1 => generate_char(&mut rng, CharType::LowerLetter),
+                2 => generate_char(&mut rng, CharType::Digit),
+                3 => generate_char(&mut rng, CharType::Symbol),
+                _ => unreachable!(),
+            }
+        })
+        .collect();
 
+    let mut shuffle_rng = rand::thread_rng();
+    let mut irs = Irs::default();
+    irs.shuffle(&mut value, &mut shuffle_rng).expect("Shuffling failed");
+
+    value.into_iter().collect()
+}
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     if args.len() != 2 {
         println!("argument: provide length of password");
         std::process::exit(1);
     }
-    let len = args[1].parse::<u32>().unwrap();
+    let len = args[1].parse::<usize>().unwrap();
     let password = generate_password(len);
     println!("generated password: {}", password);
 }
