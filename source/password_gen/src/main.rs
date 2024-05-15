@@ -57,7 +57,7 @@ fn generate_password(length: u32) -> String {
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     if args.len() != 2 {
-        println!("argument: length of password");
+        println!("argument: provide length of password");
         std::process::exit(1);
     }
     let len = args[1].parse::<u32>().unwrap();
