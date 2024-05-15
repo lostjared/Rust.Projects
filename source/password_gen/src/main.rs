@@ -47,7 +47,8 @@ fn generate_password(length: usize) -> String {
 
     let mut shuffle_rng = rand::thread_rng();
     let mut irs = Irs::default();
-    irs.shuffle(&mut value, &mut shuffle_rng).expect("Shuffling failed");
+    irs.shuffle(&mut value, &mut shuffle_rng)
+        .expect("Shuffling failed");
 
     value.into_iter().collect()
 }
