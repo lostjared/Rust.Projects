@@ -151,9 +151,9 @@ pub mod mxr {
             Ok(v)
         }
 
-        pub fn toggle_fullscreen(&self, state: u32) {
+        pub fn toggle_fullscreen(&self, res_state: u32) {
             unsafe {
-                let _result = sdl2::sys::SDL_SetWindowFullscreen(self.id, state);
+                let _result = sdl2::sys::SDL_SetWindowFullscreen(self.id, res_state);
                 sdl2::sys::SDL_SetWindowSize(
                     self.id,
                     self.w as i32,
