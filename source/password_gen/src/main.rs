@@ -27,7 +27,7 @@ fn generate_char(rng: &mut ThreadRng, ch_type: &CharType) -> char {
         CharType::Symbol => {
             let valid = String::from("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~");
             let rpos = rng.gen_range(0..valid.len());
-            return *valid.as_bytes().into_iter().nth(rpos).unwrap() as char;
+            return valid.chars().nth(rpos).unwrap();
         }
     }
 }
