@@ -104,6 +104,11 @@ pub mod xcsv {
             Ok(())
         }
 
+        pub fn add_row(&mut self, data: &[&str]) {
+            let data_row: Vec<String> = data.iter().map(|&s| s.to_string()).collect();
+            self.table.push(data_row);
+        }
+
         fn not_token(ch: &char, sep: &char) -> bool {
             *ch == ' ' || *ch == '\r' || *ch == '\n' || *ch == '\t' || *ch == *sep
         }
