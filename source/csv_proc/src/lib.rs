@@ -95,7 +95,9 @@ pub mod xcsv {
                         cell_str = cell.clone();
                     }
 
-                    row_data.push(cell_str);
+                    if !cell_str.is_empty() {
+                        row_data.push(cell_str);
+                    }
                 }
                 writeln!(wr, "{}", row_data.join(&sep.to_string()))?;
             }
