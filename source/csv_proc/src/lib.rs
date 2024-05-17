@@ -1,79 +1,175 @@
-// Like a CSV file but with syntax of a programming language
-// called a csv_proc
-// each row/col contains one Token either an Idenetifier, String, Digits, Symbol, or Single String
-// to allow more than one type surround in quotes
+pub mod xcsv {
 
-pub mod csv {
+    use std::io::Write;
 
-   use rs_lex::rlex::*;
-   use std::fs::read_to_string;
-   use std::io::Result;
+    pub type Table = Vec<Vec<String>>;
 
-   pub struct Csv {
-       pub data: Vec<Vec<String>>,
-   }
+    pub struct StringScan {
+        pub index: usize,
+        pub dlen: usize,
+        pub data: String,
+    }
 
-   impl Csv {
-       pub fn new() -> Csv {
-           Csv { data: Vec::new() }
-       }
+    impl StringScan {
+        pub fn zero() -> StringScan {
+            StringScan {
+                index: 0,
+                dlen: 0,
+                data: String::new(),
+            }
+        }
 
-       pub fn load_file(&mut self, filename: &str, sep: &str) -> Result<()> {
-           let data = read_to_string(filename)?;
-           let all_tokens = self.tokenize_data(&data);
-           self.convert_tokens_to_data(all_tokens, sep);
-           Ok(())
-       }
+        pub fn new(string_data: &str) -> StringScan {
+            let s = string_data.to_string();
+            StringScan {
+                index: 0,
+                dlen: s.len(),
+                data: s,
+            }
+        }
 
-       fn tokenize_data(&self, data: &str) -> Vec<Vec<Box<dyn Token>>> {
-           let mut all_tokens = Vec::new();
-           for line in data.lines() {
-               if line.is_empty() { continue; }
-               let mut tokens: Vec<Box<dyn Token>> = Vec::new();
-               let mut rlex = Scanner::new(line);
-               loop {
-                   let token = rlex.scan_token();
-                   match token {
-                       ScanResult::Error => {
-                           eprintln!("Scanner Error on line: {}", line);
-                           break;
-                       }
-                       ScanResult::Ok(tok) => match tok {
-                           Some(i) => tokens.push(i),
-                           None => break,
-                       },
-                   }
-               }
-               all_tokens.push(tokens);
-           }
-           all_tokens
-       }
+        pub fn getchar(&mut self) -> Option<char> {
+            if self.index < self.dlen {
+                let ch = self.data.chars().nth(self.index).unwrap();
+                self.index += 1;
+                return Some(ch);
+            }
+            None
+        }
+        pub fn curchar(&self) -> char {
+            self.data.chars().nth(self.index).unwrap()
+        }
 
-       fn convert_tokens_to_data(&mut self, all_tokens: Vec<Vec<Box<dyn Token>>>, sep: &str) {
-           for row in all_tokens {
-               let mut vrow: Vec<String> = Vec::new();
-               let mut index = 0;
-               'main: loop {
-                   if index < row.len() {
-                       let id = row[index].get_type();
-                       if matches!(id, TokenType::Identifier | TokenType::Digits | TokenType::Symbol | TokenType::String | TokenType::SingleString) {
-                           vrow.push(row[index].get_string());
-                           index += 1;
-                           if index < row.len() && row[index].get_string() == sep {
-                               index += 1;
-                               continue 'main;
-                           } else {
-                               break 'main;
-                           }
-                       } else {
-                           break 'main;
-                       }
-                   } else {
-                       break 'main;
-                   }
-               }
-               self.data.push(vrow);
-           }
-       }
-   }
+        pub fn peekchar(&self, lookahead: usize) -> Option<char> {
+            if self.index + lookahead < self.dlen {
+                return Some(self.data.chars().nth(self.index + lookahead).unwrap());
+            }
+            None
+        }
+    }
+
+   pub struct XCsv {
+        pub scan: StringScan,
+        pub table: Table,
+    }
+
+    impl XCsv {
+        pub fn new() -> XCsv {
+            XCsv {
+                scan: StringScan::zero(),
+                table: Vec::new(),
+            }
+        }
+
+        pub fn load_file(&mut self, filename: &str, sep: &char) -> std::io::Result<()> {
+            let s = std::fs::read_to_string(filename)?;
+            for line in s.lines() {
+                self.scan = StringScan::new(&line);
+                if let Ok(result) = self.tokenize(sep) {
+                    self.table.push(result);
+                }
+            }
+            Ok(())
+        }
+
+        pub fn save_file(&mut self, filename: &str, sep: &char) -> std::io::Result<()> {
+            let f = std::fs::File::create(filename)?;
+            let mut wr = std::io::BufWriter::new(f);
+            for row in &self.table {
+                let mut row_data = Vec::new();
+                for cell in row {
+                    let mut cell_str = String::new();
+                    let needs_quotes =
+                        cell.contains(&sep.to_string()) || cell.contains('"') || cell.contains(' ');
+
+                    if needs_quotes {
+                        cell_str.push('"');
+                        for ch in cell.chars() {
+                            if ch == '"' {
+                                cell_str.push('"'); // Escape double quotes
+                            }
+                            cell_str.push(ch);
+                        }
+                        cell_str.push('"');
+                    } else {
+                        cell_str = cell.clone();
+                    }
+
+                    row_data.push(cell_str);
+                }
+                writeln!(wr, "{}", row_data.join(&sep.to_string()))?;
+            }
+            Ok(())
+        }
+
+        fn not_token(ch: &char, sep: &char) -> bool {
+            *ch == ' ' || *ch == '\r' || *ch == '\n' || *ch == '\t' || *ch == *sep
+        }
+
+        pub fn grab_token(&mut self, sep: &char) -> Option<String> {
+            if self.scan.index >= self.scan.dlen {
+                return None;
+            }
+
+            match self.scan.curchar() {
+                '\"' => {
+                    let mut data = String::new();
+                    self.scan.getchar();
+                    loop {
+                        let ch = self.scan.getchar();
+                        if let Some(c) = ch {
+                            if c == '\"' {
+                                if let Some(next_c) = self.scan.peekchar(0) {
+                                    if next_c == '\"' {
+                                        data.push('\"');
+                                        self.scan.getchar();
+                                    } else {
+                                        break;
+                                    }
+                                }
+                            } else {
+                                data.push(c);
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                    Some(data)
+                }
+                _ => {
+                    let mut data = String::new();
+                    loop {
+                        let ch = self.scan.getchar();
+                        if let Some(c) = ch {
+                            if !XCsv::not_token(&c, sep) {
+                                data.push(c);
+                            } else {
+                                break;
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                    Some(data)
+                }
+            }
+        }
+
+        pub fn tokenize(&mut self, sep: &char) -> Result<Vec<String>, String> {
+            let mut v: Vec<String> = Vec::new();
+            loop {
+                if let Some(token) = self.grab_token(sep) {
+                    v.push(token);
+                } else {
+                    break;
+                }
+                if let Some(c) = self.scan.peekchar(0) {
+                    if c == *sep {
+                        self.scan.getchar();
+                    }
+                }
+            }
+            Ok(v)
+        }
+    }
 }
