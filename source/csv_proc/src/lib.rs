@@ -72,6 +72,15 @@ pub mod xcsv {
             Ok(())
         }
 
+        pub fn load_string(&mut self, the_data: &str, sep: &char) {
+            for line in the_data.lines() {
+                self.scan = StringScan::new(&line);
+                if let Ok(result) = self.tokenize(sep) {
+                    self.table.push(result);
+                }
+            }
+        }
+        
         pub fn save_file(&mut self, filename: &str, sep: &char) -> std::io::Result<()> {
             let f = std::fs::File::create(filename)?;
             let mut wr = std::io::BufWriter::new(f);
