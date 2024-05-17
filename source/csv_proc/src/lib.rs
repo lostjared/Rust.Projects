@@ -3,9 +3,7 @@
 pub mod xcsv {
 
     use std::io::Write;
-
     pub type Table = Vec<Vec<String>>;
-
     pub struct StringScan {
         pub index: usize,
         pub dlen: usize,
