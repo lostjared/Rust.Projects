@@ -8,6 +8,7 @@ fn main() -> std::io::Result<()> {
     }
     let mut xcsv = XCsv::new();
     xcsv.load_file(&args[1], &',')?;
+    xcsv.add_row(&["Apple", "Data", "Siren", "Thought"]);
     xcsv.save_file("test1.txt", &',')?;
     Ok(())
 }
