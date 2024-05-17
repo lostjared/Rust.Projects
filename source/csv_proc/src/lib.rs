@@ -1,3 +1,5 @@
+
+
 pub mod xcsv {
 
     use std::io::Write;
@@ -107,6 +109,10 @@ pub mod xcsv {
         pub fn add_row(&mut self, data: &[&str]) {
             let data_row: Vec<String> = data.iter().map(|&s| s.to_string()).collect();
             self.table.push(data_row);
+        }
+
+        pub fn remove_row(&mut self, row: usize) {
+            self.table.remove(row);
         }
 
         fn not_token(ch: &char, sep: &char) -> bool {
