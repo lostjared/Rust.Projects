@@ -7,6 +7,11 @@ fn test_csv() {
     xcsv.add_row(&["apples", "bannas", "rocks","dirt"]);
     assert_eq!(xcsv.at(0, 1), "one");
     assert_eq!(xcsv.at(1, 1), "bannas");
+    for row in &xcsv.table {
+        for item in row {
+            assert!(item.len() > 0);
+        }
+    }
 }
 
 
@@ -22,6 +27,5 @@ fn main() -> std::io::Result<()> {
     xcsv.save_file("test1.txt", &',')?;
     println!("{}", xcsv.at(0, 1));
     println!("{}", xcsv.at(3, 2));
-
     Ok(())
 }
