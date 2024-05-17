@@ -14,6 +14,14 @@ fn test_csv() {
     }
 }
 
+#[test]
+fn test_load_string() {
+    let mut xcsv = XCsv::new();
+    xcsv.load_string("apples,oranges,grapefruit,chocolate\nhere,there,overhre,nowhere\n1,2,3,4\n\"Here is a string\",one,two,three", &',');
+    assert_eq!(xcsv.at(0, 1), "oranges");
+    assert_eq!(xcsv.at(2, 2), "3");
+}
+
 
 fn main() -> std::io::Result<()> {
     let args: Vec<String> = std::env::args().collect();
