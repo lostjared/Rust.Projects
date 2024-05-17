@@ -115,6 +115,10 @@ pub mod xcsv {
             self.table.remove(row);
         }
 
+        pub fn at(&mut self, row: usize, col: usize) -> &String {
+            &self.table[row][col]
+        }
+
         fn not_token(ch: &char, sep: &char) -> bool {
             *ch == ' ' || *ch == '\r' || *ch == '\n' || *ch == '\t' || *ch == *sep
         }

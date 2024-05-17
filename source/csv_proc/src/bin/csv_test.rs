@@ -10,5 +10,7 @@ fn main() -> std::io::Result<()> {
     xcsv.load_file(&args[1], &',')?;
     xcsv.add_row(&["Apple", "Data", "Siren", "Thought"]);
     xcsv.save_file("test1.txt", &',')?;
+    println!("{}", xcsv.at(0, 1));
+    println!("{}", xcsv.at(3, 2));
     Ok(())
 }
