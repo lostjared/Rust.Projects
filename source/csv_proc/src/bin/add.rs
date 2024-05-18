@@ -30,7 +30,7 @@ fn main() -> std::io::Result<()> {
         }
         println!("Wrote {} rows(s) to table", len);
     }
-    xcsv.save_file(&args[2], &',');
+    xcsv.save_file(&args[2], &',')?;
     println!("Wrote updated file to: {}", args[2]);
     Ok(())
 
