@@ -10,7 +10,9 @@ fn main() -> std::io::Result<()> {
         std::process::exit(1);
     }
     let mut xcsv = XCsv::new();
-    xcsv.load_file(&args[1], &',')?;
+    if args[1] != "-n" {
+        xcsv.load_file(&args[1], &',')?;
+    }
     println!("Enter lines one at a time when completed type break");
     loop {
         print!("> ");
@@ -26,6 +28,7 @@ fn main() -> std::io::Result<()> {
         temp_xcsv.load_string(&line, &',');
         let len = temp_xcsv.table.len();
         for row in temp_xcsv.table {
+            println!("Wrote {} col(s) on row", row.len());
             xcsv.table.push(row);
         }
         println!("Wrote {} rows(s) to table", len);
