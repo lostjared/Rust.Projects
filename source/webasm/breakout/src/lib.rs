@@ -431,3 +431,8 @@ impl Breakout {
         self.grid = grid;
     }
 }
+// Example usage function in Rust
+#[wasm_bindgen]
+pub fn example_random_range_usage() -> i32 {
+    random_range(1, 100)
+}

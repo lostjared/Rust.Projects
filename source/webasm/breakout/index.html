@@ -1,18 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Breakout WASM Rust</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rust WASM Example</title>
 </head>
 <body>
     <script type="module">
-        import init, { hello_world } from './web/breakout.js';
+       // Function to generate a random number between min and max (inclusive)
+       export function random_range(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // Import the WASM module
+        import init, { Ball, example_random_range_usage } from '/web/breakout.js';
+
         async function run() {
             await init();
-            let s = hello_world();
-            console.log(s);  
+
+            const ball = new Ball();
+
+            ball.reset();
+            const value = ball.x;
+
+            console.log("ball x-pos: " + ball.x);
+            // Log initial properties
+          
+            console.log("Random number from JS: ", random_range(1, 100));
+            console.log("Random number from Rust: ", example_random_range_usage());
         }
+          
+
         run();
+
     </script>
 </body>
 </html>
