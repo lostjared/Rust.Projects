@@ -178,7 +178,8 @@ impl Grid {
     #[wasm_bindgen]
     pub fn index(&self, col: usize, row: usize) -> u32 {
         let idx = col * TILE_H + row;
-        self.blocks[idx]
+        let block = self.blocks[idx];
+        block
     }
 }
 
@@ -352,7 +353,7 @@ impl Breakout {
         Breakout {
             paddle: Paddle::new(
                 SCREEN_WIDTH / 2 - PADDLE_WIDTH / 2,
-                SCREEN_HEIGHT - 60,
+                SCREEN_HEIGHT - 100,
                 Color::new(255, 0, 0),
             ),
             ball: Ball::new(),

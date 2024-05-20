@@ -12,7 +12,7 @@
         }
         
         .can1 {
-            width: 70%;
+            width: 50%;
             height: auto;
         }
         
@@ -54,6 +54,8 @@
         import init, { Breakout, Ball, Paddle, Grid, example_random_range_usage } from '/web/breakout.js';
 
         var breakout;
+        var paddle;
+       
         var WIDTH=1440;
         var HEIGHT=1080;
         var TILE_W=1440/32;
@@ -61,8 +63,8 @@
 
         async function run() {
             await init();
-
             breakout = new Breakout();
+            paddle = breakout.paddle;
             main();
         }
 
@@ -97,28 +99,39 @@
         }
 
         function keyPressed(key) {
-
+            if(key.keyCode == 37) {
+                if(paddle.x > 0) {
+                    paddle.x -= 20;
+                    drawScreen();
+                }
+                key.preventDefault();
+            } else if (key.keyCode == 39) {
+                if(paddle.x < 1440-210) {
+                    paddle.x += 20;
+                    drawScreen();
+                    key.preventDefault();
+                }
+            }
         }
-        
         
         function drawScreen() {
             context.fillStyle = "#000000";
             context.fillRect(0, 0, WIDTH, HEIGHT);
             let tile_w = WIDTH/32;
             let tile_h = HEIGHT/2/16;
-            let colorz = breakout.grid.colors;
-            for(var x = 0; x < tile_w; ++x) {
-                for(var y = 0; y < tile_h; ++y) {
+            for(var x = 0; x < tile_w-1; ++x) {
+                for(var y = 0; y < tile_h-1; ++y) {
                     context.fillStyle="#BD0000";
                     let pos = breakout.grid.index(x, y);
-                    if(pos > 1) {
-                        context.fillStyle=randomColors[pos];
-                        context.fillRect(x*32, y*16, 32, 16);
-                    }
+                    if(pos == 0) continue;
+                    context.fillStyle=randomColors[pos];
+                    context.fillRect(x*32, y*16, 32, 16);
                 }
             }
             context.fillStyle = "#FFFFFF";
             context.fillRect(breakout.ball.x, breakout.ball.y, 16, 16);
+            context.fillStyle = "#FFFFFF";
+            context.fillRect(paddle.x, paddle.y, 200, 20);
             breakout.update();
         }
     
