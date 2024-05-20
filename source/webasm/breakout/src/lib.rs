@@ -239,7 +239,7 @@ impl Ball {
         {
             self.dy = -self.dy;
         } else if self.y + BALL_SIZE > paddle.y() + BALL_SIZE {
-            std::thread::sleep(std::time::Duration::from_secs(1));
+            //std::thread::sleep(std::time::Duration::from_secs(1));
             lives_delta -= 1;
             self.reset();
         }

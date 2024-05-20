@@ -3,7 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rust WASM Example</title>
+    <title>Rust Breakout</title>
+
+    <style type="text/css">
+
+        .div1 {
+            text-align: center;
+        }
+        
+        .can1 {
+            width: 70%;
+            height: auto;
+        }
+        
+        input {
+            font-size: 24px;
+        }
+        
+        .con1 {
+            text-align: center;
+        }
+        
+        .con2 {
+            text-align: center;
+        }
+        
+        body {
+            background-color: #000000;
+        }
+
+        a {
+            color: rgb(255,255,255);
+        }
+        .span1 {
+            color: rgb(255,255,255);
+            font-size: 32px;
+        }
+        </style>
+
+
 </head>
 <body>
     <script type="module">
@@ -13,26 +51,50 @@
         }
 
         // Import the WASM module
-        import init, { Ball, example_random_range_usage } from '/web/breakout.js';
+        import init, { Breakout, Ball, Paddle, Grid, example_random_range_usage } from '/web/breakout.js';
+
+        var breakout;
 
         async function run() {
             await init();
 
-            const ball = new Ball();
-
-            ball.reset();
-            const value = ball.x;
-
-            console.log("ball x-pos: " + ball.x);
-            // Log initial properties
-          
-            console.log("Random number from JS: ", random_range(1, 100));
-            console.log("Random number from Rust: ", example_random_range_usage());
+            breakout = new Breakout();
+            main();
         }
-          
 
         run();
+        var can = document.getElementById("can1");
+        var context = can.getContext("2d");
 
+        function main() {
+            breakout.new_game();
+            window.addEventListener("keydown", keyPressed, true);
+            setInterval(drawScreen, 25);
+            drawScreen();
+        }
+
+        function keyPressed(key) {
+
+        }
+        
+        function drawScreen() {
+            context.fillStyle = "#000000";
+            context.fillRect(0, 0, 1440, 1080);
+            context.fillStyle="#FFFFFF";
+            context.fillRect(breakout.ball.x, breakout.ball.y, 16, 16);
+           
+            breakout.update();
+        }
+    
     </script>
+
+    <div class="con2">
+    <span class="span1"><b>Breakout Rust</b></span>
+    </div><br>
+    <div class="div1">
+    <canvas class="can1" id="can1" width="1440" height="1080">
+    </canvas>
+    </div>
+
 </body>
 </html>
