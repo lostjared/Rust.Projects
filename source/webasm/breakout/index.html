@@ -94,7 +94,7 @@
             setRandom();
             breakout.new_game();
             window.addEventListener("keydown", keyPressed, true);
-            setInterval(drawScreen, 25);
+            setInterval(drawScreen, 10);
             drawScreen();
         }
 
@@ -102,14 +102,14 @@
             if(key.keyCode == 37) {
                 if(paddle.x > 0) {
                     paddle.x -= 20;
-                    drawScreen();
+                    breakout.set_paddle_xy(paddle.x, paddle.y);
+                    drawScreen();                   
                 }
-                key.preventDefault();
             } else if (key.keyCode == 39) {
                 if(paddle.x < 1440-210) {
                     paddle.x += 20;
+                    breakout.set_paddle_xy(paddle.x, paddle.y);
                     drawScreen();
-                    key.preventDefault();
                 }
             }
         }
@@ -131,8 +131,11 @@
             context.fillStyle = "#FFFFFF";
             context.fillRect(breakout.ball.x, breakout.ball.y, 16, 16);
             context.fillStyle = "#FFFFFF";
-            context.fillRect(paddle.x, paddle.y, 200, 20);
-            breakout.update();
+            context.fillRect(breakout.paddle.x, breakout.paddle.y, 200, 20);
+            
+            if(breakout.update()) {
+                
+            }
         }
     
     </script>

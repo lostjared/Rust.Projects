@@ -392,9 +392,15 @@ impl Breakout {
         self.paddle.clone()
     }
 
+    #[wasm_bindgen]
+    pub fn set_paddle_xy(&mut self, x: i32, y: i32) {
+        self.paddle.x = x;
+        self.paddle.y = y;
+    }
+
     #[wasm_bindgen(setter)]
-    pub fn set_paddle(&mut self, paddle: Paddle) {
-        self.paddle = paddle;
+    pub fn set_paddle(&mut self, paddle: &Paddle) {
+        self.paddle = paddle.clone();
     }
 
     #[wasm_bindgen(getter)]
