@@ -94,10 +94,67 @@
             setRandom();
             breakout.new_game();
             window.addEventListener("keydown", keyPressed, true);
+            var istouch = 'ontouchstart' in window;
+            if(istouch) {
+                window.addEventListener("touchmove", mouseMove, true);
+                }
+            else {
+                window.addEventListener("mousemove", mouseMoveB, true);
+            }
+
+
+
             setInterval(drawScreen, 25);
             drawScreen();
         }
 
+        var downX = 0, downY = 0,upX = 0, upY = 0;
+        var old_down_X = 0;
+        var old_pos = 0;
+        var is_down = false;
+        var is_moved = false
+        
+        function moveLeft() {
+            if(paddle.x > 0) {
+                paddle.x -= 20;
+                breakout.set_paddle_xy(paddle.x, paddle.y);
+                drawScreen();                   
+            }
+     
+        }
+        function moveRight() {
+            if(paddle.x < 960-210) {
+                    paddle.x += 20;
+                    breakout.set_paddle_xy(paddle.x, paddle.y);
+                    drawScreen();
+                }
+        }
+
+        function mouseMove(e) {
+            var canvas = document.getElementById('can1');
+            var rect = canvas.getBoundingClientRect(); s
+            var xpos = e.touches[0].clientX - rect.left;
+            var ypos = e.touches[0].clientY - rect.top;
+            if (xpos > 0 && xpos+200 < canvas.width) {
+                breakout.set_paddle_xy(xpos, paddle.y);
+            }
+            e.stopPropagation();
+            e.preventDefault();
+        }   
+
+
+        function mouseMoveB(e) {
+            var canvas = document.getElementById('can1');
+            var rect = canvas.getBoundingClientRect(); 
+            var xpos = e.clientX - rect.left;
+            var ypos = e.clientY - rect.top;
+             if (xpos > 0 && xpos+200 < canvas.width) {
+                breakout.set_paddle_xy(xpos, paddle.y);
+
+            }
+            e.stopPropagation();
+            e.preventDefault();
+        }
         function keyPressed(key) {
             if(key.keyCode == 37) {
                 if(paddle.x > 0) {
