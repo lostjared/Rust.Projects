@@ -12,7 +12,7 @@
         }
         
         .can1 {
-            width: 70%;
+            width: 60%;
             height: auto;
         }
         
@@ -48,7 +48,7 @@
        // Function to generate a random number between min and max (inclusive)
        export function random_range(min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
+       }
 
         // Import the WASM module
         import init, { Breakout, Ball, Paddle, Grid, example_random_range_usage } from '/web/breakout.js';
@@ -132,7 +132,10 @@
             context.fillRect(breakout.ball.x, breakout.ball.y, 16, 16);
             context.fillStyle = "#FFFFFF";
             context.fillRect(breakout.paddle.x, breakout.paddle.y, 200, 20);
-            
+            context.fillStyle = randomColors[random_range(0, 10)];
+            context.font="14px Verdana";
+            context.fillText("Score: " + breakout.score + " Lives: " + breakout.lives, 15, 690);
+        
             if(breakout.update()) {
                 
             }
