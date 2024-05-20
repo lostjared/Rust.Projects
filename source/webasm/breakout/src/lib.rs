@@ -114,7 +114,7 @@ impl Default for Grid {
 impl Grid {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Grid {
-        let blocks = vec![0; TILE_W * TILE_H]; // initialize all blocks with color_type 0
+        let blocks = vec![0; TILE_W* TILE_H]; // initialize all blocks with color_type 0
         let colors = Grid::rand_colors();
         Grid { blocks, colors }
     }
@@ -174,6 +174,11 @@ impl Grid {
     #[wasm_bindgen(setter)]
     pub fn set_colors(&mut self, colors: Vec<Color>) {
         self.colors = colors;
+    }
+    #[wasm_bindgen]
+    pub fn index(&self, col: usize, row: usize) -> u32 {
+        let idx = col * TILE_H + row;
+        self.blocks[idx]
     }
 }
 

@@ -54,6 +54,10 @@
         import init, { Breakout, Ball, Paddle, Grid, example_random_range_usage } from '/web/breakout.js';
 
         var breakout;
+        var WIDTH=1440;
+        var HEIGHT=1080;
+        var TILE_W=1440/32;
+        var TILE_H=1080/2/16;
 
         async function run() {
             await init();
@@ -65,8 +69,27 @@
         run();
         var can = document.getElementById("can1");
         var context = can.getContext("2d");
+        
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        var randomColors = [];
+
+        function setRandom() {
+            randomColors = [];
+            for (let i = 0; i < 100; i++) {
+                 randomColors.push(getRandomColor());
+            }
+        }
 
         function main() {
+            setRandom();
             breakout.new_game();
             window.addEventListener("keydown", keyPressed, true);
             setInterval(drawScreen, 25);
@@ -77,12 +100,25 @@
 
         }
         
+        
         function drawScreen() {
             context.fillStyle = "#000000";
-            context.fillRect(0, 0, 1440, 1080);
-            context.fillStyle="#FFFFFF";
+            context.fillRect(0, 0, WIDTH, HEIGHT);
+            let tile_w = WIDTH/32;
+            let tile_h = HEIGHT/2/16;
+            let colorz = breakout.grid.colors;
+            for(var x = 0; x < tile_w; ++x) {
+                for(var y = 0; y < tile_h; ++y) {
+                    context.fillStyle="#BD0000";
+                    let pos = breakout.grid.index(x, y);
+                    if(pos > 1) {
+                        context.fillStyle=randomColors[pos];
+                        context.fillRect(x*32, y*16, 32, 16);
+                    }
+                }
+            }
+            context.fillStyle = "#FFFFFF";
             context.fillRect(breakout.ball.x, breakout.ball.y, 16, 16);
-           
             breakout.update();
         }
     
