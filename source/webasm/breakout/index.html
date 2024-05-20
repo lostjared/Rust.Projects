@@ -12,7 +12,7 @@
         }
         
         .can1 {
-            width: 50%;
+            width: 70%;
             height: auto;
         }
         
@@ -56,10 +56,10 @@
         var breakout;
         var paddle;
        
-        var WIDTH=1440;
-        var HEIGHT=1080;
-        var TILE_W=1440/32;
-        var TILE_H=1080/2/16;
+        var WIDTH=960;
+        var HEIGHT=720;
+        var TILE_W=960/32;
+        var TILE_H=720/2/16;
 
         async function run() {
             await init();
@@ -94,7 +94,7 @@
             setRandom();
             breakout.new_game();
             window.addEventListener("keydown", keyPressed, true);
-            setInterval(drawScreen, 10);
+            setInterval(drawScreen, 25);
             drawScreen();
         }
 
@@ -106,7 +106,7 @@
                     drawScreen();                   
                 }
             } else if (key.keyCode == 39) {
-                if(paddle.x < 1440-210) {
+                if(paddle.x < 960-210) {
                     paddle.x += 20;
                     breakout.set_paddle_xy(paddle.x, paddle.y);
                     drawScreen();
@@ -144,7 +144,7 @@
     <span class="span1"><b>Breakout Rust</b></span>
     </div><br>
     <div class="div1">
-    <canvas class="can1" id="can1" width="1440" height="1080">
+    <canvas class="can1" id="can1" width="960" height="720">
     </canvas>
     </div>
 

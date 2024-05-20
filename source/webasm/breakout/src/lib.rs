@@ -8,8 +8,8 @@ extern "C" {
 
 // Example usage in Rust
 
-pub const SCREEN_WIDTH: i32 = 1440;
-pub const SCREEN_HEIGHT: i32 = 1080;
+pub const SCREEN_WIDTH: i32 = 960;
+pub const SCREEN_HEIGHT: i32 = 720;
 pub const TILE_W: usize = SCREEN_WIDTH as usize / 32;
 pub const TILE_H: usize = SCREEN_HEIGHT as usize / 2 / 16;
 pub const PADDLE_WIDTH: i32 = 200;
@@ -353,7 +353,7 @@ impl Breakout {
         Breakout {
             paddle: Paddle::new(
                 SCREEN_WIDTH / 2 - PADDLE_WIDTH / 2,
-                SCREEN_HEIGHT - 100,
+                SCREEN_HEIGHT - 30,
                 Color::new(255, 0, 0),
             ),
             ball: Ball::new(),
