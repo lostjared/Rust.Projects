@@ -3,9 +3,11 @@ use std::io::BufReader;
 
 #[wasm_bindgen]
 pub fn convert_text(text: &str) -> String {
-    let reader = BufReader::new(text.as_bytes());
-    convert_to_cxx(reader,"v",true)
-}
+        let mut s = String::from(text);
+        s.push('\n');
+        let reader = BufReader::new(s.as_bytes());
+        convert_to_cxx(reader,"v",true)
+  }
 
 #[wasm_bindgen]
 pub fn convert_text_v(text: &str) -> String {
