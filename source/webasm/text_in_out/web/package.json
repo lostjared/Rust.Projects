@@ -1,0 +1,14 @@
+{
+  "name": "text_in_out",
+  "version": "0.1.0",
+  "files": [
+    "text_in_out_bg.wasm",
+    "text_in_out.js",
+    "text_in_out.d.ts"
+  ],
+  "module": "text_in_out.js",
+  "types": "text_in_out.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
