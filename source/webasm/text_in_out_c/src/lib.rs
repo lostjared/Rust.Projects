@@ -1,10 +1,24 @@
-use wasm_bindgen::prelude::*;
+    use wasm_bindgen::prelude::*;
 use std::io::BufReader;
 
 #[wasm_bindgen]
 pub fn convert_text(text: &str) -> String {
     let reader = BufReader::new(text.as_bytes());
-    convert_to_cxx(reader, true)
+    convert_to_cxx(reader,"v",true)
+}
+
+fn slash_seq(input: &str) -> String {
+    let mut value: String = String::new();
+    for i in input.chars() {
+        if i == '\\' {
+            value.push_str("\\\\");
+        } else if i == '\"' {
+            value.push_str("\\\"");
+        } else {
+            value.push(i);
+        }
+    }
+    value
 }
 
 fn convert_to_cxx<T: std::io::BufRead + Sized>(mut reader: T, name: &str, blank: bool) -> String {
