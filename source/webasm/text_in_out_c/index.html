@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Convert Text to Rust Vec</title>
+    <style type="text/css">
+
+        body { background-color: rgb(150, 150, 150); font-family: monospace; font-size: 16px; }
+        div { padding: 15px; }
+        textarea { width: 100%; height: auto }
+
+    </style>
+</head>
+<body>
+    <script type="module">
+        import init, { convert_text } from './web/text_in_out_c.js';
+        async function convert_data() {
+            await init();
+            const text = document.getElementById("txt_input").value;
+            const result = convert_text(text);
+            document.getElementById("txt_output").value = result;
+        }
+        window.convert_data =  convert_data;
+    </script>
+    <div>
+
+        <h1>Convert text to C array.</h1 >
+        <h3>Enter text in the input press convert.</h3>
+        <b>Input:</b><br>
+        <textarea id="txt_input" rows="10" cols="80"></textarea><br>
+        <b>Output:</b><br>
+        <textarea id="txt_output" rows="10" cols="80"></textarea><br><br>
+        <input type="button" value="Convert" onclick="convert_data()"><br> 
+    </div>
+</body>
+</html>
