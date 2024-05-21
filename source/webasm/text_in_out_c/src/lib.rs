@@ -1,4 +1,4 @@
-    use wasm_bindgen::prelude::*;
+use wasm_bindgen::prelude::*;
 use std::io::BufReader;
 
 #[wasm_bindgen]
@@ -6,6 +6,13 @@ pub fn convert_text(text: &str) -> String {
     let reader = BufReader::new(text.as_bytes());
     convert_to_cxx(reader,"v",true)
 }
+
+#[wasm_bindgen]
+pub fn convert_text_v(text: &str) -> String {
+    let reader = BufReader::new(text.as_bytes());
+    convert_to_cxx_v(reader)
+}
+
 
 fn slash_seq(input: &str) -> String {
     let mut value: String = String::new();
@@ -18,6 +25,37 @@ fn slash_seq(input: &str) -> String {
             value.push(i);
         }
     }
+    value
+}
+
+fn convert_to_cxx_v<T>(mut reader: T) -> String
+where
+    T: std::io::BufRead + Sized,
+{
+    let mut value: String = String::new();
+    value.push_str("std::vector<char> v {");
+    let mut bytes = [0; 1024];
+    let mut first_byte = true;
+
+    loop {
+        let val = reader.read(&mut bytes).expect("Failed to read");
+        if val == 0 {
+            break;
+        }
+        if !first_byte {
+            value.push(',');
+        }
+        first_byte = false;
+
+        for i in 0..val {
+            if i > 0 {
+                value.push(',');
+            }
+            let s = format!("{:#04x}", bytes[i]);
+            value.push_str(&s);
+        }
+    }
+    value.push_str("};\n");
     value
 }
 
@@ -47,3 +85,4 @@ fn convert_to_cxx<T: std::io::BufRead + Sized>(mut reader: T, name: &str, blank:
     value.push_str("\n};\n");
     value
 }
+
