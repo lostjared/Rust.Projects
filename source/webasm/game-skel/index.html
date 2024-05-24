@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Breakout WASM Rust</title>
+</head>
+<body>
+    <script type="module">
+        import init, { hello_world, Object } from './web/game.js';
+        async function run() {
+            await init();
+            let s = hello_world();
+            console.log(s);  
+            let obj = Object();
+            obj.x = 200;
+            
+        }
+        run();
+    </script>
+</body>
+</html>
