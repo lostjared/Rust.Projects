@@ -20,12 +20,12 @@ impl Object  {
         }
 
     }
-    
+
     #[wasm_bindgen(getter)]
-    ub fn x(&self) -> i32 {
+    pub fn x(&self) -> i32 {
         self.x
     }
-\   #[wasm_bindgen(setter)]
+    #[wasm_bindgen(setter)]
     pub fn x(&self, value: i32) {
         self.x = value;
     }
