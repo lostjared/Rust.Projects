@@ -26,7 +26,7 @@ impl Object  {
         self.x
     }
     #[wasm_bindgen(setter)]
-    pub fn x(&self, value: i32) {
+    pub fn set_x(&mut self, value: i32) {
         self.x = value;
     }
 
