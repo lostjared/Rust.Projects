@@ -1,0 +1,7 @@
+[package]
+name = "ldd_deploy"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = "3.2.17"
