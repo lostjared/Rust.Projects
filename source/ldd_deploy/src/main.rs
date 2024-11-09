@@ -1,3 +1,4 @@
+
 /*
 
     This Rust program, named ldd-deploy, is a command-line utility designed to identify and copy all shared library dependencies (.dll files)
@@ -35,7 +36,6 @@ use std::process::{Command, Stdio};
 struct Arguments {
     pub input: PathBuf,
     pub output: PathBuf,
-    pub msys: PathBuf,
 }
 
 fn parse_args() -> Arguments {
@@ -52,14 +52,6 @@ fn parse_args() -> Arguments {
                 .required(true),
         )
         .arg(
-            Arg::with_name("msys")
-                .short('m')
-                .long("msys")
-                .help("msys path")
-                .takes_value(true)
-                .required(true),
-        )
-        .arg(
             Arg::with_name("output")
                 .short('o')
                 .long("output")
@@ -70,7 +62,6 @@ fn parse_args() -> Arguments {
         .get_matches();
 
     let input = PathBuf::from(matches.value_of("input").unwrap());
-    let msys = PathBuf::from(matches.value_of("msys").unwrap());
     let output = matches
         .value_of("output")
         .map(PathBuf::from)
@@ -79,24 +70,36 @@ fn parse_args() -> Arguments {
     Arguments {
         input,
         output,
-        msys,
     }
 }
 
-fn copy_dll(msys: &Path, input_loc: &str, output_dir: &Path) -> std::io::Result<()> {
+fn copy_file(src: &Path, dst: &Path) -> std::io::Result<()> {
+    let status = Command::new("cp")
+        .arg(src)
+        .arg(dst)
+        .status()?;
+
+    if status.success() {
+        Ok(())
+    } else {
+        Err(std::io::Error::new(std::io::ErrorKind::Other, "Failed to copy file"))
+    }
+}
+
+fn copy_dll(input_loc: &str, output_dir: &Path) -> std::io::Result<()> {
     let pos = input_loc.find("=>").unwrap();
     let fname = &input_loc[0..pos].trim();
     let right = &input_loc[pos + 3..];
     let pos2 = right.find('(').unwrap();
-    let loc = &right[1..pos2 - 1].trim();
-    let src = msys.join(loc);
+    let loc = &right[0..pos2 - 1].trim();
+    let src = PathBuf::from(loc);
     let dst = output_dir.join(fname);
+    copy_file(&src, &dst)?;
     println!("{} -> {}", src.display(), dst.display());
-    std::fs::copy(&src, &dst)?;
     Ok(())
 }
 
-fn extract_dll(msys: &Path, input: &Path, output_dir: &Path) -> std::io::Result<()> {
+fn extract_dll(input: &Path, output_dir: &Path) -> std::io::Result<()> {
     let command = format!("ldd \"{}\" | grep -vi windows", input.display());
     let mut child = Command::new("sh")
         .arg("-c")
@@ -116,7 +119,7 @@ fn extract_dll(msys: &Path, input: &Path, output_dir: &Path) -> std::io::Result<
     let mut istream = std::io::BufReader::new(output.as_bytes());
     let mut line = String::new();
     while istream.read_line(&mut line)? > 0 {
-        copy_dll(msys, line.trim(), output_dir)?;
+        copy_dll(line.trim(), output_dir)?;
         line.clear();
     }
     Ok(())
@@ -124,6 +127,6 @@ fn extract_dll(msys: &Path, input: &Path, output_dir: &Path) -> std::io::Result<
 
 fn main() -> std::io::Result<()> {
     let args = parse_args();
-    extract_dll(&args.msys, &args.input, &args.output)?;
+    extract_dll(&args.input, &args.output)?;
     Ok(())
 }
