@@ -1,4 +1,3 @@
-
 /*
 
     This Rust program, named ldd-deploy, is a command-line utility designed to identify and copy all shared library dependencies (.dll files)
@@ -67,22 +66,19 @@ fn parse_args() -> Arguments {
         .map(PathBuf::from)
         .unwrap_or_else(|| PathBuf::from("."));
 
-    Arguments {
-        input,
-        output,
-    }
+    Arguments { input, output }
 }
 
 fn copy_file(src: &Path, dst: &Path) -> std::io::Result<()> {
-    let status = Command::new("cp")
-        .arg(src)
-        .arg(dst)
-        .status()?;
+    let status = Command::new("cp").arg(src).arg(dst).status()?;
 
     if status.success() {
         Ok(())
     } else {
-        Err(std::io::Error::new(std::io::ErrorKind::Other, "Failed to copy file"))
+        Err(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            "Failed to copy file",
+        ))
     }
 }
 
