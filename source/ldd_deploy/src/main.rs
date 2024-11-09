@@ -27,16 +27,15 @@
 
 */
 use clap::{App, Arg};
-use std::io::BufRead;
-use std::io::Read;
-use std::process::Command;
-use std::process::Stdio;
+use std::io::{BufRead, Read};
+use std::path::{Path, PathBuf};
+use std::process::{Command, Stdio};
 
 #[derive(Debug)]
 struct Arguments {
-    pub input: String,
-    pub output: Option<String>,
-    pub msys: String,
+    pub input: PathBuf,
+    pub output: PathBuf,
+    pub msys: PathBuf,
 }
 
 fn parse_args() -> Arguments {
@@ -50,7 +49,7 @@ fn parse_args() -> Arguments {
                 .long("input")
                 .help("input executable")
                 .takes_value(true)
-                .required(true)
+                .required(true),
         )
         .arg(
             Arg::with_name("msys")
@@ -58,7 +57,7 @@ fn parse_args() -> Arguments {
                 .long("msys")
                 .help("msys path")
                 .takes_value(true)
-                .required(true)
+                .required(true),
         )
         .arg(
             Arg::with_name("output")
@@ -66,43 +65,34 @@ fn parse_args() -> Arguments {
                 .long("output")
                 .help("output directory")
                 .takes_value(true)
-                .required(false)
+                .required(false),
         )
         .get_matches();
 
-    let val_i = matches.value_of("input").unwrap();
-    let val_o = matches.value_of("output");
-    let val_m = matches.value_of("msys").unwrap();
-    let val_out;
+    let input = PathBuf::from(matches.value_of("input").unwrap());
+    let msys = PathBuf::from(matches.value_of("msys").unwrap());
+    let output = matches.value_of("output")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| PathBuf::from("."));
 
-    if val_o != None {
-        val_out = Some(val_o.unwrap().to_string());
-    } else {
-        val_out = Some(String::from("."));
-    }
-    
-    Arguments {
-        input: val_i.to_string(),
-        output:val_out,
-        msys: val_m.to_string(),
-    }
+    Arguments { input, output, msys }
 }
 
-fn copy_dll(msys: &str, input_loc: &str, output_dir: &str) -> std::io::Result<()> {
+fn copy_dll(msys: &Path, input_loc: &str, output_dir: &Path) -> std::io::Result<()> {
     let pos = input_loc.find("=>").unwrap();
-    let fname = &input_loc[0..pos];
-    let right = &input_loc[pos+3..];
+    let fname = &input_loc[0..pos].trim();
+    let right = &input_loc[pos + 3..];
     let pos2 = right.find("(").unwrap();
-    let loc = &right[0..pos2-1];
-    let src = format!("{}/{}", msys, loc);
-    let dst = format!("{}/{}", output_dir, fname);
-    println!("{} -> {}", src, dst);
-    std::fs::copy(src, dst)?;
+    let loc = &right[1..pos2 - 1].trim();
+    let src = msys.join(loc);
+    let dst = output_dir.join(fname);
+    println!("{} -> {}", src.display(), dst.display());
+    std::fs::copy(&src, &dst)?;
     Ok(())
 }
 
-fn extract_dll(msys: &str, input: &str, output_loc: &str) -> std::io::Result<()> {
-    let command = format!("ldd {} | grep -vi windows", input);
+fn extract_dll(msys: &Path, input: &Path, output_dir: &Path) -> std::io::Result<()> {
+    let command = format!("ldd \"{}\" | grep -vi windows", input.display());
     let mut child = Command::new("sh")
         .arg("-c")
         .arg(&command)
@@ -121,15 +111,14 @@ fn extract_dll(msys: &str, input: &str, output_loc: &str) -> std::io::Result<()>
     let mut istream = std::io::BufReader::new(output.as_bytes());
     let mut line = String::new();
     while istream.read_line(&mut line)? > 0 {
-        copy_dll(msys, &line.trim(), output_loc)?;
-        line.clear(); 
+        copy_dll(msys, line.trim(), output_dir)?;
+        line.clear();
     }
-
     Ok(())
 }
 
 fn main() -> std::io::Result<()> {
     let args = parse_args();
-    extract_dll(&args.msys, &args.input, &args.output.unwrap())?;
+    extract_dll(&args.msys, &args.input, &args.output)?;
     Ok(())
 }
