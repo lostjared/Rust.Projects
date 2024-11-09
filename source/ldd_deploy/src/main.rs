@@ -87,7 +87,7 @@ fn copy_dll(msys: &Path, input_loc: &str, output_dir: &Path) -> std::io::Result<
     let pos = input_loc.find("=>").unwrap();
     let fname = &input_loc[0..pos].trim();
     let right = &input_loc[pos + 3..];
-    let pos2 = right.find("(").unwrap();
+    let pos2 = right.find('(').unwrap();
     let loc = &right[1..pos2 - 1].trim();
     let src = msys.join(loc);
     let dst = output_dir.join(fname);
