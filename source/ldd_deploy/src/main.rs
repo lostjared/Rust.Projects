@@ -1,6 +1,6 @@
-/* 
+/*
 
-    This Rust program, named ldd-deploy, is a command-line utility designed to identify and copy all shared library dependencies (.dll files) 
+    This Rust program, named ldd-deploy, is a command-line utility designed to identify and copy all shared library dependencies (.dll files)
     of a given executable to a specified output directory, primarily for use in a MinGW or MSYS environment on Windows.
 
     How It Works:
@@ -22,7 +22,7 @@
 
     If any errors occur, such as missing dependencies or issues with copying files, the program outputs an error message and exits.
     Use Case:
-    This program is useful when you need to deploy a Linux-compiled executable on Windows (under MinGW/MSYS) along with all its required .dll files, 
+    This program is useful when you need to deploy a Linux-compiled executable on Windows (under MinGW/MSYS) along with all its required .dll files,
     ensuring the executable can run independently without requiring users to set up an MSYS environment manually.
 
 */
@@ -71,11 +71,16 @@ fn parse_args() -> Arguments {
 
     let input = PathBuf::from(matches.value_of("input").unwrap());
     let msys = PathBuf::from(matches.value_of("msys").unwrap());
-    let output = matches.value_of("output")
+    let output = matches
+        .value_of("output")
         .map(PathBuf::from)
         .unwrap_or_else(|| PathBuf::from("."));
 
-    Arguments { input, output, msys }
+    Arguments {
+        input,
+        output,
+        msys,
+    }
 }
 
 fn copy_dll(msys: &Path, input_loc: &str, output_dir: &Path) -> std::io::Result<()> {
